@@ -22,6 +22,7 @@ class CreateUsersTable extends Migration
             $table->string('name');
             $table->string('surname');
             $table->unsignedTinyInteger('age');
+            $table->softDeletes();
             $table->timestamps();
         });
     }
