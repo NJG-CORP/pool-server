@@ -78,7 +78,7 @@ return [
     |
     */
 
-    'locale' => 'en',
+    'locale' => 'ru',
 
     /*
     |--------------------------------------------------------------------------
@@ -177,6 +177,8 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
 
+        Jrean\UserVerification\UserVerificationServiceProvider::class
+
     ],
 
     /*
@@ -226,6 +228,7 @@ return [
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
 
+        'UserVerification' => Jrean\UserVerification\Facades\UserVerification::class
     ],
 
 ];

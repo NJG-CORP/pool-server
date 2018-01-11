@@ -1,0 +1,34 @@
+<?php
+/**
+ * Created by PhpStorm.
+ * User: tooyz
+ * Date: 11.01.2018
+ * Time: 1:32
+ */
+
+namespace App\Http;
+
+
+class Responder
+{
+    public function successResponse($data, $status = 200){
+        return $this->makeResponse(
+            $status, [
+                "data" => $data
+            ]
+        );
+    }
+
+    public function errorResponse($error, $data = null, $status = 500){
+        return $this->makeResponse($status, [
+            "error" => $error,
+            "data" => $data
+        ]);
+    }
+
+    private function makeResponse($code, $data){
+        return \response()->json(
+            $data, $code
+        );
+    }
+}

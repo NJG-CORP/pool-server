@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Http\Responder;
+use App\Services\UserService;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
 
@@ -15,6 +17,12 @@ class AppServiceProvider extends ServiceProvider
     public function boot()
     {
         Schema::defaultStringLength(191);
+        $this->app->singleton(UserService::class, function(){
+            return new UserService();
+        });
+        $this->app->singleton(Responder::class, function(){
+            return new Responder();
+        });
     }
 
     /**

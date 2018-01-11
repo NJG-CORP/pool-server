@@ -22,7 +22,9 @@ class UsersTableSeeder extends Seeder
                 'remember_token' => str_random(10),
                 "api_token" => str_random(24),
                 "email" => $faker->email,
-                "age" => $faker->numberBetween(16, 40)
+                "age" => $faker->numberBetween(16, 40),
+                "verified" => $faker->boolean,
+                "verification_token" => str_random()
             ]);
         }
     }
