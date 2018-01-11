@@ -44,13 +44,11 @@ class UserController extends Controller
         $req = $this->request->all();
         $this->validateRequestData([
             "email" => "required|email|unique:users",
-            'password' => "required|min:6",
             "name" => "required|min:2",
             "surname" => "required|min:2"
         ]);
         $res = $this->users->register(
             $req['email'],
-            $req['password'],
             $req['name'],
             $req['surname']
         );

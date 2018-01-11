@@ -22,17 +22,23 @@ class UserService
         return false;
     }
 
-    public function register($email, $password, $name, $surname){
+    public function register($email, $name, $surname){
+        $password = str_random(6);
         $createdUser = User::create([
             "email" => $email,
             "password" => bcrypt($password),
             "name" => $name,
             "surname" => $surname
         ]);
-        \UserVerification::generate($createdUser);
-        \UserVerification::send(
-            $createdUser
-        );
-        return $createdUser;
+        if ( $createdUser instanceof User ){
+            \Mail::raw(
+                $password,
+                function (Message $message) use ( $createdUser ){
+                    $message->from("pooltest@mail.ru");
+                    $message->to($createdUser);
+                }
+            );
+            return $createdUser;
+        }
     }
 }
