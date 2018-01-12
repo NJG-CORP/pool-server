@@ -4,9 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Http\Responder;
 use App\Services\UserService;
-use function App\Utils\checkValidationErrors;
+use App\Utils\R;
 use Illuminate\Http\Request;
-use Illuminate\Validation\Validator;
+use Illuminate\Support\Facades\Password;
 
 class UserController extends Controller
 {
@@ -35,9 +35,7 @@ class UserController extends Controller
             $req['email'],
             $req['password']
         );
-        if ( $res ){
-            return $this->responder->successResponse($res);
-        }
+        return $this->responder->successResponse($res);
     }
 
     public function register(){
@@ -52,8 +50,21 @@ class UserController extends Controller
             $req['name'],
             $req['surname']
         );
-        if ( $res ){
-            return $this->responder->successResponse($res);
+        return $this->responder->successResponse($res);
+    }
+
+    public function resetPassword(){
+        $this->validateRequestData([
+            'email' => 'required|email'
+        ]);
+        $broker = Password::broker();
+        $res = $broker->sendResetLink(
+            $this->request->get('email')
+        );
+        if ( $res === Password::RESET_LINK_SENT ){
+            return $this->responder->successResponse(true);
+        } else {
+            return $this->responder->errorResponse(R::USER_PASS_RESET_FAILURE);
         }
     }
 }
