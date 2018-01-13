@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateRatingTable extends Migration
+class CreateChatMessagesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,12 +13,11 @@ class CreateRatingTable extends Migration
      */
     public function up()
     {
-        Schema::create('rating', function (Blueprint $table) {
+        Schema::create('chat_messages', function (Blueprint $table) {
             $table->increments('id');
-            $table->unsignedInteger('rater_id');
-            $table->unsignedInteger('rated_id');
-            $table->unsignedTinyInteger('score')->nullable();
-            $table->string('comment')->nullable();
+            $table->unsignedInteger('sender_id');
+            $table->unsignedInteger('receiver_id');
+            $table->string('text');
             $table->timestamps();
         });
     }
@@ -30,6 +29,6 @@ class CreateRatingTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('rating');
+        Schema::dropIfExists('chat_messages');
     }
 }

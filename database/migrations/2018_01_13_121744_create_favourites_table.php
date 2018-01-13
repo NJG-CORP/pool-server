@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateImagesTable extends Migration
+class CreateFavouritesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,12 +13,11 @@ class CreateImagesTable extends Migration
      */
     public function up()
     {
-        Schema::create('images', function (Blueprint $table) {
-            $table->increments('id');
-            $table->unsignedInteger('imageable_id');
-            $table->string('imageable_type');
-            $table->string('path');
+        Schema::create('favourites', function (Blueprint $table) {
+            $table->unsignedInteger('from_id');
+            $table->unsignedInteger('to_id');
             $table->timestamp('created_at')->useCurrent();
+            $table->index(['from_id', 'to_id']);
         });
     }
 
@@ -29,6 +28,6 @@ class CreateImagesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('images');
+        Schema::dropIfExists('favourites');
     }
 }

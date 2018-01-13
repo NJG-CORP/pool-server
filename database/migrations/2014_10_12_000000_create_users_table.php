@@ -17,6 +17,11 @@ class CreateUsersTable extends Migration
             $table->increments('id');
             $table->string('email')->unique();
             $table->string('password');
+            $table->unsignedTinyInteger('age');
+            $table->string('name');
+            $table->string('surname');
+            $table->unsignedInteger('location_id');
+            $table->unsignedInteger('city_id');
             $table->string('api_token');
             $table->rememberToken();
             $table->softDeletes();

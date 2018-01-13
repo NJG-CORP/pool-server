@@ -18,6 +18,7 @@ class CreateInvitationsTable extends Migration
             $table->unsignedInteger('inviter_id');
             $table->unsignedInteger('invited_id');
             $table->unsignedInteger('club_id');
+            $table->boolean('accepted')->default(false);
             $table->dateTime('meeting_at');
             $table->timestamps();
         });
