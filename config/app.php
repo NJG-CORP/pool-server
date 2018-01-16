@@ -177,7 +177,7 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
 
-
+        Devfactory\Taxonomy\TaxonomyServiceProvider::class
     ],
 
     /*
@@ -227,6 +227,7 @@ return [
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
 
+        'Taxonomy'        => Devfactory\Taxonomy\Facades\TaxonomyFacade::class,
     ],
 
 ];

@@ -17,4 +17,12 @@ class Club extends Model
     public function city(){
         return $this->belongsTo(City::class);
     }
+
+    public function location(){
+        return $this->belongsTo(Location::class);
+    }
+
+    public function rating(){
+        return $this->morphMany(Rating::class, 'rateable');
+    }
 }

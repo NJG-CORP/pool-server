@@ -9,6 +9,10 @@ class Location extends Model
     protected $dates = ['updated_at'];
 
     public function user(){
-        return $this->belongsTo(User::class);
+        return $this->hasOne(User::class);
+    }
+
+    public function club(){
+        return $this->hasOne(Club::class);
     }
 }

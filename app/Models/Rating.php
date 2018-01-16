@@ -13,7 +13,7 @@ class Rating extends Model
         return $this->belongsTo(User::class, 'rater_id');
     }
 
-    protected function rated(){
-        return $this->belongsTo(User::class, 'rated_id');
+    public function rateable(){
+        return $this->morphTo();
     }
 }

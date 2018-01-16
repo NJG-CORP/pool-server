@@ -37,7 +37,7 @@ class User extends Authenticatable
     }
 
     public function receivedRatings(){
-        return $this->hasMany(Rating::class, 'rated_id', 'id');
+        return $this->morphMany(Rating::class, 'rateable');
     }
 
     public function sentFavourites(){

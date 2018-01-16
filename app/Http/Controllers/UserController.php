@@ -15,16 +15,19 @@ class UserController extends Controller
      */
     private  $users;
     /**
-     * @var Responder
+     * UserController constructor.
+     * @param Request $request
+     * @param UserService $users
      */
-    private $responder;
-
-    public function __construct(Request $request, UserService $users, Responder $responder){
-        $this->request = $request;
+    public function __construct(Request $request, UserService $users){
+        parent::__construct($request);
         $this->users = $users;
-        $this->responder = $responder;
     }
 
+    /**
+     * @return \Illuminate\Http\JsonResponse
+     * @throws \App\Exceptions\ControllableException
+     */
     public function login(){
         $req = $this->request->all();
         $this->validateRequestData([
@@ -38,6 +41,10 @@ class UserController extends Controller
         return $this->responder->successResponse($res);
     }
 
+    /**
+     * @return \Illuminate\Http\JsonResponse
+     * @throws \App\Exceptions\ControllableException
+     */
     public function register(){
         $req = $this->request->all();
         $this->validateRequestData([
@@ -53,6 +60,10 @@ class UserController extends Controller
         return $this->responder->successResponse($res);
     }
 
+    /**
+     * @return \Illuminate\Http\JsonResponse
+     * @throws \App\Exceptions\ControllableException
+     */
     public function resetPassword(){
         $this->validateRequestData([
             'email' => 'required|email'

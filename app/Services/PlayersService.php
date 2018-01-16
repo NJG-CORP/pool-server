@@ -14,6 +14,7 @@ class PlayersService
      * @return \Illuminate\Support\Collection
      */
     public function getFavouritePlayersOfUser(User $user){
+        $user->load('avatar');
         return $user->sentFavourites;
     }
 

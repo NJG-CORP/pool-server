@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Exceptions\ControllableException;
+use App\Http\Responder;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller as BaseController;
@@ -17,6 +18,15 @@ class Controller extends BaseController
      * @var Request
      */
     protected $request = null;
+    /**
+     * @var Responder $responder
+     */
+    protected $responder = null;
+    public function __construct(Request $request)
+    {
+        $this->request = $request;
+        $this->responder = resolve(Responder::class);
+    }
 
     /**
      * @param $validationRules

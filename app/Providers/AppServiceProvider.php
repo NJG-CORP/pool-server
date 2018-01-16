@@ -3,7 +3,9 @@
 namespace App\Providers;
 
 use App\Http\Responder;
+use App\Services\ClubsService;
 use App\Services\PlayersService;
+use App\Services\RatingService;
 use App\Services\UserService;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
@@ -26,6 +28,12 @@ class AppServiceProvider extends ServiceProvider
         });
         $this->app->singleton(PlayersService::class, function(){
             return new PlayersService();
+        });
+        $this->app->singleton(ClubsService::class, function(){
+            return new PlayersService();
+        });
+        $this->app->singleton(RatingService::class, function(){
+            return new RatingService();
         });
     }
 

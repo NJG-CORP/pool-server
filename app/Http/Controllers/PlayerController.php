@@ -5,29 +5,30 @@ namespace App\Http\Controllers;
 use App\Http\Responder;
 use App\Models\User;
 use App\Services\PlayersService;
+use App\Services\RatingService;
 use Illuminate\Http\Request;
 
 class PlayerController extends Controller
 {
     /**
-     * @var PlayersService
+     * @var PlayersService $players
      */
     private $players;
     /**
-     * @var Responder
+     * @var RatingService $rating
      */
-    private $responder;
+    private $rating;
 
     /**
      * PlayerController constructor.
      * @param Request $request
      * @param PlayersService $players
-     * @param Responder $responder
+     * @param RatingService $rating
      */
-    public function __construct(Request $request, PlayersService $players, Responder $responder){
-        $this->request = $request;
+    public function __construct(Request $request, PlayersService $players, RatingService $rating){
+        parent::__construct($request);
         $this->players = $players;
-        $this->responder = $responder;
+        $this->rating = $rating;
     }
 
     /**
@@ -35,7 +36,9 @@ class PlayerController extends Controller
      */
     public function favouritePlayers(){
         $favourites = $this->players->getFavouritePlayersOfUser(\Auth::user());
-        return $this->responder->successResponse($favourites);
+        return $this->responder->successResponse([
+            'models' => $favourites
+        ]);
     }
 
     /**
@@ -50,13 +53,37 @@ class PlayerController extends Controller
         ]);
         $addedUser = User::findOrFail($id);
         if (
-            $result = $this->players->addFavouritePlayer(
+            $res = $this->players->addFavouritePlayer(
                 \Auth::user(),
                 $addedUser
             )
         ) {
-            return $this->responder->successResponse(true);
+            return $this->responder->successResponse([
+                "id" => $res
+            ]);
         }
         return $this->responder->errorResponse();
+    }
+
+    /**
+     * @param Request $request
+     * @param $id
+     * @return \Illuminate\Http\JsonResponse
+     * @throws \App\Exceptions\ControllableException
+     */
+    public function rate(Request $request, $id){
+        $this->validateRequestData([
+            "score" => "required|number|max:5|min:1",
+            "comment" => "string|min:1"
+        ]);
+        $req = $this->request->all();
+        $player = User::find($id);
+        $res = $this->rating->rate(\Auth::user(), $player, $req['score'], empty($req['comment'])?"":$req['comment']);
+        if ( $res ){
+            return $this->responder->successResponse([
+                "id" => $res
+            ]);
+        }
+        return $this->responder->errorResponse($res);
     }
 }
