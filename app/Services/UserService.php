@@ -16,7 +16,7 @@ class UserService
     public function tryLogin($email, $password){
         $authAttempt = \Auth::attempt(['email' => $email, 'password' => $password]);
         if ( $authAttempt ){
-            $user = User::where('email', $email)->first();
+            $user = \Auth::user();
             return $user->api_token;
         }
         return false;

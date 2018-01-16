@@ -18,6 +18,10 @@ class Controller extends BaseController
      */
     protected $request = null;
 
+    /**
+     * @param $validationRules
+     * @throws ControllableException
+     */
     protected function validateRequestData($validationRules){
         $req = $this->request->all();
         $validator = \Validator::make($req, $validationRules);

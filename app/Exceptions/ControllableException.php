@@ -41,7 +41,7 @@ class ControllableException extends \Exception
     public function render($request)
     {
         return (new Responder())->errorResponse(
-            $this->getMessage(), $this->getCode(), $this->data
+            $this->getMessage(), $this->data, $this->getCode()
         );
     }
 }

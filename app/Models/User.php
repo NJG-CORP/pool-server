@@ -32,14 +32,6 @@ class User extends Authenticatable
         return $this->belongsTo(Location::class);
     }
 
-    public function sentInvitations(){
-        return $this->hasMany(Invitation::class, 'inviter_id');
-    }
-
-    public function receivedInvitations(){
-        return $this->hasMany(Invitation::class, 'invited_id');
-    }
-
     public function sentRatings(){
         return $this->hasMany(Rating::class, 'rater_id', 'id');
     }
@@ -55,5 +47,4 @@ class User extends Authenticatable
     public function receivedFavourites(){
         return $this->belongsToMany(User::class, 'favourites', 'to_id', 'from_id');
     }
-
 }
