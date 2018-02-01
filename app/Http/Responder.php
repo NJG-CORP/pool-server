@@ -13,7 +13,7 @@ use App\Utils\R;
 
 class Responder
 {
-    public function successResponse($data, $status = 200){
+    public function successResponse($data = [], $status = 200){
         return $this->makeResponse(
             $status, [
                 "data" => $data

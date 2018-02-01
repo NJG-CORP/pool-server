@@ -19,7 +19,7 @@ class UserService
             $user = \Auth::user();
             return $user->api_token;
         }
-        return false;
+        return null;
     }
 
     public function register($email, $name, $surname){
@@ -40,5 +40,6 @@ class UserService
             );
             return $createdUser;
         }
+        return null;
     }
 }

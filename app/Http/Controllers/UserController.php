@@ -38,7 +38,9 @@ class UserController extends Controller
             $req['email'],
             $req['password']
         );
-        return $this->responder->successResponse($res);
+        return $this->responder->successResponse([
+            "token" => $res
+        ]);
     }
 
     /**
@@ -57,7 +59,9 @@ class UserController extends Controller
             $req['name'],
             $req['surname']
         );
-        return $this->responder->successResponse($res);
+        return $this->responder->successResponse([
+            "user" => $res
+        ]);
     }
 
     /**
@@ -73,7 +77,9 @@ class UserController extends Controller
             $this->request->get('email')
         );
         if ( $res === Password::RESET_LINK_SENT ){
-            return $this->responder->successResponse(true);
+            return $this->responder->successResponse([
+                "reset" => true
+            ]);
         } else {
             return $this->responder->errorResponse(R::USER_PASS_RESET_FAILURE);
         }

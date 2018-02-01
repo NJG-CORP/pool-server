@@ -15,4 +15,8 @@ class Location extends Model
     public function club(){
         return $this->hasOne(Club::class);
     }
+
+    public function city(){
+        return $this->belongsTo(City::class);
+    }
 }

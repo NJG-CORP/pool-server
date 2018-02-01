@@ -10,7 +10,10 @@ Route::middleware(['auth.token'])->group(function(){
     Route::prefix('players')->group(function(){
         Route::get('favourites', 'PlayerController@favourite');
         Route::post('favourite/{id}', 'PlayerController@addFavouritePlayer');
+        Route::post('unfavourite/{id}', 'PlayerController@removeFavouritePlayer');
         Route::post('rate/{id}', 'PlayerController@rate');
+        Route::get('search', 'PlayerController@search');
+        Route::get('show/{id}', 'PlayerController@show');
     });
     Route::prefix('clubs')->group(function(){
         Route::get('list', 'ClubController@list');

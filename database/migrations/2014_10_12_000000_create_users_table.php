@@ -23,6 +23,7 @@ class CreateUsersTable extends Migration
             $table->unsignedInteger('location_id');
             $table->unsignedInteger('city_id');
             $table->string('api_token');
+            $table->boolean('status');
             $table->rememberToken();
             $table->softDeletes();
             $table->timestamps();

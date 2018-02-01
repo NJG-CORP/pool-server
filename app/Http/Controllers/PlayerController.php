@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Responder;
+use App\Exceptions\ControllableException;
 use App\Models\User;
 use App\Services\PlayersService;
 use App\Services\RatingService;
+use App\Utils\R;
 use Illuminate\Http\Request;
 
 class PlayerController extends Controller
@@ -67,6 +68,28 @@ class PlayerController extends Controller
 
     /**
      * @param Request $request
+     * @param User $id
+     * @return \Illuminate\Http\JsonResponse
+     * @throws \App\Exceptions\ControllableException
+     */
+    public function removeFavouritePlayer(Request $request, User $id){
+        $this->validateRequestData([
+            "id" => "required|number"
+        ]);
+        $removedUser = User::findOrFail($id);
+        if (
+        $res = $this->players->removeFavouritePlayer(
+            \Auth::user(),
+            $removedUser
+        )
+        ) {
+            return $this->responder->successResponse();
+        }
+        return $this->responder->errorResponse();
+    }
+
+    /**
+     * @param Request $request
      * @param $id
      * @return \Illuminate\Http\JsonResponse
      * @throws \App\Exceptions\ControllableException
@@ -85,5 +108,35 @@ class PlayerController extends Controller
             ]);
         }
         return $this->responder->errorResponse($res);
+    }
+
+    /**
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     * @throws ControllableException
+     */
+    public function search(Request $request){
+        $this->validateRequestData([
+            "offset" => "required|number",
+        ]);
+        try {
+            $res = $this->players->search($this->request->get('offset'), \Auth::user());
+        } catch (\Throwable $e){
+            throw new ControllableException($e->getMessage());
+        }
+        return $this->responder->successResponse([
+            'users' => $res
+        ]);
+    }
+
+    public function show(Request $request, $id){
+        $user = $this->players->show($id);
+        if ( $user ){
+            return $this->responder->successResponse([
+                'user' => $user
+            ]);
+        } else {
+            return $this->responder->errorResponse(R::MODEL_NOT_FOUND);
+        }
     }
 }
