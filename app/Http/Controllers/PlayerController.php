@@ -43,6 +43,11 @@ class PlayerController extends Controller
         ]);
     }
 
+    /**
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     * @throws ControllableException
+     */
     public function mapLocation(Request $request){
         $this->validateRequestData([
            'city_id' => 'required'
@@ -53,6 +58,11 @@ class PlayerController extends Controller
         ]);
     }
 
+    /**
+     * @param Request $request
+     * @param $id
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function show(Request $request, $id){
         $user = $this->players->show($id);
         if ( $user ){

@@ -21,10 +21,11 @@ class Responder
         );
     }
 
-    public function errorResponse($error = R::COMMON_ERROR, $data = null, $status = 500){
+    public function errorResponse($error = R::COMMON_ERROR, $data = null, $status = 500, $stack = null){
         return $this->makeResponse($status, [
             "error" => $error,
-            "data" => $data
+            "data" => $data,
+            "stack" => $stack
         ]);
     }
 

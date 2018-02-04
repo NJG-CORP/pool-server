@@ -36,12 +36,12 @@ class ControllableException extends \Exception
      * Render the exception into an HTTP response.
      *
      * @param  \Illuminate\Http\Request
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function render($request)
     {
         return (new Responder())->errorResponse(
-            $this->getMessage(), $this->data, $this->getCode()
+            $this->getMessage(), $this->data, $this->getCode(), $this->getTraceAsString()
         );
     }
 }
