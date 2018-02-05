@@ -44,6 +44,9 @@ class UserService
     }
 
     public function resetPassword($email){
+        /**
+         * @var User $user
+         */
         $user = User::where('email', $email)->first();
         if ( $user ){
             $broker = Password::broker();

@@ -9,7 +9,6 @@ class Utils{
         \Mail::raw(
             $text,
             function (Message $message) use ($to, $subject){
-                $message->from("tmpr@poolbuddy.ru", "Poolbuddy.ru");
                 $message->subject($subject);
                 $message->to($to);
             }
