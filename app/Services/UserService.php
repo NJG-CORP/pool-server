@@ -36,13 +36,20 @@ class UserService
             "status" => false
         ]);
         if ( $createdUser instanceof User ){
-            \Mail::raw(
-                $password,
-                function (Message $message) use ( $createdUser, $email){
-                    $message->from("pooltest@mail.ru");
-                    $message->to($email);
-                }
-            );
+//            \Mail::raw(
+//                $password,
+//                function (Message $message) use ( $createdUser, $email){
+//                    $message->from("pooltest@mail.ru");
+//                    $message->to($email);
+//                }
+//            );
+            $to      =  $email;
+            $subject = 'Registration';
+            $message = $password;
+            $headers = 'From: pooltest@mail.ru' . "\r\n" .
+                'Reply-To: pooltest@mail.ru' . "\r\n" .
+                'X-Mailer: PHP/' . phpversion();
+            mail($to, $subject, $message, $headers);
             return $createdUser;
         }
         return null;
