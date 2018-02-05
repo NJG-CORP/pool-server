@@ -39,7 +39,7 @@ class UserController extends Controller
             $req['password']
         );
         if ( !$auth ){
-            return $this->responder->errorResponse(R::USER_LOGIN_FAILURE);
+            return $this->responder->errorResponse(R::USER_LOGIN_FAILURE, null, 401);
         }
         return $this->responder->successResponse([
             "token" => $auth
@@ -64,7 +64,7 @@ class UserController extends Controller
         );
         return $this->responder->successResponse([
             "user" => $res
-        ]);
+        ], 201);
     }
 
     /**
