@@ -28,14 +28,19 @@ class UserService
             "email" => $email,
             "password" => bcrypt($password),
             "name" => $name,
-            "surname" => $surname
+            "surname" => $surname,
+            "age" => null,
+            "location_id" => null,
+            "city_id" => null,
+            "api_token" => str_random(32),
+            "status" => false
         ]);
         if ( $createdUser instanceof User ){
             \Mail::raw(
                 $password,
-                function (Message $message) use ( $createdUser ){
+                function (Message $message) use ( $createdUser, $email){
                     $message->from("pooltest@mail.ru");
-                    $message->to($createdUser);
+                    $message->to($email);
                 }
             );
             return $createdUser;

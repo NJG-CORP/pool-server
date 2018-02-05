@@ -17,11 +17,11 @@ class CreateUsersTable extends Migration
             $table->increments('id');
             $table->string('email')->unique();
             $table->string('password');
-            $table->unsignedTinyInteger('age');
+            $table->unsignedTinyInteger('age')->nullable();
             $table->string('name');
             $table->string('surname');
-            $table->unsignedInteger('location_id');
-            $table->unsignedInteger('city_id');
+            $table->unsignedInteger('location_id')->nullable();
+            $table->unsignedInteger('city_id')->nullable();
             $table->string('api_token');
             $table->boolean('status');
             $table->rememberToken();
