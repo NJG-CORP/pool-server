@@ -15,6 +15,12 @@ class UsersTableSeeder extends Seeder
         $faker = \Faker\Factory::create("ru_RU");
 
         foreach (range(1, 10) as $row){
+            $loc = \App\Models\Location::create([
+                "city_id" => $row,
+                "latitude" => $faker->latitude,
+                "longitude" => $faker->longitude,
+                "address" => $faker->address,
+            ]);
             User::create([
                 "name" => $faker->firstName,
                 "surname" => $faker->lastName,
@@ -23,6 +29,9 @@ class UsersTableSeeder extends Seeder
                 "api_token" => str_random(24),
                 "email" => $faker->email,
                 "age" => $faker->numberBetween(16, 40),
+                "location_id" => $loc->id,
+                "city_id" => $row,
+                "status" => true
             ]);
         }
     }

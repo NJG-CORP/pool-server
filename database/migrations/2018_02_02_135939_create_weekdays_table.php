@@ -15,7 +15,7 @@ class CreateWeekdaysTable extends Migration
     {
         Schema::create('weekdays', function (Blueprint $table) {
             $table->increments('id');
-            $table->timestamps();
+            $table->string('name');
         });
     }
 

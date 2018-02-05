@@ -2,7 +2,7 @@
 
 use Illuminate\Database\Seeder;
 
-class ClubsTableSeeder extends Seeder
+class CityTableSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -14,10 +14,9 @@ class ClubsTableSeeder extends Seeder
         $faker = \Faker\Factory::create("ru_RU");
 
         foreach (range(1, 10) as $row){
-            \App\Models\Club::create([
-                "name" => $faker->company,
-                "description" => $faker->text,
-                "location_id" => $row,
+            \App\Models\City::create([
+                "name" => $faker->city,
+                "geo_id" => pow($row, 2)
             ]);
         }
     }

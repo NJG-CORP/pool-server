@@ -12,6 +12,8 @@ class DatabaseSeeder extends Seeder
     public function run()
     {
          $this->call([
+             WeekdaysTableSeeder::class,
+             CityTableSeeder::class,
              UsersTableSeeder::class,
              ClubsTableSeeder::class
          ]);
