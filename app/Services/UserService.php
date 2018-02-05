@@ -1,11 +1,10 @@
 <?php
 namespace App\Services;
 
-use App\Exceptions\ControllableException;
 use App\Models\User;
 use App\Utils\R;
-use Illuminate\Mail\Message;
-use Illuminate\Support\Facades\Mail;
+use App\Utils\Utils;
+use Illuminate\Support\Facades\Password;
 
 class UserService
 {
@@ -32,25 +31,25 @@ class UserService
             "age" => null,
             "location_id" => null,
             "city_id" => null,
-            "api_token" => str_random(32),
+            "api_token" => $this->makeToken(),
             "status" => false
         ]);
         if ( $createdUser instanceof User ){
-//            \Mail::raw(
-//                $password,
-//                function (Message $message) use ( $createdUser, $email){
-//                    $message->from("pooltest@mail.ru");
-//                    $message->to($email);
-//                }
-//            );
-            $to      =  $email;
-            $subject = 'Registration';
-            $message = $password;
-            $headers = 'From: pooltest@mail.ru' . "\r\n" .
-                'Reply-To: pooltest@mail.ru' . "\r\n" .
-                'X-Mailer: PHP/' . phpversion();
-            mail($to, $subject, $message, $headers);
+            Utils::sendMail(
+                $password, $createdUser->email, R::USER_REGISTRATION_EMAIL_SUBJECT
+            );
             return $createdUser;
+        }
+        return null;
+    }
+
+    public function resetPassword($email){
+        $user = User::where('email', $email)->first();
+        if ( $user ){
+            $broker = Password::broker();
+            return $broker->sendResetLink(
+                ['email' => $email]
+            );
         }
         return null;
     }

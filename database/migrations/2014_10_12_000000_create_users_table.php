@@ -20,6 +20,7 @@ class CreateUsersTable extends Migration
             $table->unsignedTinyInteger('age')->nullable();
             $table->string('name');
             $table->string('surname');
+            $table->unsignedTinyInteger('gender')->default(1);
             $table->unsignedInteger('location_id')->nullable();
             $table->unsignedInteger('city_id')->nullable();
             $table->string('api_token');

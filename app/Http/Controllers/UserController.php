@@ -31,15 +31,18 @@ class UserController extends Controller
     public function login(){
         $req = $this->request->all();
         $this->validateRequestData([
-            "email" => "required|email|unique:users",
+            "email" => "required|email",
             'password' => "required|min:6",
         ]);
-        $res = $this->users->tryLogin(
+        $auth = $this->users->tryLogin(
             $req['email'],
             $req['password']
         );
+        if ( !$auth ){
+            return $this->responder->errorResponse(R::USER_LOGIN_FAILURE);
+        }
         return $this->responder->successResponse([
-            "token" => $res
+            "token" => $auth
         ]);
     }
 
@@ -72,8 +75,7 @@ class UserController extends Controller
         $this->validateRequestData([
             'email' => 'required|email'
         ]);
-        $broker = Password::broker();
-        $res = $broker->sendResetLink(
+        $res = $this->users->resetPassword(
             $this->request->get('email')
         );
         if ( $res === Password::RESET_LINK_SENT ){
