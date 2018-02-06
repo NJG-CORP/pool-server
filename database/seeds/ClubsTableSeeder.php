@@ -16,7 +16,7 @@ class ClubsTableSeeder extends Seeder
         foreach (range(1, 10) as $row){
             \App\Models\Club::create([
                 "name" => $faker->company,
-                "description" => $faker->text,
+                "description" => substr($faker->text, 0, 100),
                 "location_id" => $row,
             ]);
         }
