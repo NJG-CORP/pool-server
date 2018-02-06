@@ -19,7 +19,6 @@ class CreateLocationsTable extends Migration
             $table->smallInteger('latitude');
             $table->smallInteger('longitude');
             $table->string('address')->nullable();
-            $table->timestamp('updated_at')->useCurrent();
         });
     }
 

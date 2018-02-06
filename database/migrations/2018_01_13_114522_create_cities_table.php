@@ -17,7 +17,6 @@ class CreateCitiesTable extends Migration
             $table->increments('id');
             $table->string('name');
             $table->unsignedInteger('geo_id');
-            $table->timestamp('created_at')->useCurrent();
         });
     }
 
