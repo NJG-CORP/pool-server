@@ -24,6 +24,16 @@ class PlayerController extends Controller
         $this->players = $players;
     }
 
+
+    public function selfInfo(){
+        $info = $this->players->show(
+            \Auth::user()->id
+        );
+        return $this->responder->successResponse([
+           "player" => $info
+        ]);
+    }
+
     /**
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
@@ -31,7 +41,7 @@ class PlayerController extends Controller
      */
     public function search(Request $request){
         $this->validateRequestData([
-            "offset" => "required|number",
+            "offset" => "required|numeric",
         ]);
         try {
             $res = $this->players->search($this->request->get('offset'), \Auth::user());

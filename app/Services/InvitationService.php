@@ -29,4 +29,14 @@ class InvitationService
         return Invitation::where('inviter_id', $user->id)
             ->orWhere('invited_id', $user->id)->get();
     }
+
+    public function accept($userId, $invId){
+        $invitation = Invitation::find($invId);
+        if ( $invitation && $invitation->invited->id === $userId ){
+            $invitation->accepted = true;
+            $invitation->save();
+            return $invitation;
+        }
+        return false;
+    }
 }

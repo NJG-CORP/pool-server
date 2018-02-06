@@ -24,5 +24,16 @@
     }
 ```
 
+**Принять приглашение на игру**
+
+**POST /invitation/accept/{INVITATION_ID}**
+```
+    None
+```
+```
+    {
+        invitation: Invitation
+    }
+```
 
 

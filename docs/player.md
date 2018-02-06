@@ -1,3 +1,15 @@
+**Получить свой профиль**
+
+**GET /players/self**
+```
+    None
+```
+```
+    {
+        player: Player
+    }
+```
+
 **Игроки на карте**
 
 **GET /players/map**

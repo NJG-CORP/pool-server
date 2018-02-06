@@ -35,7 +35,7 @@ class FavouriteController extends Controller
      */
     public function addFavouritePlayer(Request $request, User $id){
         $this->validateRequestData([
-            "id" => "required|number"
+            "id" => "required|numeric"
         ]);
         $addedUser = User::findOrFail($id);
         if (
@@ -59,7 +59,7 @@ class FavouriteController extends Controller
      */
     public function removeFavouritePlayer(Request $request, User $id){
         $this->validateRequestData([
-            "id" => "required|number"
+            "id" => "required|numeric"
         ]);
         $removedUser = User::findOrFail($id);
         if (

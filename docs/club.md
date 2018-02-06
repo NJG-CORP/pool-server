@@ -22,17 +22,5 @@
     }
 ```
 
-**Оценить клуб**
-
-**POST /clubs/rate/{CLUB_ID}**
-```
-    >score!
-```
-```
-    {
-        club: Club
-    }
-```
-
 
 

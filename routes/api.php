@@ -8,6 +8,7 @@ Route::middleware('cors')->group(function(){
     });
     Route::middleware(['auth.token'])->group(function(){
         Route::prefix('players')->group(function(){
+            Route::get('self', 'PlayerController@selfInfo');
             Route::get('search', 'PlayerController@search');
             Route::get('map', 'PlayerController@mapLocation');
             Route::get('show/{id}', 'PlayerController@show');
@@ -19,15 +20,16 @@ Route::middleware('cors')->group(function(){
         });
         Route::prefix('clubs')->group(function(){
             Route::get('list', 'ClubController@list');
-            Route::post('{id}', 'ClubController@byId');
-            Route::post('rate/{id}', 'ClubController@rate');
+            Route::get('{id}', 'ClubController@byId');
         });
         Route::prefix('rating')->group(function(){
-            Route::post('rate/player/{id}', 'RatingController@ratePlayer');
+            Route::post('player/{id}', 'RatingController@ratePlayer');
+            Route::post('club/{id}', 'RatingController@rateClub');
         });
         Route::prefix('invitation')->group(function(){
             Route::get('list', 'InvitationController@invitationList');
-            Route::get('send', 'InvitationController@inviteUser');
+            Route::post('send', 'InvitationController@inviteUser');
+            Route::post('accept/{id}', 'InvitationController@invitationAccept');
         });
     });
 });
