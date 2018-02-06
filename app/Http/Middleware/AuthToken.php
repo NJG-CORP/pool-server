@@ -3,6 +3,7 @@
 namespace App\Http\Middleware;
 
 use App\Exceptions\ControllableException;
+use App\Models\User;
 use App\Utils\R;
 use Closure;
 
@@ -26,14 +27,15 @@ class AuthToken
                 401
             );
         }
-        $authorized = \Auth::attempt(['api_token' => $token]);
-        if ( !$authorized ){
+        $user = User::where('api_token', $token)->first();
+        if ( !$user ){
             throw new ControllableException(
                 R::AUTH_WRONG_TOKEN,
                 null,
                 401
             );
         }
+        \Auth::login($user);
         return $next($request);
     }
 }
