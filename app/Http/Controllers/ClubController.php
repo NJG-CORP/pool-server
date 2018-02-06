@@ -60,7 +60,7 @@ class ClubController extends Controller
         $res = $this->rating->rate(\Auth::user(), $club, $req['score']);
         if ( $res ){
             return $this->responder->successResponse([
-                "id" => $res
+                "club" => $this->clubs->getOne($id)
             ]);
         }
         return $this->responder->errorResponse($res);

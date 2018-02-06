@@ -23,7 +23,7 @@ class FavouriteController extends Controller
     public function favouritePlayers(){
         $favourites = $this->favourite->getFavouritePlayersOfUser(\Auth::user());
         return $this->responder->successResponse([
-            'models' => $favourites
+            'players' => $favourites
         ]);
     }
 
@@ -45,7 +45,7 @@ class FavouriteController extends Controller
         )
         ) {
             return $this->responder->successResponse([
-                "id" => $res
+                "player" => $addedUser
             ]);
         }
         return $this->responder->errorResponse();
@@ -68,7 +68,9 @@ class FavouriteController extends Controller
             $removedUser
         )
         ) {
-            return $this->responder->successResponse();
+            return $this->responder->successResponse([
+                "player" => $removedUser
+            ]);
         }
         return $this->responder->errorResponse();
     }

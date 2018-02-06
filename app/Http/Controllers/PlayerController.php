@@ -39,7 +39,7 @@ class PlayerController extends Controller
             throw new ControllableException($e->getMessage());
         }
         return $this->responder->successResponse([
-            'users' => $res
+            'players' => $res
         ]);
     }
 
@@ -67,7 +67,7 @@ class PlayerController extends Controller
         $user = $this->players->show($id);
         if ( $user ){
             return $this->responder->successResponse([
-                'user' => $user
+                'player' => $user
             ]);
         } else {
             return $this->responder->errorResponse(R::MODEL_NOT_FOUND);
