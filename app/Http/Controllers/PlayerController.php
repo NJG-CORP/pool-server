@@ -25,13 +25,23 @@ class PlayerController extends Controller
     }
 
 
-    public function selfInfo(){
+    public function selfInfo(Request $request){
         $info = $this->players->show(
             \Auth::user()->id
         );
         return $this->responder->successResponse([
            "player" => $info
         ]);
+    }
+
+    public function update(Request $request){
+        $res = $this->players->save(\Auth::user(), $request->except(['api_token']));
+        if ( $res ){
+            return $this->responder->successResponse([
+                "user" => $res
+            ]);
+        }
+        return $this->responder->errorResponse();
     }
 
     /**

@@ -10,6 +10,21 @@
     }
 ```
 
+**Обновить свой профиль**
+
+**POST /players/update**
+```
+    >age?
+    >name?
+    >surname?
+    >gender?
+```
+```
+    {
+        player: Player
+    }
+```
+
 **Игроки на карте**
 
 **GET /players/map**

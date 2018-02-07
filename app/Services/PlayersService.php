@@ -23,6 +23,16 @@ class PlayersService
         )->find($id);
     }
 
+    public function save(User $user, $fields){
+        foreach ($fields as $key=>$value){
+            $user->{$key} = $value;
+        }
+        if ( $user->save() ){
+            return $user;
+        }
+        return false;
+    }
+
     public function mapLocation($cityId){
         return User::with(['location', 'avatar'])
             ->where('city_id', $cityId)
