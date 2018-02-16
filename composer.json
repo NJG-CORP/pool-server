@@ -7,6 +7,7 @@
     "require": {
         "php": ">=7.0.0",
         "barryvdh/laravel-cors": "^0.11.0",
+        "berkayk/onesignal-laravel": "^0.9.9",
         "devfactory/taxonomy": "^3.1",
         "fideloper/proxy": "~3.3",
         "laravel/framework": "5.5.*",

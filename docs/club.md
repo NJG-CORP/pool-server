@@ -6,7 +6,23 @@
 ```
 ```
     {
-        clubs: Club[]
+        clubs: [
+            {
+                id: number,
+                name: string,
+                description: string,
+                location: {
+                    id: number,
+                    latitude: number,
+                    longitude: number,
+                    city: {
+                        id: number,
+                        name: string
+                    },
+                    address: string
+                }
+            }
+        ]
     }
 ```
 
@@ -18,7 +34,21 @@
 ```
 ```
     {
-        club: Club
+        club:{
+            id: number,
+            name: string,
+            description: string,
+            location: {
+                id: number,
+                latitude: number,
+                longitude: number,
+                city: {
+                    id: number,
+                    name: string
+                },
+                address: string
+            }
+        }
     }
 ```
 

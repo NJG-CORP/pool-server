@@ -7,7 +7,9 @@
 ```
 ```
     {
-        rating: Rating
+        rating: {
+            id: number
+        }
     }
 ```
 
@@ -19,7 +21,9 @@
 ```
 ```
     {
-        rating: Rating
+        rating: {
+            id: number
+        }
     }
 ```
 

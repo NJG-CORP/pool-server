@@ -6,7 +6,18 @@
 ```
 ```
     {
-        players: Player[]
+        players: [
+            {
+                id: number,
+                name: string, 
+                surname: string,
+                status: boolean,
+                avatar: {
+                    id: number,
+                    path: string
+                }
+            }
+        ]
     }
 ```
 
@@ -18,7 +29,12 @@
 ```
 ```
     {
-        player: Player //Добавленный игрок
+        player: { //добавленный игрок
+            id: number,
+            name: string, 
+            surname: string,
+            status: boolean
+        }
     }
 ```
 
@@ -30,7 +46,12 @@
 ```
 ```
     {
-        player: Player //Удаленный игрок
+        player: { //удаленный игрок
+                id: number,
+                name: string, 
+                surname: string,
+                status: boolean
+            }
     }
 ```
 

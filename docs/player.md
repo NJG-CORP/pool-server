@@ -6,7 +6,35 @@
 ```
 ```
     {
-        player: Player
+        player: {
+            id: number,
+            email: string,
+            age: number,
+            name: string,
+            surname: string,
+            gender: integer,
+            avatar: {
+                id: number,
+                path: string
+            },
+            location: {
+                id: number,
+                city: {
+                    id: number,
+                    name: string
+                },
+                latitude: number,
+                longitude: number,
+                address: string
+            },
+            city: {
+                id: number,
+                name: string
+            },
+            status: boolean,
+            created_at: date,
+            updated_at: date
+        }
     }
 ```
 
@@ -18,10 +46,43 @@
     >name?
     >surname?
     >gender?
+    >city?{
+        id!
+        name!
+    }
+    >avatar?
 ```
 ```
     {
-        player: Player
+        player: {
+            id: number,
+            email: string,
+            age: number,
+            name: string,
+            surname: string,
+            gender: integer,
+            avatar: {
+                id: number,
+                path: string
+            },
+            location: {
+                id: number,
+                city: {
+                    id: number,
+                    name: string
+                },
+                latitude: number,
+                longitude: number,
+                address: string
+            },
+            city: {
+                id: number,
+                name: string
+            },
+            status: boolean,
+            created_at: date,
+            updated_at: date
+        }
     }
 ```
 
@@ -33,7 +94,31 @@
 ```
 ```
     {
-        players: Player[]
+        players: [
+            {
+                id: number,
+                name: string,
+                surname: string,
+                avatar: {
+                    id: number,
+                    path: string
+                },
+                location: {
+                    id: number,
+                    city: {
+                        id: number,
+                        name: string
+                    },
+                    latitude: number,
+                    longitude: number,
+                    address: string
+                },
+                city: {
+                    id: number,
+                    name: string
+                },
+            }
+        ]
     }
 ```
 
@@ -45,7 +130,35 @@
 ```
 ```
     {
-        player: Player
+        player: {
+            id: number,
+            email: string,
+            age: number,
+            name: string,
+            surname: string,
+            gender: integer,
+            avatar: {
+                id: number,
+                path: string
+            },
+            location: {
+                id: number,
+                city: {
+                    id: number,
+                    name: string
+                },
+                latitude: number,
+                longitude: number,
+                address: string
+            },
+            city: {
+                id: number,
+                name: string
+            },
+            status: boolean,
+            created_at: date,
+            updated_at: date
+        }
     }
 ```
 
@@ -57,7 +170,17 @@
 ```
 ```
     {
-        players: Player[]
+        players: [
+            {
+                id: number,
+                name: string,
+                surname: string,
+                avatar: {
+                    id: number,
+                    path: string
+                }
+            }
+        ]
     }
 ```
 

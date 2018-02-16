@@ -20,7 +20,12 @@
 ```
 ```
     {
-        user: User | null
+        user: {
+            id: number,
+            name: string,
+            surname: string,
+            api_token: string
+        }
     }
 ```
 

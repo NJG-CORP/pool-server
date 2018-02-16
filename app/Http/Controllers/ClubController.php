@@ -26,14 +26,14 @@ class ClubController extends Controller
     public function list(){
         $clubs = $this->clubs->getList();
         return $this->responder->successResponse([
-            'models' => $clubs
+            'clubs' => $clubs
         ]);
     }
 
     public function byId(Request $request, $id){
         $club = $this->clubs->getOne($id);
         return $this->responder->successResponse([
-            'model' => $club
+            'club' => $club
         ]);
     }
 }
