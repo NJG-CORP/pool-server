@@ -11,10 +11,10 @@ use Illuminate\Support\Facades\Mail;
 class ClubsService
 {
     public function getList(){
-        return Club::with(['rating', 'location', 'image'])->get();
+        return Club::with(['rating', 'location', 'images'])->get();
     }
 
     public function getOne($id){
-        return Club::with(['rating', 'location', 'image'])->find($id);
+        return Club::with(['rating', 'location', 'images'])->find($id);
     }
 }

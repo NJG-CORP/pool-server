@@ -10,11 +10,7 @@ use Illuminate\Support\Facades\Mail;
 
 class CityService
 {
-    public function getList(){
+    public function search(){
         return Club::with(['rating', 'location', 'image'])->get();
-    }
-
-    public function getOne($id){
-        return Club::with(['rating', 'location', 'image'])->find($id);
     }
 }
