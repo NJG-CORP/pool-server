@@ -1,6 +1,6 @@
 **Список избранных**
 
-**GET /favourite/list**
+**GET /favourites/list**
 ```
     None
 ```
@@ -23,7 +23,7 @@
 
 **Добавить игрока в избранное**
 
-**POST /favourite/add/{PLAYER_ID}**
+**POST /favourites/add/{PLAYER_ID}**
 ```
     None
 ```
@@ -40,7 +40,7 @@
 
 **Убрать игрока из избранного**
 
-**POST /favourite/remove/{PLAYER_ID}**
+**POST /favourites/remove/{PLAYER_ID}**
 ```
     None
 ```

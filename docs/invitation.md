@@ -1,6 +1,6 @@
 **Список приглашений**
 
-**GET /invitation/list**
+**GET /invitations/list**
 ```
     None
 ```
@@ -23,7 +23,7 @@
 
 **Посмотреть приглашение**
 
-**GET /invitation/{INVITATION_ID}**
+**GET /invitations/{INVITATION_ID}**
 ```
     None
 ```
@@ -44,7 +44,7 @@
 
 **Отправить приглашение на игру**
 
-**POST /invitation/send**
+**POST /invitations/send**
 ```
     >invited_id!
     >club_id!
@@ -67,7 +67,7 @@
 
 **Принять приглашение на игру**
 
-**POST /invitation/accept/{INVITATION_ID}**
+**POST /invitations/accept/{INVITATION_ID}**
 ```
     None
 ```
@@ -88,7 +88,7 @@
 
 **Отклонить приглашение на игру**
 
-**POST /invitation/reject/{INVITATION_ID}**
+**POST /invitations/reject/{INVITATION_ID}**
 ```
     None
 ```

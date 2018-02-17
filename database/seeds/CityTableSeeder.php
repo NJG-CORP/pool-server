@@ -16,7 +16,7 @@ class CityTableSeeder extends Seeder
         foreach (range(1, 10) as $row){
             \App\Models\City::create([
                 "name" => $faker->city,
-                "geo_id" => pow($row, 2)
+                "id" => pow($row, 2)
             ]);
         }
     }

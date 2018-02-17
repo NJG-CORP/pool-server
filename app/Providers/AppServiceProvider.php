@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Http\Responder;
+use App\Services\CityService;
 use App\Services\ClubsService;
 use App\Services\FavouriteService;
 use App\Services\PlayersService;
@@ -38,6 +39,9 @@ class AppServiceProvider extends ServiceProvider
         });
         $this->app->singleton(RatingService::class, function(){
             return new RatingService();
+        });
+        $this->app->singleton(CityService::class, function(){
+            return new CityService();
         });
     }
 

@@ -14,7 +14,7 @@ Route::middleware('cors')->group(function(){
             Route::get('map', 'PlayerController@mapLocation');
             Route::get('show/{id}', 'PlayerController@show');
         });
-        Route::prefix('favourite')->group(function(){
+        Route::prefix('favourites')->group(function(){
             Route::get('list', 'FavouriteController@favouritePlayers');
             Route::post('add/{id}', 'FavouriteController@addFavouritePlayer');
             Route::post('remove/{id}', 'FavouriteController@removeFavouritePlayer');
@@ -27,10 +27,13 @@ Route::middleware('cors')->group(function(){
             Route::post('player/{id}', 'RatingController@ratePlayer');
             Route::post('club/{id}', 'RatingController@rateClub');
         });
-        Route::prefix('invitation')->group(function(){
+        Route::prefix('invitations')->group(function(){
             Route::get('list', 'InvitationController@invitationList');
             Route::post('send', 'InvitationController@inviteUser');
             Route::post('accept/{id}', 'InvitationController@invitationAccept');
+        });
+        Route::prefix('cities')->group(function(){
+            Route::get('search', 'CityController@search');
         });
     });
 });
