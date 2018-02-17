@@ -31,7 +31,7 @@ class AppServiceProvider extends ServiceProvider
             return new PlayersService();
         });
         $this->app->singleton(ClubsService::class, function(){
-            return new PlayersService();
+            return new ClubsService();
         });
         $this->app->singleton(FavouriteService::class, function(){
             return new FavouriteService();
