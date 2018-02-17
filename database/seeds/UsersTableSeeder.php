@@ -31,8 +31,26 @@ class UsersTableSeeder extends Seeder
                 "age" => $faker->numberBetween(16, 40),
                 "location_id" => $loc->id,
                 "city_id" => $row,
-                "status" => true
+                "status" => false
             ]);
         }
+        $loc = \App\Models\Location::create([
+            "city_id" => 11,
+            "latitude" => $faker->latitude,
+            "longitude" => $faker->longitude,
+            "address" => $faker->address,
+        ]);
+        User::create([
+            "name" => "Никита",
+            "surname" => "Кольцов",
+            'password' => bcrypt("123456"),
+            'remember_token' => str_random(10),
+            "api_token" => str_random(24),
+            "email" => "tooy_m@mail.ru",
+            "age" => 25,
+            "location_id" => $loc->id,
+            "city_id" => 11,
+            "status" => false
+        ]);
     }
 }
