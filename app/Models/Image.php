@@ -16,6 +16,6 @@ class Image extends Model
     }
 
     public function getUrlAttribute(){
-        return "/public/assets/images" . $this->path;
+        return "/assets/images" . $this->path;
     }
 }
