@@ -14,7 +14,7 @@ class ImageService
      * @return string|ImageModel
      */
     public function create($b64, Model $model = null, $path){
-        if ( !is_dir($path) ){
+        if ( !is_dir(dirname($path)) ){
             mkdir(dirname($path), 0777, true);
         }
         /**
