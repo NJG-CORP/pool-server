@@ -1,6 +1,8 @@
 /node_modules
 /public/hot
 /public/storage
+/public/assets/
+!/public/assets/images/placeholder.jpg
 /storage/*.key
 /vendor
 /.idea
