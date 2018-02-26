@@ -41,6 +41,8 @@ class PlayerController extends Controller
 ){
         parent::__construct($request);
         $this->players = $players;
+        $this->cities = $cities;
+        $this->images = $images;
     }
 
     public function selfInfo(Request $request){
