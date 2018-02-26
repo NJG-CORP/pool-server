@@ -2,7 +2,6 @@
 namespace App\Services;
 
 use Illuminate\Database\Eloquent\Model;
-use Intervention\Image\Image;
 use App\Models\Image as ImageModel;
 
 class ImageService
@@ -17,9 +16,6 @@ class ImageService
         if ( !is_dir(dirname($path)) ){
             mkdir(dirname($path), 0777, true);
         }
-        /**
-         * @var Image $nativeImage
-         */
         $nativeImage = Image::make(
             file_get_contents($b64)
         )->save($path);
