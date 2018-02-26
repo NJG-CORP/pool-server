@@ -9,7 +9,7 @@ Route::middleware('cors')->group(function(){
     Route::middleware(['auth.token'])->group(function(){
         Route::prefix('players')->group(function(){
             Route::get('self', 'PlayerController@selfInfo');
-            Route::get('update', 'PlayerController@update');
+            Route::post('update', 'PlayerController@update');
             Route::get('search', 'PlayerController@search');
             Route::get('map', 'PlayerController@mapLocation');
             Route::get('show/{id}', 'PlayerController@show');
