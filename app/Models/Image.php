@@ -10,6 +10,7 @@ class Image extends Model
     protected $dates = ['created_at'];
     protected $hidden = ['id', 'imageable_id', 'imageable_type', 'path'];
     protected $appends = ['url'];
+    protected $guarded = [];
 
     public function imageable(){
         return $this->morphTo();
