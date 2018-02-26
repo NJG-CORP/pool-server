@@ -12,7 +12,11 @@ class PlayersService
     public function search($offset, User $currentUser){
         return User::with([
             'receivedRatings', 'location.city', 'avatar'
-        ])->where('id', '<>', $currentUser->id )->offset($offset)->limit(10)->get();
+        ])
+            ->where('id', '<>', $currentUser->id )
+            ->offset($offset)
+            ->limit(10)
+            ->get();
     }
 
     public function show($id){
@@ -23,10 +27,36 @@ class PlayersService
         )->find($id);
     }
 
-    public function save(User $user, $fields){
+    /**
+     * @param User $user
+     * @param $fields
+     * @param CityService $cityService
+     * @param ImageService $imageService
+     * @return User|bool
+     */
+    public function save(User $user, $fields, CityService $cityService, ImageService $imageService){
+        $fields = collect($fields);
+        $city = $fields->get('city');
+        $fields->forget('city');
+        $avatar = $fields->get('avatar');
+        $fields->forget('avatar');
+
         foreach ($fields as $key=>$value){
             $user->{$key} = $value;
         }
+        if ( $city ){
+            $cityService->ensureCity($city['id'], $city['name']);
+        }
+
+        if ( $avatar ){
+            $imagePath = public_path("avatars/" . $user->id);
+            $imageService->create(
+                $avatar,
+                $user,
+                $imagePath
+            );
+        }
+
         if ( $user->save() ){
             return $user;
         }

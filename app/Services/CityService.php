@@ -1,13 +1,8 @@
 <?php
 namespace App\Services;
 
-use App\Exceptions\ControllableException;
-use App\Models\Club;
-use App\Models\User;
-use App\Utils\R;
+use App\Models\City;
 use GuzzleHttp\Client;
-use Illuminate\Mail\Message;
-use Illuminate\Support\Facades\Mail;
 
 class CityService
 {
@@ -36,5 +31,14 @@ class CityService
         } catch (\Throwable $e){
             return [];
         }
+    }
+
+    public function ensureCity($id, $name){
+        $city = City::firstOrCreate([
+            'id' => $id
+        ], [
+            'name' => $name
+        ]);
+        return $city;
     }
 }

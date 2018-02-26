@@ -177,7 +177,9 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
 
-        Devfactory\Taxonomy\TaxonomyServiceProvider::class
+        Devfactory\Taxonomy\TaxonomyServiceProvider::class,
+
+        Intervention\Image\ImageServiceProvider::class
     ],
 
     /*
@@ -228,6 +230,7 @@ return [
         'View' => Illuminate\Support\Facades\View::class,
 
         'Taxonomy'        => Devfactory\Taxonomy\Facades\TaxonomyFacade::class,
+        'Image' => Intervention\Image\Facades\Image::class
     ],
 
 ];

@@ -2,13 +2,14 @@
 
 namespace App\Models;
 
+use Devfactory\Taxonomy\TaxonomyTrait;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class User extends Authenticatable
 {
-    use Notifiable, SoftDeletes;
+    use Notifiable, SoftDeletes, TaxonomyTrait;
     /**
      * The attributes that should be hidden for arrays.
      *

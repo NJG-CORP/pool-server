@@ -6,6 +6,7 @@ use App\Http\Responder;
 use App\Services\CityService;
 use App\Services\ClubsService;
 use App\Services\FavouriteService;
+use App\Services\ImageService;
 use App\Services\PlayersService;
 use App\Services\RatingService;
 use App\Services\UserService;
@@ -42,6 +43,9 @@ class AppServiceProvider extends ServiceProvider
         });
         $this->app->singleton(CityService::class, function(){
             return new CityService();
+        });
+        $this->app->singleton(ImageService::class, function(){
+           return new ImageService();
         });
     }
 

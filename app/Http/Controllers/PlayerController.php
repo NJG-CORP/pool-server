@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Exceptions\ControllableException;
+use App\Services\CityService;
+use App\Services\ImageService;
 use App\Services\PlayersService;
 use App\Utils\R;
 use Illuminate\Http\Request;
@@ -15,15 +17,31 @@ class PlayerController extends Controller
     private $players;
 
     /**
+     * @var CityService $cities
+     */
+    private $cities;
+
+    /**
+     * @var ImageService $images
+     */
+    private $images;
+
+    /**
      * PlayerController constructor.
      * @param Request $request
      * @param PlayersService $players
+     * @param CityService $cities
+     * @param ImageService $images
      */
-    public function __construct(Request $request, PlayersService $players){
+    public function __construct(
+        Request $request,
+        PlayersService $players,
+        CityService $cities,
+        ImageService $images
+){
         parent::__construct($request);
         $this->players = $players;
     }
-
 
     public function selfInfo(Request $request){
         $info = $this->players->show(
@@ -35,7 +53,12 @@ class PlayerController extends Controller
     }
 
     public function update(Request $request){
-        $res = $this->players->save(\Auth::user(), $request->except(['api_token']));
+        $res = $this->players->save(
+            \Auth::user(),
+            $request->except(['api_token']),
+            $this->cities,
+            $this->images
+        );
         if ( $res ){
             return $this->responder->successResponse([
                 "user" => $res
