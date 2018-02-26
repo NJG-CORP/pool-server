@@ -13,18 +13,22 @@ class ImageService
      * @return string|ImageModel
      */
     public function create($b64, Model $model = null, $path){
-        if ( !is_dir(dirname($path)) ){
-            mkdir(dirname($path), 0777, true);
+        $public = public_path();
+        $imagePath = $public . "/assets/images";
+        $imagePath = $imagePath . '/' . $path;
+        $imageDir = dirname($imagePath);
+        if ( !is_dir($imageDir) ){
+            mkdir($imageDir, 0777, true);
         }
         $nativeImage = \Image::make(
             file_get_contents($b64)
-        )->save($path);
+        )->save($imagePath);
 
         if ( $model ){
             $image = ImageModel::create([
                 "imageable_id" => $model->id,
                 "imageable_type" => get_class($model),
-                "path" => $path
+                "path" => str_replace($public, '', $imagePath)
             ]);
             return $image;
         }
