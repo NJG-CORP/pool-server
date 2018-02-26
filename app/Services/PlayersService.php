@@ -49,7 +49,7 @@ class PlayersService
         }
 
         if ( $avatar ){
-            $imagePath = public_path("avatars/" . $user->id);
+            $imagePath = public_path("assets/images/avatars/" . $user->id);
             $imageService->create(
                 $avatar,
                 $user,
