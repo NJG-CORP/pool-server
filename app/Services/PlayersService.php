@@ -3,6 +3,8 @@ namespace App\Services;
 
 use App\Models\User;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Query\JoinClause;
 use Illuminate\Support\Collection;
 
 class PlayersService
@@ -17,6 +19,7 @@ class PlayersService
         $dbQuery = User::with([
             'location.city', 'avatar', 'gameTime'
         ])
+            ->select(['users.*'])
             ->where('users.id', '<>', $currentUser->id );
 
         $gender = $query->get('gender');
@@ -44,7 +47,11 @@ class PlayersService
         }
 
         if ( $rating = $query->get('rating') ){
-
+            $dbQuery
+                ->join('rating', 'users.id', '=', 'rating.rateable_id')
+                ->where('rating.rateable_type', User::class)
+                ->addSelect(\DB::raw('AVG(`rating`.`score`) as calculated_rating'))
+                ->havingRaw(\DB::raw('`calculated_rating` >= ' . $rating));
         }
 
         if ( $gameType = $query->get('game_type') ){
@@ -55,6 +62,7 @@ class PlayersService
             $dbQuery->getAllByTermId($gamePaymentType);
         }
         return $dbQuery
+            ->groupBy(['users.id'])
             ->offset($offset)
             ->limit(10)
             ->get();

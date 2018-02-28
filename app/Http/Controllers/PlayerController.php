@@ -81,6 +81,7 @@ class PlayerController extends Controller
             "days" => "array",
             "time.from" => "string",
             "time.to" => "string",
+            "city_id" => "numeric",
             'rating' => 'numeric|min:1|max:5',
             "game_type" => "numeric",
             "game_payment_type" => "numeric"

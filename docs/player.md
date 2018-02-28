@@ -182,6 +182,7 @@
         >from?
         >to?
     }
+    >city_id?
     >rating?
     >game_type?
     >game_payment_type?

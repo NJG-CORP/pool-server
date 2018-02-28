@@ -20,7 +20,7 @@ class User extends Authenticatable
     ];
 
     protected $guarded = [];
-    protected $appends = ['calculated_rating'];
+    //protected $appends = ['calculated_rating'];
 
     protected $dates = ['created_at', 'updated_at', 'deleted_at'];
 
@@ -53,7 +53,7 @@ class User extends Authenticatable
     }
 
     public function getCalculatedRatingAttribute(){
-        return $this->receivedRatings()->sum('score');
+        return $this->receivedRatings()->avg('score');
     }
 
     public function gameTime(){
