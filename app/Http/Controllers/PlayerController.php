@@ -77,9 +77,25 @@ class PlayerController extends Controller
     public function search(Request $request){
         $this->validateRequestData([
             "offset" => "required|numeric",
+            "gender" => "numeric",
+            "days" => "array",
+            "time.from" => "string",
+            "time.to" => "string",
+            'rating' => 'numeric|min:1|max:5',
+            "game_type" => "numeric",
+            "game_payment_type" => "numeric"
         ]);
         try {
-            $res = $this->players->search($this->request->get('offset'), \Auth::user());
+            $query = collect([
+                'gender', 'days', 'time', 'rating', 'game_type', 'game_payment_type'
+            ]);
+            $res = $this->players->search(
+                $this->request->get('offset'),
+                $query->mapWithKeys(function ($e) {
+                    return [$e=>$this->request->get($e)];
+                }),
+                \Auth::user()
+            );
         } catch (\Throwable $e){
             throw new ControllableException($e->getMessage());
         }

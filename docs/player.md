@@ -155,6 +155,15 @@
                 id: number,
                 name: string
             },
+            game_time_from: number,
+            game_time_to: number,
+            game_time: [
+                {
+                    id: number.
+                    name: string
+                }
+            ],
+            calculated_rating: number,
             status: boolean,
             created_at: date,
             updated_at: date
@@ -166,7 +175,16 @@
 
 **GET /players/search**
 ```
-    None
+    >offset!
+    >gender?
+    >days?[]
+    >time?{
+        >from?
+        >to?
+    }
+    >rating?
+    >game_type?
+    >game_payment_type?
 ```
 ```
     {
@@ -175,10 +193,21 @@
                 id: number,
                 name: string,
                 surname: string,
+                gender: boolean,
+                age: number,
+                calculated_rating: number,
                 avatar: {
                     id: number,
                     path: string
                 }
+                game_time_from: number,
+                game_time_to: number,
+                game_time: [
+                    {
+                        id: number.
+                        name: string
+                    }
+                ]
             }
         ]
     }

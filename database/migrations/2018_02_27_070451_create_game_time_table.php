@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CityIdToBigint extends Migration
+class CreateGameTimeTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,10 @@ class CityIdToBigint extends Migration
      */
     public function up()
     {
-        Schema::table('cities', function (Blueprint $table) {
-            $table->unsignedBigInteger('id')->change();
+        Schema::create('game_time', function (Blueprint $table) {
+            $table->increments('id');
+            $table->unsignedInteger("user_id");
+            $table->unsignedInteger("weekday_id");
         });
     }
 
@@ -25,8 +27,6 @@ class CityIdToBigint extends Migration
      */
     public function down()
     {
-        Schema::table('cities', function (Blueprint $table) {
-            $table->unsignedInteger('id')->change();
-        });
+        Schema::dropIfExists('game_time');
     }
 }

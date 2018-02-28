@@ -16,10 +16,11 @@ class User extends Authenticatable
      * @var array
      */
     protected $hidden = [
-        'password', 'remember_token', 'api_token'
+        'password', 'remember_token', 'api_token', 'deleted_at'
     ];
 
     protected $guarded = [];
+    protected $appends = ['calculated_rating'];
 
     protected $dates = ['created_at', 'updated_at', 'deleted_at'];
 
@@ -49,5 +50,19 @@ class User extends Authenticatable
 
     public function receivedFavourites(){
         return $this->belongsToMany(User::class, 'favourites', 'to_id', 'from_id');
+    }
+
+    public function getCalculatedRatingAttribute(){
+        return $this->receivedRatings()->sum('score');
+    }
+
+    public function gameTime(){
+        return $this
+            ->belongsToMany(
+                Weekday::class,
+                'game_time',
+                'user_id',
+                'weekday_id'
+            );
     }
 }

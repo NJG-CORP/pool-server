@@ -15,5 +15,9 @@ class TaxonomyTableSeeder extends Seeder
         Taxonomy::createTerm($gameTypeVocabulary->id, "Русский");
         Taxonomy::createTerm($gameTypeVocabulary->id, "Снукер");
         Taxonomy::createTerm($gameTypeVocabulary->id, "Пул");
+
+        $gameTypeVocabulary = Taxonomy::createVocabulary("GamePaymentType");
+        Taxonomy::createTerm($gameTypeVocabulary->id, "Поровну");
+        Taxonomy::createTerm($gameTypeVocabulary->id, "Беру на себя");
     }
 }

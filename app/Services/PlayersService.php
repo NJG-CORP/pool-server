@@ -1,19 +1,60 @@
 <?php
 namespace App\Services;
 
-use App\Exceptions\ControllableException;
 use App\Models\User;
-use App\Utils\R;
-use Illuminate\Mail\Message;
-use Illuminate\Support\Facades\Mail;
+use Carbon\Carbon;
+use Illuminate\Support\Collection;
 
 class PlayersService
 {
-    public function search($offset, User $currentUser){
-        return User::with([
-            'receivedRatings', 'location.city', 'avatar'
+    /**
+     * @param $offset
+     * @param Collection $query
+     * @param User $currentUser
+     * @return \Illuminate\Database\Eloquent\Collection|static[]
+     */
+    public function search($offset, $query, User $currentUser){
+        $dbQuery = User::with([
+            'location.city', 'avatar', 'gameTime'
         ])
-            ->where('id', '<>', $currentUser->id )
+            ->where('users.id', '<>', $currentUser->id );
+
+        $gender = $query->get('gender');
+        if ( $gender !== null ){
+            $dbQuery->where('gender', $gender);
+        }
+
+        if ( $days = $query->get('days') ){
+            $dbQuery->join('game_time', 'users.id', '=', 'game_time.user_id');
+            $dbQuery->whereIn('game_time.weekday_id', $days);
+        }
+
+        if ( $time = $query->get('time') ){
+            $dayStart = 0;
+            $dayEnd = 60 * 60 * 24;
+            $from = empty($time['from'])?
+                $dayStart:
+                (new Carbon($time['from']))->secondsSinceMidnight();
+            $to = empty($time['to'])?
+                $dayEnd:
+                (new Carbon($time['to']))->secondsSinceMidnight();
+            $dbQuery
+                ->where('game_time_from', '<=', $to)
+                ->where('game_time_to', '>=', $from);
+        }
+
+        if ( $rating = $query->get('rating') ){
+
+        }
+
+        if ( $gameType = $query->get('game_type') ){
+            $dbQuery->getAllByTermId($gameType);
+        }
+
+        if ( $gamePaymentType = $query->get('game_payment_type') ){
+            $dbQuery->getAllByTermId($gamePaymentType);
+        }
+        return $dbQuery
             ->offset($offset)
             ->limit(10)
             ->get();

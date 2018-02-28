@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Rating;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 
@@ -13,6 +14,8 @@ class UsersTableSeeder extends Seeder
     public function run()
     {
         $faker = \Faker\Factory::create("ru_RU");
+//        $gameTypeVocabulary = \Taxonomy::getVocabularyByName('GameType');
+//        $gamePaymentTypeVocabulary = \Taxonomy::getVocabularyByName('GamePaymentType');
 
         foreach (range(1, 10) as $row){
             $loc = \App\Models\Location::create([
@@ -21,7 +24,7 @@ class UsersTableSeeder extends Seeder
                 "longitude" => $faker->longitude,
                 "address" => $faker->address,
             ]);
-            User::create([
+            $user = User::create([
                 "name" => $faker->firstName,
                 "surname" => $faker->lastName,
                 'password' => '$2y$10$TKh8H1.PfQx37YgCzwiKb.KjNyWgaHb9cbcoQgdIVFlYg7B77UdFm',
@@ -31,8 +34,26 @@ class UsersTableSeeder extends Seeder
                 "age" => $faker->numberBetween(16, 40),
                 "location_id" => $loc->id,
                 "city_id" => $row,
-                "status" => false
+                "status" => false,
+                "gender" => \random_int(0, 1),
+                "game_time_from" => 0,
+                "game_time_to" => 7000 * $row
             ]);
+            foreach ( range(1, random_int(0, 5)) as $rating ){
+                Rating::create([
+                    "rater_id" => $row+1,
+                    'rateable_id' => $row,
+                    'score' => random_int(1, 5),
+                    'rateable_type' => User::class,
+                    'comment' => $faker->text(25)
+                ]);
+            }
+            \DB::table('game_time')->insert([
+                'user_id' => $row,
+                "weekday_id" => min($row, 7)
+            ]);
+            $user->addTerm(random_int(1, 3)); //gameType
+            $user->addTerm(random_int(4, 5)); //gamePaymentType
         }
         $loc = \App\Models\Location::create([
             "city_id" => 11,
