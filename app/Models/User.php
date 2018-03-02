@@ -53,7 +53,9 @@ class User extends Authenticatable
     }
 
     public function getCalculatedRatingAttribute(){
-        return $this->receivedRatings()->avg('score');
+        return collect($this->receivedRatings)->reduce(function($a, $x){
+            return $a + $x->score;
+        }, 0);
     }
 
     public function gameTime(){

@@ -25,4 +25,10 @@ class Club extends Model
     public function rating(){
         return $this->morphMany(Rating::class, 'rateable');
     }
+
+    public function getCalculatedRatingAttribute(){
+        return collect($this->rating)->reduce(function($a, $x){
+            return $a + $x->score;
+        }, 0);
+    }
 }
