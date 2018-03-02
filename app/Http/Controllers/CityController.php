@@ -30,7 +30,7 @@ class CityController extends Controller
      */
     public function search(Request $request){
         $this->validateRequestData([
-           "query" => "required|string"
+           "query" => "string"
         ]);
         $cities = $this->cities->search($request->get("query"));
         return $this->responder->successResponse([

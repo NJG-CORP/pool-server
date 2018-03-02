@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Invitation extends Model
 {
     protected $dates = ['created_at', 'updated_at'];
+    protected $hidden = [];
 
     public function inviter(){
         return $this->belongsTo(User::class, 'inviter_id');

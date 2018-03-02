@@ -27,8 +27,6 @@ class Club extends Model
     }
 
     public function getCalculatedRatingAttribute(){
-        return collect($this->rating)->reduce(function($a, $x){
-            return $a + $x->score;
-        }, 0);
+        return (int)$this->rating()->avg('score');
     }
 }

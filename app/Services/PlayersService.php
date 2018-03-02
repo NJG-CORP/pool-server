@@ -72,7 +72,7 @@ class PlayersService
         return User::with(
             'receivedRatings', 'sentRatings',
             'sentFavourites', 'receivedFavourites',
-            'location.city', 'avatar'
+            'location', 'avatar', 'city'
         )->find($id);
     }
 
@@ -93,12 +93,13 @@ class PlayersService
         foreach ($fields as $key=>$value){
             $user->{$key} = $value;
         }
-        if ( $city ){
-            $cityService->ensureCity($city['id'], $city['name']);
+        if ( $city && $city['id'] ){
+            $userCity = $cityService->ensureCity($city['id'], $city['name']);
+            $user->city_id = $userCity->id;
         }
 
         if ( $avatar ){
-            $imagePath = "avatars/" . $user->id;
+            $imagePath = "avatars/" . $user->id . '.jpg';
             $imageService->create(
                 $avatar,
                 $user,

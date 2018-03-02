@@ -16,7 +16,8 @@ class DatabaseSeeder extends Seeder
              WeekdaysTableSeeder::class,
              CityTableSeeder::class,
              UsersTableSeeder::class,
-             ClubsTableSeeder::class
+             ClubsTableSeeder::class,
+             InvitationTableSeeder::class
          ]);
     }
 }

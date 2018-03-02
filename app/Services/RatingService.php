@@ -14,10 +14,11 @@ class RatingService
 {
     public function rate(User $rater, Model $model, $score, $comment = ""){
         $class = get_class($model);
-        return Rating::create([
+        return Rating::firstOrCreate([
             "rater_id" => $rater->id,
             "rateable_id" => $model->id,
             "rateable_type" => $class,
+        ],[
             "score" => $score,
             "comment" => $comment
         ]);
