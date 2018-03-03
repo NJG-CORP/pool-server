@@ -12,11 +12,20 @@ class Image extends Model
     protected $appends = ['url'];
     protected $guarded = [];
 
+    private static $imagesPath = "/assets/images";
+
     public function imageable(){
         return $this->morphTo();
     }
 
     public function getUrlAttribute(){
-        return "/assets/images" . $this->path;
+        return static::$imagesPath . $this->path;
+    }
+
+    public static function getDefaultImage(){
+        return [
+            "id" => 0,
+            "url" => static::$imagesPath . '/placeholder.jpg'
+        ];
     }
 }
