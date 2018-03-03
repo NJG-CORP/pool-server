@@ -1,7 +1,7 @@
 <?php
 /**
  * A helper file for Laravel 5, to provide autocomplete information to your IDE
- * Generated for Laravel 5.5.28 on 2018-01-11.
+ * Generated for Laravel 5.5.28 on 2018-03-03.
  *
  * @author Barry vd. Heuvel <barryvdh@gmail.com>
  * @see https://github.com/barryvdh/laravel-ide-helper
@@ -1648,7 +1648,7 @@ namespace Illuminate\Support\Facades {
         /**
          * Get the currently authenticated user.
          *
-         * @return \App\Models\User|null
+         * @return \App\Models\User|null 
          * @static 
          */ 
         public static function user()
@@ -1683,7 +1683,7 @@ namespace Illuminate\Support\Facades {
          * Log the given user ID into the application without sessions or cookies.
          *
          * @param mixed $id
-         * @return \App\User|false 
+         * @return \App\Models\User|false 
          * @static 
          */ 
         public static function onceUsingId($id)
@@ -1747,7 +1747,7 @@ namespace Illuminate\Support\Facades {
          *
          * @param mixed $id
          * @param bool $remember
-         * @return \App\User|false 
+         * @return \App\Models\User|false 
          * @static 
          */ 
         public static function loginUsingId($id, $remember = false)
@@ -1794,7 +1794,7 @@ namespace Illuminate\Support\Facades {
         /**
          * Get the last user we attempted to authenticate.
          *
-         * @return \App\User 
+         * @return \App\Models\User 
          * @static 
          */ 
         public static function getLastAttempted()
@@ -1896,7 +1896,7 @@ namespace Illuminate\Support\Facades {
         /**
          * Return the currently cached user.
          *
-         * @return \App\User|null 
+         * @return \App\Models\User|null 
          * @static 
          */ 
         public static function getUser()
@@ -1942,7 +1942,7 @@ namespace Illuminate\Support\Facades {
         /**
          * Determine if the current user is authenticated.
          *
-         * @return \App\User 
+         * @return \App\Models\User 
          * @throws \Illuminate\Auth\AuthenticationException
          * @static 
          */ 
@@ -12257,6 +12257,176 @@ namespace Illuminate\Support\Facades {
  
 }
 
+namespace Devfactory\Taxonomy\Facades { 
+
+    class TaxonomyFacade {
+        
+        /**
+         * Create a new Vocabulary with the given name
+         *
+         * @param string $name The name of the Vocabulary
+         * @return mixed The Vocabulary object if created, FALSE if error creating,
+         *  Exception if the vocabulary name already exists.
+         * @static 
+         */ 
+        public static function createVocabulary($name)
+        {
+            return \Devfactory\Taxonomy\Taxonomy::createVocabulary($name);
+        }
+        
+        /**
+         * Get a Vocabulary by ID
+         *
+         * @param int $id The id of the Vocabulary to fetch
+         * @return \Devfactory\Taxonomy\The Vocabulary Model object, otherwise NULL
+         * @static 
+         */ 
+        public static function getVocabulary($id)
+        {
+            return \Devfactory\Taxonomy\Taxonomy::getVocabulary($id);
+        }
+        
+        /**
+         * Get a Vocabulary by name
+         *
+         * @param string $name The name of the Vocabulary to fetch
+         * @return \Devfactory\Taxonomy\The Vocabulary Model object, otherwise NULL
+         * @static 
+         */ 
+        public static function getVocabularyByName($name)
+        {
+            return \Devfactory\Taxonomy\Taxonomy::getVocabularyByName($name);
+        }
+        
+        /**
+         * Get a Vocabulary by name
+         *
+         * @param string $name The name of the Vocabulary to fetch
+         * @return \Devfactory\Taxonomy\The Vocabulary Model object, otherwise NULL
+         * @static 
+         */ 
+        public static function getVocabularyByNameAsArray($name)
+        {
+            return \Devfactory\Taxonomy\Taxonomy::getVocabularyByNameAsArray($name);
+        }
+        
+        /**
+         * Get a Vocabulary by name as an options array for dropdowns
+         *
+         * @param string $name The name of the Vocabulary to fetch
+         * @return \Devfactory\Taxonomy\The Vocabulary Model object, otherwise NULL
+         * @static 
+         */ 
+        public static function getVocabularyByNameOptionsArray($name)
+        {
+            return \Devfactory\Taxonomy\Taxonomy::getVocabularyByNameOptionsArray($name);
+        }
+        
+        /**
+         * Delete a Vocabulary by ID
+         *
+         * @param int $id The ID of the Vocabulary to delete
+         * @return bool TRUE if Vocabulary is deletes, otherwise FALSE
+         * @thrown Illuminate\Database\Eloquent\ModelNotFoundException
+         * @static 
+         */ 
+        public static function deleteVocabulary($id)
+        {
+            return \Devfactory\Taxonomy\Taxonomy::deleteVocabulary($id);
+        }
+        
+        /**
+         * Delete a Vocabulary by name
+         *
+         * @param string $name The name of the Vocabulary to delete
+         * @return bool TRUE if Vocabulary is deletes, otherwise FALSE
+         * @static 
+         */ 
+        public static function deleteVocabularyByName($name)
+        {
+            return \Devfactory\Taxonomy\Taxonomy::deleteVocabularyByName($name);
+        }
+        
+        /**
+         * Create a new term in a specific vocabulary
+         *
+         * @param int $vid The Vocabulary ID in which to add the term
+         * @param string $name The name of the term
+         * @param int $parent The ID of the parent term if it is a child
+         * @param int $weight The weight of the term in order to sort them inside the Vocabulary
+         * @return int The ID of the created term
+         * @thrown Illuminate\Database\Eloquent\ModelNotFoundException
+         * @static 
+         */ 
+        public static function createTerm($vid, $name, $parent = 0, $weight = 0)
+        {
+            return \Devfactory\Taxonomy\Taxonomy::createTerm($vid, $name, $parent, $weight);
+        }
+         
+    }
+ 
+}
+
+namespace Intervention\Image\Facades { 
+
+    class Image {
+        
+        /**
+         * Overrides configuration settings
+         *
+         * @param array $config
+         * @static 
+         */ 
+        public static function configure($config = array())
+        {
+            return \Intervention\Image\ImageManager::configure($config);
+        }
+        
+        /**
+         * Initiates an Image instance from different input types
+         *
+         * @param mixed $data
+         * @return \Intervention\Image\Image 
+         * @static 
+         */ 
+        public static function make($data)
+        {
+            return \Intervention\Image\ImageManager::make($data);
+        }
+        
+        /**
+         * Creates an empty image canvas
+         *
+         * @param integer $width
+         * @param integer $height
+         * @param mixed $background
+         * @return \Intervention\Image\Image 
+         * @static 
+         */ 
+        public static function canvas($width, $height, $background = null)
+        {
+            return \Intervention\Image\ImageManager::canvas($width, $height, $background);
+        }
+        
+        /**
+         * Create new cached image and run callback
+         * (requires additional package intervention/imagecache)
+         *
+         * @param \Closure $callback
+         * @param integer $lifetime
+         * @param boolean $returnObj
+         * @return \Image 
+         * @static 
+         */ 
+        public static function cache($callback, $lifetime = null, $returnObj = false)
+        {
+            return \Intervention\Image\ImageManager::cache($callback, $lifetime, $returnObj);
+        }
+         
+    }
+ 
+}
+
 
 namespace  { 
 
@@ -14369,6 +14539,10 @@ namespace  {
     class Validator extends \Illuminate\Support\Facades\Validator {}
 
     class View extends \Illuminate\Support\Facades\View {}
+
+    class Taxonomy extends \Devfactory\Taxonomy\Facades\TaxonomyFacade {}
+
+    class Image extends \Intervention\Image\Facades\Image {}
  
 }
 

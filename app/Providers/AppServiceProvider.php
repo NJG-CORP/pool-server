@@ -9,6 +9,7 @@ use App\Services\FavouriteService;
 use App\Services\ImageService;
 use App\Services\PlayersService;
 use App\Services\RatingService;
+use App\Services\TaxonomyService;
 use App\Services\UserService;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
@@ -46,6 +47,9 @@ class AppServiceProvider extends ServiceProvider
         });
         $this->app->singleton(ImageService::class, function(){
            return new ImageService();
+        });
+        $this->app->singleton(TaxonomyService::class, function(){
+            return new TaxonomyService();
         });
     }
 

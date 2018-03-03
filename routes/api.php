@@ -35,6 +35,10 @@ Route::middleware('cors')->group(function(){
         Route::prefix('cities')->group(function(){
             Route::get('search', 'CityController@search');
         });
+        Route::prefix('taxonomies')->group(function(){
+            Route::get('vocabularies', 'TaxonomyController@getVocabularies');
+            Route::get('terms/{id}', 'TaxonomyController@getTerms');
+        });
     });
 });
 

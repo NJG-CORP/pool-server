@@ -51,6 +51,8 @@
         name!
     }
     >avatar?
+    >game_time_from?
+    >game_time_to?
 ```
 ```
     {

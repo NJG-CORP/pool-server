@@ -24,17 +24,6 @@ class User extends Authenticatable
 
     protected $dates = ['created_at', 'updated_at', 'deleted_at'];
 
-    protected static function boot()
-    {
-        parent::boot();
-
-        static::retrieved(function(User $user){
-            if ( is_null($user->avatar) ){
-                $user->setAttribute('avatar', Image::getDefaultImage());
-            }
-        });
-    }
-
     public function avatar(){
         return $this->morphOne(Image::class, 'imageable');
     }
