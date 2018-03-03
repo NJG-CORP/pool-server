@@ -16,6 +16,8 @@ class R
     const USER_LOGIN_FAILURE = "E-mail или пароль не верны";
 
     const MODEL_NOT_FOUND = "Модель не найдена";
+
+    const RATING_SAME_MODEL = "Нельзя повысить рейтинг самому себе";
 }
 
 
