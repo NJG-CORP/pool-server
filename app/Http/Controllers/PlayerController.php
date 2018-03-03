@@ -114,7 +114,7 @@ class PlayerController extends Controller
         $this->validateRequestData([
            'city_id' => 'required'
         ]);
-        $players = $this->players->mapLocation($this->request->get('city_id'));
+        $players = $this->players->mapLocation(\Auth::user(), $this->request->get('city_id'));
         return $this->responder->successResponse([
             'players' => $players
         ]);

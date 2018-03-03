@@ -19,7 +19,7 @@ class UsersTableSeeder extends Seeder
 
         foreach (range(1, 10) as $row){
             $loc = \App\Models\Location::create([
-                "city_id" => $row,
+                "city_id" => 7700000000000,
                 "latitude" => $faker->latitude,
                 "longitude" => $faker->longitude,
                 "address" => $faker->address,
@@ -33,11 +33,16 @@ class UsersTableSeeder extends Seeder
                 "email" => $faker->email,
                 "age" => $faker->numberBetween(16, 40),
                 "location_id" => $loc->id,
-                "city_id" => $row,
-                "status" => false,
+                "city_id" => 7700000000000,
+                "status" => true,
                 "gender" => \random_int(0, 1),
                 "game_time_from" => 0,
                 "game_time_to" => 7000 * $row
+            ]);
+            $image = Image::create([
+                "imageable_id" => $row,
+                "imageable_type" => User::class,
+                "path" => "/placeholder.jpg"
             ]);
             foreach ( range(1, random_int(0, 5)) as $rating ){
                 Rating::create([

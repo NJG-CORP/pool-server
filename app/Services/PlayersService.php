@@ -113,8 +113,14 @@ class PlayersService
         return false;
     }
 
-    public function mapLocation($cityId){
+    /**
+     * @param User $user
+     * @param $cityId
+     * @return \Illuminate\Database\Eloquent\Collection|static[]
+     */
+    public function mapLocation(User $user, $cityId){
         return User::with(['location', 'avatar'])
+            ->where('id', '<>', $user->id)
             ->where('city_id', $cityId)
             ->where('status', true)
             ->get();
