@@ -10,7 +10,7 @@ class Rating extends Model
     protected $dates = ['created_at', 'updated_at'];
     protected $guarded = [];
 
-    protected function rater(){
+    public function rater(){
         return $this->belongsTo(User::class, 'rater_id');
     }
 
