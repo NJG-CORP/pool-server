@@ -33,6 +33,7 @@ class InvitationService
             ->get()
             ->map(function (Invitation $e){
                 $e->inviter->setAppends(['calculated_rating']);
+                return $e;
             });
     }
 
