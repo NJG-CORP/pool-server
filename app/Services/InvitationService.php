@@ -26,8 +26,14 @@ class InvitationService
     }
 
     public function invitationList(User $user){
-        return Invitation::where('inviter_id', $user->id)
-            ->orWhere('invited_id', $user->id)->get();
+        return Invitation::
+            with(['inviter.avatar', 'inviter.receivedRatings', 'club.location'])
+            //where('inviter_id', $user->id)
+            ->orWhere('invited_id', $user->id)
+            ->get()
+            ->map(function (Invitation $e){
+                $e->inviter->setAppends('calculated_rating');
+            });
     }
 
     public function accept($userId, $invId){
