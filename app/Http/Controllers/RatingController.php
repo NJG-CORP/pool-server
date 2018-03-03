@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Club;
+use App\Models\User;
 use App\Services\RatingService;
 use Illuminate\Http\Request;
 
