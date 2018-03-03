@@ -70,7 +70,7 @@ class PlayersService
 
     public function show($id){
         return User::with(
-            'receivedRatings', 'sentRatings',
+            'receivedRatings.rater.avatar', 'sentRatings',
             'receivedFavourites',
             'location', 'avatar', 'city'
         )->find($id);
