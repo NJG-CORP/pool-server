@@ -32,7 +32,7 @@ class InvitationService
             ->orWhere('invited_id', $user->id)
             ->get()
             ->map(function (Invitation $e){
-                $e->inviter->setAppends('calculated_rating');
+                $e->inviter->setAppends(['calculated_rating']);
             });
     }
 
