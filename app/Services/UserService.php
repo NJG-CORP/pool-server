@@ -16,7 +16,7 @@ class UserService
         $authAttempt = \Auth::attempt(['email' => $email, 'password' => $password]);
         if ( $authAttempt ){
             $user = \Auth::user();
-            return $user->api_token;
+            return $user;
         }
         return null;
     }

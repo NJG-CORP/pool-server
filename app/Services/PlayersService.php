@@ -20,6 +20,8 @@ class PlayersService
             'location.city', 'avatar', 'gameTime'
         ])
             ->select(['users.*'])
+            ->join('rating', 'users.id', '=', 'rating.rateable_id')
+            ->addSelect(\DB::raw('AVG(`rating`.`score`) as calculated_rating'))
             ->where('users.id', '<>', $currentUser->id );
 
         $gender = $query->get('gender');
@@ -48,9 +50,7 @@ class PlayersService
 
         if ( $rating = $query->get('rating') ){
             $dbQuery
-                ->join('rating', 'users.id', '=', 'rating.rateable_id')
                 ->where('rating.rateable_type', User::class)
-                ->addSelect(\DB::raw('AVG(`rating`.`score`) as calculated_rating'))
                 ->havingRaw(\DB::raw('`calculated_rating` >= ' . $rating));
         }
 
@@ -71,7 +71,7 @@ class PlayersService
     public function show($id){
         return User::with(
             'receivedRatings', 'sentRatings',
-            'sentFavourites', 'receivedFavourites',
+            'receivedFavourites',
             'location', 'avatar', 'city'
         )->find($id);
     }
