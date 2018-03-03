@@ -39,7 +39,7 @@ class UsersTableSeeder extends Seeder
                 "game_time_from" => 0,
                 "game_time_to" => 7000 * $row
             ]);
-            $image = Image::create([
+            $image = \App\Models\Image::create([
                 "imageable_id" => $row,
                 "imageable_type" => User::class,
                 "path" => "/placeholder.jpg"
