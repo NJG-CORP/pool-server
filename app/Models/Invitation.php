@@ -16,4 +16,8 @@ class Invitation extends Model
     public function invited(){
         return $this->belongsTo(User::class, 'invited_id');
     }
+
+    public function club(){
+        return $this->belongsTo(Club::class);
+    }
 }
