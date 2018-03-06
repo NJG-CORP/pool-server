@@ -122,7 +122,7 @@ class PlayersService
         return User::with(['location', 'avatar'])
             ->where('id', '<>', $user->id)
             ->where('city_id', $cityId)
-            ->where('status', true)
+            //->where('status', true)
             ->get();
     }
 }
