@@ -119,10 +119,15 @@ class PlayersService
      * @return \Illuminate\Database\Eloquent\Collection|static[]
      */
     public function mapLocation(User $user, $cityId){
-        return User::with(['location', 'avatar'])
+        $users = User::with(['location', 'avatar', 'receivedRatings'])
             ->where('id', '<>', $user->id)
             ->where('city_id', $cityId)
             //->where('status', true)
             ->get();
+        return $users->map(function (User $e){
+            return $e
+                ->setHidden(array_merge($e->getHidden(), ['received_ratings']))
+                ->setAppends(['calculated_rating']);
+        });
     }
 }

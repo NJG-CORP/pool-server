@@ -31,12 +31,8 @@ class FavouriteController extends Controller
      * @param Request $request
      * @param User $id
      * @return \Illuminate\Http\JsonResponse
-     * @throws \App\Exceptions\ControllableException
      */
     public function addFavouritePlayer(Request $request, User $id){
-        $this->validateRequestData([
-            "id" => "required|numeric"
-        ]);
         $addedUser = User::findOrFail($id);
         if (
         $res = $this->favourite->addFavouritePlayer(
