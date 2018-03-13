@@ -37,9 +37,9 @@ class InvitationService
             });
     }
 
-    public function accept($userId, $invId){
+    public function accept($user, $invId){
         $invitation = Invitation::find($invId);
-        if ( $invitation && $invitation->invited->id === $userId ){
+        if ( $invitation && $invitation->invited->id === $user->id ){
             $invitation->accepted = true;
             $invitation->save();
             return $invitation;
