@@ -37,10 +37,16 @@ class InvitationService
             });
     }
 
-    public function accept($user, $invId){
+    /**
+     * @param $user
+     * @param $invId
+     * @param $accepted
+     * @return bool|Invitation
+     */
+    public function setStatus($user, $invId, $accepted){
         $invitation = Invitation::find($invId);
         if ( $invitation && $invitation->invited->id === $user->id ){
-            $invitation->accepted = true;
+            $invitation->accepted = $accepted;
             $invitation->save();
             return $invitation;
         }

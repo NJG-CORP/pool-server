@@ -46,7 +46,17 @@ class InvitationController extends Controller
     }
 
     public function invitationAccept(Request $request, $id){
-        $res = $this->invitation->accept(\Auth::user(), $id);
+        $res = $this->invitation->setStatus(\Auth::user(), $id, true);
+        if ( $res ){
+            return $this->responder->successResponse([
+                'invitation' => $res
+            ]);
+        }
+        return $this->responder->errorResponse();
+    }
+
+    public function invitationReject(Request $request, $id){
+        $res = $this->invitation->setStatus(\Auth::user(), $id, false);
         if ( $res ){
             return $this->responder->successResponse([
                 'invitation' => $res
