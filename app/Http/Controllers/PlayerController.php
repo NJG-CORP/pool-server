@@ -77,14 +77,14 @@ class PlayerController extends Controller
     public function search(Request $request){
         $this->validateRequestData([
             "offset" => "required|numeric",
-            "gender" => "numeric",
-            "days" => "array",
-            "time.from" => "string",
-            "time.to" => "string",
+            "gender" => "numeric|nullable",
+            "days" => "array|nullable",
+            "time.from" => "string|nullable",
+            "time.to" => "string|nullable",
             "city_id" => "numeric",
-            'rating' => 'numeric|min:1|max:5',
-            "game_type" => "numeric",
-            "game_payment_type" => "numeric"
+            'rating' => 'numeric|min:1|max:5|nullable',
+            "game_type" => "numeric|nullable",
+            "game_payment_type" => "numeric|nullable"
         ]);
         try {
             $query = collect([
