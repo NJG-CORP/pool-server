@@ -42,6 +42,7 @@ class UserController extends Controller
             return $this->responder->errorResponse(R::USER_LOGIN_FAILURE, null, 401);
         }
         return $this->responder->successResponse([
+            "token" => $auth->api_token,
             "user" => $auth
         ]);
     }
