@@ -28,7 +28,7 @@ class InvitationController extends Controller
     public function inviteUser(Request $request){
         $this->validateRequestData([
             'invited_id' => 'required|integer',
-            'club_id' => 'required|integer',
+            'club_id' => 'integer',
             'meeting_at' => 'required'
         ]);
         $invitation = $this->invitation->invite(

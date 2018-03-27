@@ -42,7 +42,6 @@ class UserController extends Controller
             return $this->responder->errorResponse(R::USER_LOGIN_FAILURE, null, 401);
         }
         return $this->responder->successResponse([
-            "token" => $auth->api_token,
             "user" => $auth
         ]);
     }
@@ -56,12 +55,16 @@ class UserController extends Controller
         $this->validateRequestData([
             "email" => "required|email|unique:users",
             "name" => "required|min:2",
-            "surname" => "required|min:2"
+            "surname" => "required|min:2",
+            "source" => "string",
+            "external_id" => "string"
         ]);
         $res = $this->users->register(
             $req['email'],
             $req['name'],
-            $req['surname']
+            $req['surname'],
+            $this->request->get('source'),
+            $this->request->get('external_id')
         );
         return $this->responder->successResponse([
             "user" => $res

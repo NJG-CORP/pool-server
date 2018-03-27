@@ -7,7 +7,14 @@
 ```
 ```
     {
-        token: str | null
+        user: {
+            id: number,
+            name: string,
+            surname: string,
+            source: string,
+            external_id: number,
+            api_token: string
+        } 
     }
 ```
 **Регистрация**
@@ -17,6 +24,8 @@
     > email!
     > name!
     > surname!
+    > source?
+    > external_id?
 ```
 ```
     {
@@ -24,6 +33,8 @@
             id: number,
             name: string,
             surname: string,
+            source: string,
+            external_id: number,
             api_token: string
         }
     }

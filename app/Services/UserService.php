@@ -21,7 +21,7 @@ class UserService
         return null;
     }
 
-    public function register($email, $name, $surname){
+    public function register($email, $name, $surname, $source, $external_id){
         $password = str_random(6);
         $createdUser = User::create([
             "email" => $email,
@@ -31,6 +31,8 @@ class UserService
             "age" => null,
             "location_id" => null,
             "city_id" => null,
+            "source" => $source,
+            "external_id" => $external_id,
             "api_token" => $this->makeToken(),
             "status" => false
         ]);
