@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Query\JoinClause;
 use Illuminate\Support\Collection;
 
-class PlayersService
+class PlayerService
 {
     /**
      * @param $offset
@@ -71,7 +71,7 @@ class PlayersService
     public function show($id){
         return User::with(
             'receivedRatings.rater.avatar', 'sentRatings',
-            'receivedFavourites',
+            'receivedFavourites', 'gameType',
             'location', 'avatar', 'city'
         )->find($id);
     }
@@ -89,6 +89,8 @@ class PlayersService
         $fields->forget('city');
         $avatar = $fields->get('avatar');
         $fields->forget('avatar');
+        $gameType = $fields->get('game_type');
+        $fields->forget('game_type');
 
         foreach ($fields as $key=>$value){
             $user->{$key} = $value;
@@ -105,6 +107,10 @@ class PlayersService
                 $user,
                 $imagePath
             );
+        }
+
+        if ( $gameType ){
+            $user->addTerm($gameType);
         }
 
         if ( $user->save() ){

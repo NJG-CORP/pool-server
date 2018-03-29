@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use Devfactory\Taxonomy\Models\Term;
+use Devfactory\Taxonomy\Models\TermRelation;
 use Devfactory\Taxonomy\TaxonomyTrait;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Notifications\Notifiable;
@@ -50,6 +52,12 @@ class User extends Authenticatable
 
     public function receivedFavourites(){
         return $this->belongsToMany(User::class, 'favourites', 'to_id', 'from_id');
+    }
+
+    public function gameType(){
+        $rel = $this->
+            morphMany(TermRelation::class, 'relationable')->first();
+        return $rel->term();
     }
 
     public function getCalculatedRatingAttribute(){

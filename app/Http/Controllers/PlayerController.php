@@ -5,14 +5,14 @@ namespace App\Http\Controllers;
 use App\Exceptions\ControllableException;
 use App\Services\CityService;
 use App\Services\ImageService;
-use App\Services\PlayersService;
+use App\Services\PlayerService;
 use App\Utils\R;
 use Illuminate\Http\Request;
 
 class PlayerController extends Controller
 {
     /**
-     * @var PlayersService $players
+     * @var PlayerService $players
      */
     private $players;
 
@@ -29,13 +29,13 @@ class PlayerController extends Controller
     /**
      * PlayerController constructor.
      * @param Request $request
-     * @param PlayersService $players
+     * @param PlayerService $players
      * @param CityService $cities
      * @param ImageService $images
      */
     public function __construct(
         Request $request,
-        PlayersService $players,
+        PlayerService $players,
         CityService $cities,
         ImageService $images
 ){

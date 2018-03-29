@@ -47,6 +47,34 @@ class UserController extends Controller
         ]);
     }
 
+
+    /**
+     * @return \Illuminate\Http\JsonResponse
+     * @throws \App\Exceptions\ControllableException
+     */
+    public function social(){
+        $req = $this->request->all();
+        $this->validateRequestData([
+            "email" => "required",
+            'external_id' => "required",
+            'source' => 'required'
+        ]);
+        $auth = $this->users->checkExternalUserExists(
+            $req['email'],
+            $req['external_id'],
+            $req['source']
+        );
+        if ( !$auth ){
+            return $this->responder->successResponse([
+                'token' => null,
+            ]);
+        }
+        return $this->responder->successResponse([
+            "token" => $auth->api_token,
+            "user" => $auth
+        ]);
+    }
+
     /**
      * @return \Illuminate\Http\JsonResponse
      * @throws \App\Exceptions\ControllableException

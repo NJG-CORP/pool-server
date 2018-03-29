@@ -7,7 +7,7 @@ use App\Services\CityService;
 use App\Services\ClubsService;
 use App\Services\FavouriteService;
 use App\Services\ImageService;
-use App\Services\PlayersService;
+use App\Services\PlayerService;
 use App\Services\RatingService;
 use App\Services\TaxonomyService;
 use App\Services\UserService;
@@ -30,8 +30,8 @@ class AppServiceProvider extends ServiceProvider
         $this->app->singleton(UserService::class, function(){
             return new UserService();
         });
-        $this->app->singleton(PlayersService::class, function(){
-            return new PlayersService();
+        $this->app->singleton(PlayerService::class, function(){
+            return new PlayerService();
         });
         $this->app->singleton(ClubsService::class, function(){
             return new ClubsService();

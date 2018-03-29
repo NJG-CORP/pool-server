@@ -21,6 +21,17 @@ class UserService
         return null;
     }
 
+    public function checkExternalUserExists($email, $externalId, $source){
+        $authAttempt = \Auth::attempt([
+            'email' => $email, 'external_id' => $externalId, 'source' => $source
+        ]);
+        if ( $authAttempt ){
+            $user = \Auth::user();
+            return $user;
+        }
+        return null;
+    }
+
     public function register($email, $name, $surname, $source, $external_id){
         $password = str_random(6);
         $createdUser = User::create([
