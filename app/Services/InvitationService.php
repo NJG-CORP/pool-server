@@ -5,6 +5,7 @@ use App\Models\Club;
 use App\Models\Invitation;
 use App\Models\User;
 use Carbon\Carbon;
+use Illuminate\Database\Query\Builder;
 
 class InvitationService
 {
@@ -28,8 +29,11 @@ class InvitationService
     public function invitationList(User $user){
         return Invitation::
             with(['inviter.avatar', 'inviter.receivedRatings', 'club.location'])
-            //where('inviter_id', $user->id)
-            ->orWhere('invited_id', $user->id)
+            ->where(function(\Illuminate\Database\Eloquent\Builder $q) use ($user){
+                $q//->where('inviter_id', $user->id)
+                    ->orWhere('invited_id', $user->id);
+            })
+            ->where('accepted', null)
             ->get()
             ->map(function (Invitation $e){
                 $e->inviter->setAppends(['calculated_rating']);
