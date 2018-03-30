@@ -1,6 +1,7 @@
 <?php
 namespace App\Services;
 
+use App\Exceptions\ControllableException;
 use App\Models\User;
 use App\Utils\R;
 use App\Utils\Utils;
@@ -21,13 +22,25 @@ class UserService
         return null;
     }
 
+    /**
+     * @param $email
+     * @param $externalId
+     * @param $source
+     * @return User|null
+     * @throws ControllableException
+     */
     public function checkExternalUserExists($email, $externalId, $source){
-        $authAttempt = \Auth::attempt([
-            'email' => $email, 'external_id' => $externalId, 'source' => $source
-        ]);
-        if ( $authAttempt ){
-            $user = \Auth::user();
-            return $user;
+        $registeredUser = User::first(['email' => $email]);
+        if ( $registeredUser ) {
+            $authAttempt = \Auth::attempt([
+                'email' => $email, 'external_id' => $externalId, 'source' => $source
+            ]);
+            if ( $authAttempt ){
+                $user = \Auth::user();
+                return $user;
+            } else {
+                throw new ControllableException(R::USER_REGISTERED_WITH_NO_SOCIAL);
+            }
         }
         return null;
     }

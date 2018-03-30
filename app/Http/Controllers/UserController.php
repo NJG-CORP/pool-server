@@ -96,6 +96,7 @@ class UserController extends Controller
             $this->request->get('external_id')
         );
         return $this->responder->successResponse([
+            "token" => $res->api_token,
             "user" => $res
         ], 201);
     }
