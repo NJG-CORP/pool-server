@@ -30,7 +30,7 @@ class UserService
      * @throws ControllableException
      */
     public function checkExternalUserExists($email, $externalId, $source){
-        $registeredUser = User::first(['email' => $email]);
+        $registeredUser = User::where(['email' => $email])->get()->first();
         if ( $registeredUser ) {
             $authAttempt = \Auth::attempt([
                 'email' => $email, 'external_id' => $externalId, 'source' => $source
