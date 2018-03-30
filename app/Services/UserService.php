@@ -30,14 +30,13 @@ class UserService
      * @throws ControllableException
      */
     public function checkExternalUserExists($email, $externalId, $source){
-        $registeredUser = User::where(['email' => $email])->get()->first();
+        $registeredUser = User::where(['email' => $email])->first();
         if ( $registeredUser ) {
-            $authAttempt = \Auth::attempt([
+            $socialRegisteredUser = User::where([
                 'email' => $email, 'external_id' => $externalId, 'source' => $source
-            ]);
-            if ( $authAttempt ){
-                $user = \Auth::user();
-                return $user;
+            ])->first();
+            if ( $socialRegisteredUser ){
+                return $socialRegisteredUser;
             } else {
                 throw new ControllableException(R::USER_REGISTERED_WITH_NO_SOCIAL);
             }
