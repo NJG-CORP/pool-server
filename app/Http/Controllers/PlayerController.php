@@ -63,7 +63,7 @@ class PlayerController extends Controller
         );
         if ( $res ){
             return $this->responder->successResponse([
-                "user" => $res
+                "player" => $res
             ]);
         }
         return $this->responder->errorResponse();
