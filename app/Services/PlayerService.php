@@ -72,7 +72,7 @@ class PlayerService
         return User::with(
             'receivedRatings.rater.avatar', 'sentRatings',
             'receivedFavourites', 'gameType',
-            'location', 'avatar', 'city'
+            'location', 'avatar', 'city', 'gameTime'
         )->find($id);
     }
 
