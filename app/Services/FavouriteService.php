@@ -11,7 +11,15 @@ class FavouriteService
      */
     public function getFavouritePlayersOfUser(User $user){
         $user->load('avatar');
-        return $user->sentFavourites;
+        return $user
+            ->sentFavourites()
+            ->with(['city', 'avatar'])
+            ->get()
+            ->map(function (User $e){
+                $e->setAppends(['calculated_rating']);
+                $e->setHidden(array_merge($e->getHidden(), ['receivedRatings']));
+                return $e;
+            });
     }
 
     public function addFavouritePlayer(User $addingUser, User $addedUser){

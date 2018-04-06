@@ -85,12 +85,10 @@ class PlayerService
      */
     public function save(User $user, $fields, CityService $cityService, ImageService $imageService){
         $fields = collect($fields);
-        $city = $fields->get('city');
-        $fields->forget('city');
-        $avatar = $fields->get('avatar');
-        $fields->forget('avatar');
-        $gameType = $fields->get('game_type');
-        $fields->forget('game_type');
+        $city = $fields->pull('city');
+        $avatar = $fields->pull('avatar');
+        $gameType = $fields->pull('game_type');
+        $gameDays = $fields->pull('game_days');
 
         foreach ($fields as $key=>$value){
             $user->{$key} = $value;
@@ -111,6 +109,15 @@ class PlayerService
 
         if ( $gameType ){
             $user->addTerm($gameType);
+        }
+
+        if ( $gameDays ){
+            \DB::delete('DELETE FROM game_time WHERE user_id=' . $user->id);
+            foreach ( $gameDays as $day ){
+                \DB::insert(
+                    "INSERT INTO game_time SET user_id=" . $user->id . ", weekday_id=$day"
+                );
+            }
         }
 
         if ( $user->save() ){
