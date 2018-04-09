@@ -179,7 +179,8 @@ return [
 
         Devfactory\Taxonomy\TaxonomyServiceProvider::class,
 
-        Intervention\Image\ImageServiceProvider::class
+        Intervention\Image\ImageServiceProvider::class,
+        Berkayk\OneSignal\OneSignalServiceProvider::class
     ],
 
     /*
@@ -230,7 +231,8 @@ return [
         'View' => Illuminate\Support\Facades\View::class,
 
         'Taxonomy'        => Devfactory\Taxonomy\Facades\TaxonomyFacade::class,
-        'Image' => Intervention\Image\Facades\Image::class
+        'Image' => Intervention\Image\Facades\Image::class,
+        'OneSignal' => Berkayk\OneSignal\OneSignalFacade::class
     ],
 
 ];
