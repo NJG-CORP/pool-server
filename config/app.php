@@ -230,7 +230,7 @@ return [
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
 
-        'Taxonomy'        => Devfactory\Taxonomy\Facades\TaxonomyFacade::class,
+        'Taxonomy' => Devfactory\Taxonomy\Facades\TaxonomyFacade::class,
         'Image' => Intervention\Image\Facades\Image::class,
         'OneSignal' => Berkayk\OneSignal\OneSignalFacade::class
     ],

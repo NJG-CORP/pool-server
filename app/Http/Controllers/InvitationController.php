@@ -33,7 +33,7 @@ class InvitationController extends Controller
         ]);
         $invitation = $this->invitation->invite(
             \Auth::user(),
-            User::find($this->request->get('invited_at')),
+            User::find($this->request->get('invited_id')),
             Club::find($this->request->get('club_id')),
             $this->request->get('meeting_at')
         );
