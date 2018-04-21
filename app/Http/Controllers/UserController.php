@@ -132,6 +132,6 @@ class UserController extends Controller
         $res = $this->users->vkAuth(
             $this->request->get('access_token')
         );
-        return $this->responder->successResponse($res);
+        return $this->responder->successResponse(['info' => $res]);
     }
 }

@@ -119,6 +119,6 @@ class UserService
                 ]
             ]
         );
-        return $res->getBody()->getContents();
+        return json_decode($res->getBody(), true);
     }
 }
