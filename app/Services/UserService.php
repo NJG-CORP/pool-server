@@ -5,6 +5,7 @@ use App\Exceptions\ControllableException;
 use App\Models\User;
 use App\Utils\R;
 use App\Utils\Utils;
+use Devfactory\Taxonomy\Models\Vocabulary;
 use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Password;
 
@@ -77,6 +78,13 @@ class UserService
             "status" => false
         ]);
         if ( $createdUser instanceof User ){
+            /**
+             * @var Vocabulary $v
+             */
+            $v = \Taxonomy::getVocabularyByName('GamePaymentType');
+            $createdUser->addTerm(
+                $v->terms()->where('name', 'Поровну')->first()
+            );
             Utils::sendMail(
                 $password, $createdUser->email, R::USER_REGISTRATION_EMAIL_SUBJECT
             );

@@ -15,13 +15,16 @@ class TaxonomyTableSeeder extends Seeder
         Taxonomy::createTerm($gameTypeVocabulary->id, "Русский");
         Taxonomy::createTerm($gameTypeVocabulary->id, "Снукер");
         Taxonomy::createTerm($gameTypeVocabulary->id, "Пул");
+        Taxonomy::createTerm($gameTypeVocabulary->id, 'Любой');
 
-        $gameTypeVocabulary = Taxonomy::createVocabulary("GamePaymentType");
-        Taxonomy::createTerm($gameTypeVocabulary->id, "Поровну");
-        Taxonomy::createTerm($gameTypeVocabulary->id, "Беру на себя");
+        $gamePaymentTypeVocabulary = Taxonomy::createVocabulary("GamePaymentType");
+        Taxonomy::createTerm($gamePaymentTypeVocabulary->id, "Поровну");
+        Taxonomy::createTerm($gamePaymentTypeVocabulary->id, "Беру на себя");
+        Taxonomy::createTerm($gamePaymentTypeVocabulary->id, "За счет партнера");
+        Taxonomy::createTerm($gamePaymentTypeVocabulary->id, "Не имеет значения");
 
-        $paymentTypeVocabulary = Taxonomy::createVocabulary('SkillLevel');
-        Taxonomy::createTerm($paymentTypeVocabulary->id, 'Уровень игры1');
-        Taxonomy::createTerm($paymentTypeVocabulary->id, 'Уровень игры2');
+        $skillLevelVocabulary = Taxonomy::createVocabulary('SkillLevel');
+        Taxonomy::createTerm($skillLevelVocabulary->id, 'Уровень игры1');
+        Taxonomy::createTerm($skillLevelVocabulary->id, 'Уровень игры2');
     }
 }

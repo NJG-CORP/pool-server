@@ -55,9 +55,18 @@ class User extends Authenticatable
     }
 
     public function gameType(){
-        $rel = $this->
-            morphMany(TermRelation::class, 'relationable')->first();
-        return $rel->term();
+        $vocabulary = \Taxonomy::getVocabularyByName('GameType');
+        return $this->related()->where('vocabulary_id', $vocabulary->id);
+    }
+
+    public function skillLevel(){
+        $vocabulary = \Taxonomy::getVocabularyByName('SkillLevel');
+        return $this->related()->where('vocabulary_id', $vocabulary->id);
+    }
+
+    public function gamePaymentType(){
+        $vocabulary = \Taxonomy::getVocabularyByName('GamePaymentType');
+        return $this->related()->where('vocabulary_id', $vocabulary->id);
     }
 
     public function getCalculatedRatingAttribute(){

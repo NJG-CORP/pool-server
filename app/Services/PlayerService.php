@@ -3,6 +3,8 @@ namespace App\Services;
 
 use App\Models\User;
 use Carbon\Carbon;
+use Devfactory\Taxonomy\Models\Term;
+use Devfactory\Taxonomy\Models\Vocabulary;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Query\JoinClause;
 use Illuminate\Support\Collection;
@@ -55,11 +57,29 @@ class PlayerService
         }
 
         if ( $gameType = $query->get('game_type') ){
-            $dbQuery->getAllByTermId($gameType);
+            $anyType = Term::where(['name' => 'Любой'])->first();
+            if ( $gameType !== $anyType->id ) {
+                $dbQuery->getAllByTermId($gameType);
+            }
         }
 
         if ( $gamePaymentType = $query->get('game_payment_type') ){
-            $dbQuery->getAllByTermId($gamePaymentType);
+            $v = \Taxonomy::getVocabularyByName('GamePaymentType');
+            /**
+             * @var Collection $terms
+             */
+            $terms = $v->terms;
+            $formattedTerms = [];
+            foreach ($terms as $term){
+                $formattedTerms[$term->name] = $term;
+            }
+            if ( $gamePaymentType !== $formattedTerms['Не имеет значения']->id ) {
+                if ( $gamePaymentType === $formattedTerms['За счет партнера'] )
+                    $gamePaymentType = $formattedTerms['Беру на себя'];
+                else if ( $gamePaymentType === $formattedTerms['Беру на себя'] )
+                    $gamePaymentType = $formattedTerms['За счет партнера'];
+                $dbQuery->getAllByTermId($gamePaymentType);
+            }
         }
         return $dbQuery
             ->groupBy(['users.id'])
@@ -71,7 +91,7 @@ class PlayerService
     public function show($id){
         return User::with(
             'receivedRatings.rater.avatar', 'sentRatings',
-            'receivedFavourites', 'gameType',
+            'receivedFavourites', 'gameType', 'gamePaymentType', 'skillLevel',
             'location', 'avatar', 'city', 'gameTime'
         )->find($id);
     }
@@ -88,6 +108,8 @@ class PlayerService
         $city = $fields->pull('city');
         $avatar = $fields->pull('avatar');
         $gameType = $fields->pull('game_type');
+        $gamePaymentType = $fields->pull('game_payment_type');
+        $skillLevel = $fields->pull('skill_level');
         $gameDays = $fields->pull('game_days');
 
         foreach ($fields as $key=>$value){
@@ -107,9 +129,9 @@ class PlayerService
             );
         }
 
-        if ( $gameType ){
-            $user->addTerm($gameType);
-        }
+        if ( $gameType ) $user->addTerm($gameType);
+        if ( $gamePaymentType ) $user->addTerm($gamePaymentType);
+        if ( $skillLevel ) $user->addTerm($skillLevel);
 
         if ( $gameDays ){
             \DB::delete('DELETE FROM game_time WHERE user_id=' . $user->id);
