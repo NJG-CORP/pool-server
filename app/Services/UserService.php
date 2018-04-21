@@ -5,14 +5,23 @@ use App\Exceptions\ControllableException;
 use App\Models\User;
 use App\Utils\R;
 use App\Utils\Utils;
+use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Password;
 
 class UserService
 {
+    /**
+     * @return string
+     */
     private function makeToken(){
         return str_random(32);
     }
 
+    /**
+     * @param $email
+     * @param $password
+     * @return User|null
+     */
     public function tryLogin($email, $password){
         $authAttempt = \Auth::attempt(['email' => $email, 'password' => $password]);
         if ( $authAttempt ){
@@ -44,6 +53,14 @@ class UserService
         return null;
     }
 
+    /**
+     * @param $email
+     * @param $name
+     * @param $surname
+     * @param $source
+     * @param $external_id
+     * @return null
+     */
     public function register($email, $name, $surname, $source, $external_id){
         $password = str_random(6);
         $createdUser = User::create([
@@ -68,6 +85,10 @@ class UserService
         return null;
     }
 
+    /**
+     * @param $email
+     * @return null|string
+     */
     public function resetPassword($email){
         /**
          * @var User $user
@@ -80,5 +101,24 @@ class UserService
             );
         }
         return null;
+    }
+
+    /**
+     * @param $accessToken
+     * @return string
+     */
+    public function vkAuth($accessToken){
+        $client = new Client();
+        $res = $client->get(
+            'https://api.vk.com/method/users.get',
+            [
+                'query' => [
+                    'fields'=>'bdate,sex,city,photo_max_orig',
+                    'access_token' => $accessToken,
+                    'v' => '5.8'
+                ]
+            ]
+        );
+        return $res->getBody()->getContents();
     }
 }

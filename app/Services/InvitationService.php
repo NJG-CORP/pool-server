@@ -33,7 +33,7 @@ class InvitationService
                 $q//->where('inviter_id', $user->id)
                     ->orWhere('invited_id', $user->id);
             })
-            ->where('accepted', null)
+            ->whereIn('accepted', [null, true])
             ->get()
             ->map(function (Invitation $e){
                 $e->inviter->setAppends(['calculated_rating']);

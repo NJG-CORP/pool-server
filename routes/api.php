@@ -6,6 +6,7 @@ Route::middleware('cors')->group(function(){
         Route::post("register", "UserController@register");
         Route::post('reset', "UserController@resetPassword");
         Route::post('social', 'UserController@social');
+        Route::get('vkinfo', 'UserController@vkInfo');
     });
     Route::middleware(['auth.token'])->group(function(){
         Route::prefix('players')->group(function(){

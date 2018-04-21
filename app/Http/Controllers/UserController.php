@@ -120,4 +120,18 @@ class UserController extends Controller
             return $this->responder->errorResponse(R::USER_PASS_RESET_FAILURE);
         }
     }
+
+    /**
+     * @return \Illuminate\Http\JsonResponse
+     * @throws \App\Exceptions\ControllableException
+     */
+    public function vkInfo(){
+        $this->validateRequestData([
+            'access_token' => 'required|string'
+        ]);
+        $res = $this->users->vkAuth(
+            $this->request->get('access_token')
+        );
+        return $this->responder->successResponse($res);
+    }
 }
