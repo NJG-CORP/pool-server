@@ -23,6 +23,11 @@ class FavouriteService
     }
 
     public function addFavouritePlayer(User $addingUser, User $addedUser){
+        $f = \DB::table('favourites')
+            ->where('from_id', $addingUser->id)
+            ->where('to_id', $addedUser->id)
+            ->first();
+        if ( $f ) return $f;
         return \DB::table('favourites')->insert([
            'from_id' => $addingUser->id,
            'to_id' => $addedUser->id
