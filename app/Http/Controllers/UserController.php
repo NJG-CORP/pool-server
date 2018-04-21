@@ -85,7 +85,7 @@ class UserController extends Controller
             "email" => "required|email|unique:users",
             "name" => "required|min:2",
             "surname" => "required|min:2",
-            "source" => "string",
+            "source" => "string|nullable",
             "external_id" => "string"
         ]);
         $res = $this->users->register(
