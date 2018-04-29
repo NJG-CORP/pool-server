@@ -27,7 +27,7 @@ class FavouriteService
             ->where('from_id', $addingUser->id)
             ->where('to_id', $addedUser->id)
             ->first();
-        if ( $f ) return $f;
+        if ( $f ) return false;
         return \DB::table('favourites')->insert([
            'from_id' => $addingUser->id,
            'to_id' => $addedUser->id

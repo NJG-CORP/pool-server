@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use App\Services\FavouriteService;
+use App\Utils\R;
 use Illuminate\Http\Request;
 
 class FavouriteController extends Controller
@@ -44,7 +45,7 @@ class FavouriteController extends Controller
                 "player" => $addedUser
             ]);
         }
-        return $this->responder->errorResponse();
+        return $this->responder->errorResponse(R::FAVOURITE_SAME_PLAYER);
     }
 
     /**

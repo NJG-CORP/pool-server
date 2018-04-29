@@ -19,6 +19,8 @@ class R
     const MODEL_NOT_FOUND = "Модель не найдена";
 
     const RATING_SAME_MODEL = "Нельзя повысить рейтинг самому себе";
+
+    const FAVOURITE_SAME_PLAYER = "Этот игрок уже есть в избранном";
 }
 
 

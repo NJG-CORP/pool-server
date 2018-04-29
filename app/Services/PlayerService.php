@@ -129,6 +129,7 @@ class PlayerService
             );
         }
 
+        $user->removeAllTerms();
         if ( $gameType ) $user->addTerm($gameType);
         if ( $gamePaymentType ) $user->addTerm($gamePaymentType);
         if ( $skillLevel ) $user->addTerm($skillLevel);
