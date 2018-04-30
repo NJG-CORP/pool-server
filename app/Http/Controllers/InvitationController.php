@@ -65,6 +65,11 @@ class InvitationController extends Controller
         return $this->responder->errorResponse();
     }
 
+    public function invitationDelete(Request $request, $id){
+        $res = $this->invitation->deleteInvitation($id);
+        return $this->responder->successResponse($res);
+    }
+
     public function invitationList(){
         $list = $this->invitation->invitationList(\Auth::user());
         return $this->responder->successResponse([

@@ -24,7 +24,8 @@ class TaxonomyTableSeeder extends Seeder
         Taxonomy::createTerm($gamePaymentTypeVocabulary->id, "Не имеет значения");
 
         $skillLevelVocabulary = Taxonomy::createVocabulary('SkillLevel');
-        Taxonomy::createTerm($skillLevelVocabulary->id, 'Уровень игры1');
-        Taxonomy::createTerm($skillLevelVocabulary->id, 'Уровень игры2');
+        Taxonomy::createTerm($skillLevelVocabulary->id, 'Новичёк');
+        Taxonomy::createTerm($skillLevelVocabulary->id, 'Стандартный');
+        Taxonomy::createTerm($skillLevelVocabulary->id, 'Профи');
     }
 }

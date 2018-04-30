@@ -12,7 +12,7 @@ class R
 
     const USER_REGISTRATION_NOT_UNIQUE = "Пользователь с таким e-mail уже зарегистрирован";
     const USER_REGISTRATION_EMAIL_SUBJECT = 'Регистрация в приложении PoolBuddy';
-    const USER_PASS_RESET_FAILURE = "Ты чо";
+    const USER_PASS_RESET_FAILURE = "Ошибка отправки письма на указанный адрес";
     const USER_LOGIN_FAILURE = "E-mail или пароль не верны";
     const USER_REGISTERED_WITH_NO_SOCIAL = "Вы зарегистрированы другим способом";
 

@@ -56,4 +56,12 @@ class InvitationService
         }
         return false;
     }
+
+    /**
+     * @param $id
+     * @return boolean
+     */
+    public function deleteInvitation($id){
+        return Invitation::findOrFail($id)->delete();
+    }
 }

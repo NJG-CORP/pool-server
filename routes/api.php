@@ -34,6 +34,7 @@ Route::middleware('cors')->group(function(){
             Route::post('send', 'InvitationController@inviteUser');
             Route::post('accept/{id}', 'InvitationController@invitationAccept');
             Route::post('reject/{id}', 'InvitationController@invitationReject');
+            Route::post('delete/{id}', 'InvitationController@invitationDelete');
         });
         Route::prefix('cities')->group(function(){
             Route::get('search', 'CityController@search');

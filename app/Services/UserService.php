@@ -85,6 +85,10 @@ class UserService
             $createdUser->addTerm(
                 $v->terms()->where('name', 'Поровну')->first()
             );
+            $v = \Taxonomy::getVocabularyByName('SkillLevel');
+            $createdUser->addTerm(
+                $v->terms()->where('name', 'Стандартный')->first()
+            );
             Utils::sendMail(
                 $password, $createdUser->email, R::USER_REGISTRATION_EMAIL_SUBJECT
             );
