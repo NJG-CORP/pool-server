@@ -55,12 +55,10 @@ class UserController extends Controller
     public function social(){
         $req = $this->request->all();
         $this->validateRequestData([
-            "email" => "required",
             'external_id' => "required",
             'source' => 'required'
         ]);
         $auth = $this->users->checkExternalUserExists(
-            $req['email'],
             $req['external_id'],
             $req['source']
         );
@@ -80,20 +78,24 @@ class UserController extends Controller
      * @throws \App\Exceptions\ControllableException
      */
     public function register(){
-        $req = $this->request->all();
-        $this->validateRequestData([
-            "email" => "required|email|unique:users",
+        $externalId = $this->request->get('external_id');
+        $validationRules = [
             "name" => "required|min:2",
             "surname" => "required|min:2",
             "source" => "string|nullable",
             "external_id" => "string"
-        ]);
+        ];
+        if ( !$externalId ) {
+            $validationRules["email"] = "required|email|unique:users";
+        }
+
+        $this->validateRequestData($validationRules);
         $res = $this->users->register(
-            $req['email'],
-            $req['name'],
-            $req['surname'],
+            $this->request->get('email'),
+            $this->request->get('name'),
+            $this->request->get('surname'),
             $this->request->get('source'),
-            $this->request->get('external_id')
+            $externalId
         );
         return $this->responder->successResponse([
             "token" => $res->api_token,

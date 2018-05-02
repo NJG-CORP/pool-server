@@ -15,7 +15,7 @@ class CreateUsersTable extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('email')->unique();
+            $table->string('email')->nullable();
             $table->string('password');
             $table->unsignedTinyInteger('age')->nullable();
             $table->string('name');
@@ -23,8 +23,8 @@ class CreateUsersTable extends Migration
             $table->unsignedTinyInteger('gender')->default(1);
             $table->unsignedInteger('location_id')->nullable();
             $table->unsignedBigInteger('city_id')->nullable();
-            $table->unsignedInteger('game_time_from')->nullable();
-            $table->unsignedInteger('game_time_to')->nullable();
+            $table->time('game_time_from')->nullable();
+            $table->time('game_time_to')->nullable();
             $table->string('api_token');
             $table->boolean('status');
             $table->rememberToken();

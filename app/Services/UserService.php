@@ -33,18 +33,17 @@ class UserService
     }
 
     /**
-     * @param $email
      * @param $externalId
      * @param $source
      * @return User|null
      * @throws ControllableException
      */
-    public function checkExternalUserExists($email, $externalId, $source){
-        $registeredUser = User::where(['email' => $email])->first();
-        if ( $registeredUser ) {
-            $socialRegisteredUser = User::where([
-                'email' => $email, 'external_id' => $externalId, 'source' => $source
-            ])->first();
+    public function checkExternalUserExists( $externalId, $source ){
+        //TODO дыра в секурности
+        $socialRegisteredUser = User::where([
+            'external_id' => $externalId, 'source' => $source
+        ])->first();
+        if ( $socialRegisteredUser ) {
             if ( $socialRegisteredUser ){
                 return $socialRegisteredUser;
             } else {
@@ -62,7 +61,7 @@ class UserService
      * @param $external_id
      * @return null
      */
-    public function register($email, $name, $surname, $source, $external_id){
+    public function register($email = null, $name, $surname, $source, $external_id){
         $password = str_random(6);
         $createdUser = User::create([
             "email" => $email,
