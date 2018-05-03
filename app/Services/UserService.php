@@ -74,6 +74,8 @@ class UserService
             "source" => $source,
             "external_id" => $external_id,
             "api_token" => $this->makeToken(),
+            'game_time_from' => '00:00:00',
+            'game_time_to' => '23:59:59',
             "status" => false
         ]);
         if ( $createdUser instanceof User ){
