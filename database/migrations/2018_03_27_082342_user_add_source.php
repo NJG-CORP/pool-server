@@ -14,7 +14,7 @@ class UserAddSource extends Migration
     public function up()
     {
         Schema::table('users', function(Blueprint $table){
-            $table->string('source', 2)->default('');
+            $table->string('source', 2)->nullable();
             $table->unsignedInteger('external_id')->nullable();
         });
     }

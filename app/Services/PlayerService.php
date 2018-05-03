@@ -24,6 +24,7 @@ class PlayerService
             ->select(['users.*'])
             ->join('rating', 'users.id', '=', 'rating.rateable_id')
             ->addSelect(\DB::raw('AVG(`rating`.`score`) as calculated_rating'))
+            ->groupBy(['users.id'])
             ->where('users.id', '<>', $currentUser->id );
 
         $gender = $query->get('gender');
@@ -37,17 +38,23 @@ class PlayerService
         }
 
         if ( $time = $query->get('time') ){
-            $dayStart = 0;
-            $dayEnd = 60 * 60 * 24;
+            $dayStart = '00:00:00';
+            $dayEnd = '23:59:59';
             $from = empty($time['from'])?
                 $dayStart:
-                (new Carbon($time['from']))->secondsSinceMidnight();
+                $time['from'];
             $to = empty($time['to'])?
                 $dayEnd:
-                (new Carbon($time['to']))->secondsSinceMidnight();
+                $time['to'];
             $dbQuery
-                ->where('game_time_from', '<=', $to)
-                ->where('game_time_to', '>=', $from);
+                ->where(function (Builder $q) use ($from, $time) {
+                    $q->where('game_time_from', '>=', $from);
+                    if ( empty($time['from']) ) $q->orWhere('game_time_from', null);
+                })
+                ->where(function (Builder $q) use ($to, $time) {
+                    $q->where('game_time_to', '<=', $to);
+                    if ( empty($time['to']) ) $q->orWhere('game_time_to', null);
+                });
         }
 
         if ( $rating = $query->get('rating') ){
@@ -71,16 +78,17 @@ class PlayerService
             $terms = $v->terms;
             $formattedTerms = [];
             foreach ($terms as $term){
-                $formattedTerms[$term->name] = $term;
+                $formattedTerms[$term->name] = $term->id;
             }
-            if ( $gamePaymentType !== $formattedTerms['Не имеет значения']->id ) {
-                if ( $gamePaymentType === $formattedTerms['За счет партнера'] )
+            if ( $gamePaymentType != $formattedTerms['Не имеет значения'] ) {
+                if ( $gamePaymentType == $formattedTerms['За счет партнера'] )
                     $gamePaymentType = $formattedTerms['Беру на себя'];
-                else if ( $gamePaymentType === $formattedTerms['Беру на себя'] )
+                else if ( $gamePaymentType == $formattedTerms['Беру на себя'] )
                     $gamePaymentType = $formattedTerms['За счет партнера'];
                 $dbQuery->getAllByTermId($gamePaymentType);
             }
         }
+
         return $dbQuery
             ->groupBy(['users.id'])
             ->offset($offset)

@@ -14,6 +14,7 @@ class FavouriteService
         return $user
             ->sentFavourites()
             ->with(['city', 'avatar'])
+            ->groupBy(['to_id'])
             ->get()
             ->map(function (User $e){
                 $e->setAppends(['calculated_rating']);
