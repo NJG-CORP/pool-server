@@ -94,7 +94,7 @@ class UserController extends Controller
             $this->request->get('email'),
             $this->request->get('name'),
             $this->request->get('surname'),
-            $this->request->get('source'),
+            $this->request->get('source', ''),
             $externalId
         );
         return $this->responder->successResponse([
