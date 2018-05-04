@@ -25,6 +25,7 @@ class PlayerService
             ->join('rating', 'users.id', '=', 'rating.rateable_id')
             ->addSelect(\DB::raw('AVG(`rating`.`score`) as calculated_rating'))
             ->groupBy(['users.id'])
+            ->orderBy('calculated_rating', 'DESC')
             ->where('users.id', '<>', $currentUser->id );
 
         $gender = $query->get('gender');
@@ -37,19 +38,19 @@ class PlayerService
             $dbQuery->whereIn('game_time.weekday_id', $days);
         }
 
-//        if ( $time = $query->get('time') ){
-//            $dayStart = '00:00:00';
-//            $dayEnd = '23:59:00';
-//            $from = empty($time['from'])?
-//                $dayStart:
-//                date('H:i:s', strtotime($time['from']));
-//            $to = empty($time['to'])?
-//                $dayEnd:
-//                date('H:i:s', strtotime($time['to']));
-//            $dbQuery
-//                ->where('game_time_from', '>=', $from)
-//                ->where('game_time_to', '<=', $to);
-//        }
+        if ( $time = $query->get('time') ){
+            $dayStart = '00:00:00';
+            $dayEnd = '23:59:00';
+            $from = empty($time['from'])?
+                $dayStart:
+                date('H:i:s', strtotime($time['from']));
+            $to = empty($time['to'])?
+                $dayEnd:
+                date('H:i:s', strtotime($time['to']));
+            $dbQuery
+                ->where('game_time_from', '>=', $from)
+                ->where('game_time_to', '<=', $to);
+        }
 
         if ( $rating = $query->get('rating') ){
             $dbQuery
