@@ -39,22 +39,16 @@ class PlayerService
 
         if ( $time = $query->get('time') ){
             $dayStart = '00:00:00';
-            $dayEnd = '23:59:59';
+            $dayEnd = '23:59:00';
             $from = empty($time['from'])?
                 $dayStart:
-                $time['from'];
+                date('H:i:s', strtotime($time['from']));
             $to = empty($time['to'])?
                 $dayEnd:
-                $time['to'];
+                date('H:i:s', strtotime($time['to']));
             $dbQuery
-                ->where(function (Builder $q) use ($from, $time) {
-                    $q->where('game_time_from', '>=', $from);
-                    if ( empty($time['from']) ) $q->orWhere('game_time_from', null);
-                })
-                ->where(function (Builder $q) use ($to, $time) {
-                    $q->where('game_time_to', '<=', $to);
-                    if ( empty($time['to']) ) $q->orWhere('game_time_to', null);
-                });
+                ->where('game_time_from', '>=', $from)
+                ->where('game_time_to', '<=', $to);
         }
 
         if ( $rating = $query->get('rating') ){
@@ -65,7 +59,7 @@ class PlayerService
 
         if ( $gameType = $query->get('game_type') ){
             $anyType = Term::where(['name' => 'Любой'])->first();
-            if ( $gameType !== $anyType->id ) {
+            if ( $gameType != $anyType->id ) {
                 $dbQuery->getAllByTermId($gameType);
             }
         }
