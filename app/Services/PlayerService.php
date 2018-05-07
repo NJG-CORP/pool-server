@@ -19,7 +19,7 @@ class PlayerService
      */
     public function search($offset, $query, User $currentUser){
         $dbQuery = User::with([
-            'location.city', 'avatar', 'gameTime'
+            'avatar', 'gameTime', 'city', 'location.city'
         ])
             ->select(['users.*'])
             ->join('rating', 'users.id', '=', 'rating.rateable_id')
@@ -31,6 +31,10 @@ class PlayerService
         $gender = $query->get('gender');
         if ( $gender !== null ){
             $dbQuery->where('gender', $gender);
+        }
+
+        if ( $cityId = $query->get('city_id') ){
+            $dbQuery->where('city_id', $cityId);
         }
 
         if ( $days = $query->get('days') ){
