@@ -99,7 +99,7 @@ class PlayerService
             })
             ->sort(function($a, $b){
                 return $a->calculated_rating - $b->calculated_rating;
-            });
+            })->values();
     }
 
     public function show($id){
