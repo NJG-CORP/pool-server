@@ -88,7 +88,7 @@ class PlayerController extends Controller
         ]);
         try {
             $query = collect([
-                'gender', 'days', 'time', 'rating', 'game_type', 'game_payment_type'
+                'gender', 'days', 'time', 'rating', 'game_type', 'game_payment_type', 'city_id'
             ]);
             $res = $this->players->search(
                 $this->request->get('offset'),
