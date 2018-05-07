@@ -19,13 +19,13 @@ class PlayerService
      */
     public function search($offset, $query, User $currentUser){
         $dbQuery = User::with([
-            'avatar', 'gameTime', 'city', 'location.city'
+            'avatar', 'gameTime', 'city', 'location.city', 'receivedRatings'
         ])
             ->select(['users.*'])
-            ->join('rating', 'users.id', '=', 'rating.rateable_id')
-            ->addSelect(\DB::raw('AVG(`rating`.`score`) as calculated_rating'))
             ->groupBy(['users.id'])
-            ->orderBy('calculated_rating', 'DESC')
+//            ->join('rating', 'users.id', '=', 'rating.rateable_id')
+//            ->addSelect(\DB::raw('AVG(`rating`.`score`) as calculated_rating'))
+//            ->orderBy('calculated_rating', 'DESC')
             ->where('users.id', '<>', $currentUser->id );
 
         $gender = $query->get('gender');
@@ -92,7 +92,14 @@ class PlayerService
             ->groupBy(['users.id'])
             ->offset($offset)
             ->limit(10)
-            ->get();
+            ->get()
+            ->map(function (User $user){
+                $user->setAppends(['calculated_rating']);
+                return $user;
+            })
+            ->sort(function($a, $b){
+                return $a->calculated_rating - $b->calculated_rating;
+            });
     }
 
     public function show($id){
