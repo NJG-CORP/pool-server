@@ -100,9 +100,7 @@ class PlayerController extends Controller
         } catch (\Throwable $e){
             throw new ControllableException($e->getMessage());
         }
-        return $this->responder->successResponse([
-            'players' => $res
-        ]);
+        return $this->responder->successResponse($res);
     }
 
     /**

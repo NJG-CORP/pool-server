@@ -33,8 +33,8 @@ class FavouriteController extends Controller
      * @param User $id
      * @return \Illuminate\Http\JsonResponse
      */
-    public function addFavouritePlayer(Request $request, User $id){
-        $addedUser = User::find($id)->first();
+    public function addFavouritePlayer(Request $request, $id){
+        $addedUser = User::find($id);
         if (
             $res = $this->favourite->addFavouritePlayer(
                 \Auth::user(),

@@ -80,8 +80,8 @@ class UserController extends Controller
     public function register(){
         $externalId = $this->request->get('external_id');
         $validationRules = [
-            "name" => "required|min:2",
-            "surname" => "required|min:2",
+            "name" => "string",
+            "surname" => "string",
             "source" => "string|nullable",
             "external_id" => "string"
         ];

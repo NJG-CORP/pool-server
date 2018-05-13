@@ -2,11 +2,7 @@
 namespace App\Services;
 
 use App\Models\User;
-use Carbon\Carbon;
 use Devfactory\Taxonomy\Models\Term;
-use Devfactory\Taxonomy\Models\Vocabulary;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Query\JoinClause;
 use Illuminate\Support\Collection;
 
 class PlayerService
@@ -87,19 +83,23 @@ class PlayerService
                 $dbQuery->getAllByTermId($gamePaymentType);
             }
         }
+        $total = User::count();
 
-        return $dbQuery
-            ->groupBy(['users.id'])
-            ->offset($offset)
-            ->limit(10)
-            ->get()
-            ->map(function (User $user){
-                $user->setAppends(['calculated_rating']);
-                return $user;
-            })
-            ->sort(function($a, $b){
-                return $a->calculated_rating - $b->calculated_rating;
-            })->values();
+        return [
+            "total" => $total,
+            "players" => $dbQuery
+                ->groupBy(['users.id'])
+                ->offset($offset)
+                ->limit(10)
+                ->get()
+                ->map(function (User $user){
+                    $user->setAppends(['calculated_rating']);
+                    return $user;
+                })
+                ->sort(function($a, $b){
+                    return $a->calculated_rating - $b->calculated_rating;
+                })->values()
+        ];
     }
 
     public function show($id){
