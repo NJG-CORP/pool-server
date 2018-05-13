@@ -83,12 +83,11 @@ class PlayerService
                 $dbQuery->getAllByTermId($gamePaymentType);
             }
         }
-        $total = User::count();
+        $total = $dbQuery->get()->count();
 
         return [
             "total" => $total,
             "players" => $dbQuery
-                ->groupBy(['users.id'])
                 ->offset($offset)
                 ->limit(10)
                 ->get()
@@ -97,7 +96,7 @@ class PlayerService
                     return $user;
                 })
                 ->sort(function($a, $b){
-                    return $a->calculated_rating - $b->calculated_rating;
+                    return $b->calculated_rating - $a->calculated_rating;
                 })->values()
         ];
     }
