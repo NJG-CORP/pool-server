@@ -134,7 +134,7 @@ class PlayerService
         }
 
         if ( $avatar ){
-            $imagePath = "avatars/" . $user->id . '.jpg';
+            $imagePath = "avatars/" . str_random(8) . '.jpg';
             $imageService->create(
                 $avatar,
                 $user,
