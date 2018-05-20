@@ -102,11 +102,21 @@ class PlayerService
     }
 
     public function show($id){
-        return User::with(
+        $user = User::with(
             'receivedRatings.rater.avatar', 'sentRatings',
             'receivedFavourites', 'gameType', 'gamePaymentType', 'skillLevel',
             'location', 'avatar', 'city', 'gameTime'
         )->find($id);
+        if ( !empty($user->avatar->url) ){
+            $path = public_path($user->avatar->url);
+            if ( file_exists($path) ){
+                $type = pathinfo($path, PATHINFO_EXTENSION);
+                $data = file_get_contents($path);
+                $base64 = 'data:image/' . $type . ';base64,' . base64_encode($data);
+                $user->avatar->base64 = $base64;
+            }
+        }
+        return $user;
     }
 
     /**
