@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Responder;
+use App\Services\DeviceService;
 use App\Services\UserService;
 use App\Utils\R;
 use Illuminate\Http\Request;
@@ -14,14 +15,22 @@ class UserController extends Controller
      * @var UserService
      */
     private  $users;
+
+    /**
+     * @var DeviceService
+     */
+    private $devices;
+
     /**
      * UserController constructor.
      * @param Request $request
      * @param UserService $users
+     * @param DeviceService $devices
      */
-    public function __construct(Request $request, UserService $users){
+    public function __construct(Request $request, UserService $users, DeviceService $devices){
         parent::__construct($request);
         $this->users = $users;
+        $this->devices = $devices;
     }
 
     /**
@@ -136,6 +145,22 @@ class UserController extends Controller
         );
         return $this->responder->successResponse(['info' => $res]);
     }
-    
-    public function 
+
+    /**
+     * @throws \App\Exceptions\ControllableException
+     */
+    public function ensureDevice(){
+        $this->validateRequestData([
+            'device_token' => 'string|required',
+            'player_id' => 'string|required',
+            'platform' => 'numeric|required'
+        ]);
+        $res = $this->devices->ensureDevice(
+            \Auth::user(), $this->request->get('device_token'),
+            $this->request->get('platform'), $this->request->get('player_id')
+        );
+        return $this->responder->successResponse([
+            'device' => $res
+        ]);
+    }
 }

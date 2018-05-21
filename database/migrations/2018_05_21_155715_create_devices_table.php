@@ -17,6 +17,7 @@ class CreateDevicesTable extends Migration
             $table->increments('id');
             $table->unsignedInteger('user_id');
             $table->tinyInteger('platform');
+            $table->string('player_id');
             $table->string('device_token');
         });
     }

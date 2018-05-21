@@ -5,6 +5,7 @@ namespace App\Providers;
 use App\Http\Responder;
 use App\Services\CityService;
 use App\Services\ClubsService;
+use App\Services\DeviceService;
 use App\Services\FavouriteService;
 use App\Services\ImageService;
 use App\Services\PlayerService;
@@ -50,6 +51,9 @@ class AppServiceProvider extends ServiceProvider
         });
         $this->app->singleton(TaxonomyService::class, function(){
             return new TaxonomyService();
+        });
+        $this->app->singleton(DeviceService::class, function(){
+            return new DeviceService();
         });
     }
 
