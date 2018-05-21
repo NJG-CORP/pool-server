@@ -87,4 +87,8 @@ class User extends Authenticatable
                 'weekday_id'
         );
     }
+    
+    public function devices(){
+        return $this->hasMany(Device::class);
+    }
 }
