@@ -9,7 +9,7 @@ Route::middleware('cors')->group(function(){
         Route::get('vkinfo', 'UserController@vkInfo');
     });
     Route::prefix('devices')->group(function(){
-        Route::get('ensure', 'UserController@ensureDevice');
+        Route::post('ensure', 'UserController@ensureDevice');
     });
     Route::middleware(['auth.token'])->group(function(){
         Route::prefix('players')->group(function(){
