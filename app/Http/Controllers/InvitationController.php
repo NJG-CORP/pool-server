@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Club;
 use App\Models\User;
 use App\Services\InvitationService;
+use App\Services\PushService;
 use Illuminate\Http\Request;
 
 class InvitationController extends Controller
@@ -14,10 +15,16 @@ class InvitationController extends Controller
      */
     private $invitation;
 
-    public function __construct(Request $request, InvitationService $invitation)
+    /**
+     * @var PushService $pushes
+     */
+    private $pushes;
+
+    public function __construct(Request $request, InvitationService $invitation, PushService $pushes)
     {
         parent::__construct($request);
         $this->invitation = $invitation;
+        $this->pushes = $pushes;
     }
 
     /**
@@ -31,6 +38,7 @@ class InvitationController extends Controller
             'club_id' => 'integer',
             'meeting_at' => 'required'
         ]);
+        $currentUser = \Auth::user();
         $invitation = $this->invitation->invite(
             \Auth::user(),
             User::find($this->request->get('invited_id')),
@@ -38,6 +46,14 @@ class InvitationController extends Controller
             $this->request->get('meeting_at')
         );
         if ( $invitation ){
+            try {
+                $this->pushes->sendToUser(
+                    $this->request->get('invited_id'),
+                    "Приглашение на игру",
+                    "Вас пригласил на игру " . $currentUser->surname . ' ' . $currentUser->name,
+                    []
+                );
+            } catch (\Throwable $e){}
             return $this->responder->successResponse([
                 'invitation' => $invitation
             ]);
@@ -46,10 +62,19 @@ class InvitationController extends Controller
     }
 
     public function invitationAccept(Request $request, $id){
-        $res = $this->invitation->setStatus(\Auth::user(), $id, true);
-        if ( $res ){
+        $invitation = $this->invitation->setStatus(\Auth::user(), $id, true);
+        try {
+            $this->pushes->sendToUser(
+                $this->request->get($invitation->inviter->id),
+                "Приглашение принято",
+                $invitation->inviter->name . " " . $invitation->inviter->surname .
+                    " принял приглашение на игру",
+                []
+            );
+        } catch (\Throwable $e){}
+        if ( $invitation ){
             return $this->responder->successResponse([
-                'invitation' => $res
+                'invitation' => $invitation
             ]);
         }
         return $this->responder->errorResponse();

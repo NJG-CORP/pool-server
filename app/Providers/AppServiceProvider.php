@@ -9,6 +9,7 @@ use App\Services\DeviceService;
 use App\Services\FavouriteService;
 use App\Services\ImageService;
 use App\Services\PlayerService;
+use App\Services\PushService;
 use App\Services\RatingService;
 use App\Services\TaxonomyService;
 use App\Services\UserService;
@@ -54,6 +55,9 @@ class AppServiceProvider extends ServiceProvider
         });
         $this->app->singleton(DeviceService::class, function(){
             return new DeviceService();
+        });
+        $this->app->singleton(PushService::class, function(){
+            return new PushService();
         });
     }
 
