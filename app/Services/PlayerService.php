@@ -146,7 +146,7 @@ class PlayerService
 
         if ( $avatar ){
             \DB::delete("
-              DELETE FROM images WHERE imageable_type = 'App\\Models\\User'
+              DELETE FROM images WHERE imageable_type = 'App\\\\Models\\\\User'
               AND imageable_id = " . $user->id);
             $imagePath = "avatars/" . str_random(8) . '.jpg';
             $imageService->create(
