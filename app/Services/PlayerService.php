@@ -1,6 +1,7 @@
 <?php
 namespace App\Services;
 
+use App\Models\Location;
 use App\Models\User;
 use Devfactory\Taxonomy\Models\Term;
 use Illuminate\Support\Collection;
@@ -192,5 +193,21 @@ class PlayerService
                 ->setHidden(array_merge($e->getHidden(), ['received_ratings']))
                 ->setAppends(['calculated_rating']);
         });
+    }
+
+    /**
+     * @param User $user
+     * @param $location
+     * @return null
+     */
+    public function saveLocation(User $user, $location){
+        if ( !$user->city ) return null;
+        return Location::updateOrCreate([
+            'id' => $user->id
+        ], [
+            'city_id' => $user->city->id,
+            'latitude' => $location['latitude'],
+            'longitude' => $location['longitude']
+        ]);
     }
 }

@@ -18,6 +18,7 @@ Route::middleware('cors')->group(function(){
             Route::get('search', 'PlayerController@search');
             Route::get('map', 'PlayerController@mapLocation');
             Route::get('show/{id}', 'PlayerController@show');
+            Route::post('location', 'PlayerController@updateLocation');
         });
         Route::prefix('favourites')->group(function(){
             Route::get('list', 'FavouriteController@favouritePlayers');

@@ -7,6 +7,7 @@ use App\Services\CityService;
 use App\Services\ImageService;
 use App\Services\PlayerService;
 use App\Utils\R;
+use GuzzleHttp\Psr7\Stream;
 use Illuminate\Http\Request;
 
 class PlayerController extends Controller
@@ -115,6 +116,21 @@ class PlayerController extends Controller
         $players = $this->players->mapLocation(\Auth::user(), $this->request->get('city_id'));
         return $this->responder->successResponse([
             'players' => $players
+        ]);
+    }
+
+    /**
+     * @return \Illuminate\Http\JsonResponse
+     * @throws ControllableException
+     */
+    public function updateLocation(){
+        $this->validateRequestData([
+            'latitude' => 'required|string',
+            'longitude' => 'required|string'
+        ]);
+        $location = $this->players->saveLocation(\Auth::user(), $this->request->except('api_token'));
+        return $this->responder->successResponse([
+            'location' => $location
         ]);
     }
 
