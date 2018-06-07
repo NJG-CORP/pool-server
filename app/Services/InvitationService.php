@@ -27,13 +27,14 @@ class InvitationService
     }
 
     public function invitationList(User $user){
-        return Invitation::
+        $q = Invitation::
             with(['inviter.avatar', 'inviter.receivedRatings', 'club.location'])
-            ->where(function(\Illuminate\Database\Eloquent\Builder $q) use ($user){
-                $q//->where('inviter_id', $user->id)
-                    ->orWhere('invited_id', $user->id);
-            })
-            ->whereIn('accepted', [null, true])
+            ->where('invited_id', $user->id)
+            ->where(function(\Illuminate\Database\Eloquent\Builder $q){
+                $q->where('accepted', null)
+                    ->orWhere('accepted', 1);
+            });
+        return $q
             ->get()
             ->map(function (Invitation $e){
                 $e->inviter->setAppends(['calculated_rating']);
