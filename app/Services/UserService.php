@@ -111,7 +111,7 @@ class UserService
             $token = bcrypt($email . microtime());
             Utils::sendMail(
                 "
-                    <a href='https://poolbuddy.ru/password/reset/$token'>Сбросить</a>
+                    Что-бы сбросить пароль пройдите по ссылке: https://poolbuddy.ru/password/reset/$token
                 ", $email, "Сброс пароля на poolbuddy.ru"
             );
             return Password::RESET_LINK_SENT;
