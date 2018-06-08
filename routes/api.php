@@ -5,6 +5,7 @@ Route::middleware('cors')->group(function(){
         Route::post("login", "UserController@login");
         Route::post("register", "UserController@register");
         Route::post('reset', "UserController@makeResetPassword");
+        Route::get('reset/{token}', 'UserController@realResetPassword');
         Route::post('social', 'UserController@social');
         Route::get('vkinfo', 'UserController@vkInfo');
     });

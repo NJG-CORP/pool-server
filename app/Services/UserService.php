@@ -114,6 +114,7 @@ class UserService
                     Что-бы сбросить пароль пройдите по ссылке: https://poolbuddy.ru/password/reset/$token
                 ", $email, "Сброс пароля на poolbuddy.ru"
             );
+            \DB::insert("INSERT INTO password_resets SET email = '$email', token = '$token', created_at=NOW()");
             return Password::RESET_LINK_SENT;
         }
         return null;
