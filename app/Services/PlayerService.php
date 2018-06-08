@@ -186,6 +186,7 @@ class PlayerService
         $users = User::with(['location', 'avatar', 'receivedRatings'])
             ->where('id', '<>', $user->id)
             ->where('city_id', $cityId)
+            ->whereHas('location')
             //->where('status', true)
             ->get();
         return $users->map(function (User $e){
