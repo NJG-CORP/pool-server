@@ -3,6 +3,7 @@ namespace App\Services;
 
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Image as ImageModel;
+use Spatie\LaravelImageOptimizer\Facades\ImageOptimizer;
 
 class ImageService
 {
@@ -24,6 +25,7 @@ class ImageService
         $nativeImage = \Image::make(
             file_get_contents($b64)
         )->save($imagePath);
+        ImageOptimizer::optimize($imagePath);
 
         if ( $model ){
             $image = ImageModel::create([

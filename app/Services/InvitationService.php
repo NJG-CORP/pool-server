@@ -35,6 +35,7 @@ class InvitationService
                     ->orWhere('accepted', 1);
             });
         return $q
+            ->orderBy('created_at', 'DESC')
             ->get()
             ->map(function (Invitation $e){
                 $e->inviter->setAppends(['calculated_rating']);
