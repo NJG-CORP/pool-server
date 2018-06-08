@@ -116,11 +116,11 @@ class UserController extends Controller
      * @return \Illuminate\Http\JsonResponse
      * @throws \App\Exceptions\ControllableException
      */
-    public function resetPassword(){
+    public function makeResetPassword(){
         $this->validateRequestData([
             'email' => 'required|email'
         ]);
-        $res = $this->users->resetPassword(
+        $res = $this->users->makeResetPasswordToken(
             $this->request->get('email')
         );
         if ( $res === Password::RESET_LINK_SENT ){
@@ -129,6 +129,15 @@ class UserController extends Controller
             ]);
         } else {
             return $this->responder->errorResponse(R::USER_PASS_RESET_FAILURE);
+        }
+    }
+
+    public function realResetPassword(Request $request, $token){
+        $res = $this->users->resetPassword($token);
+        if ( !$res ){
+            return $this->responder->errorResponse();
+        } else {
+            return $this->responder->successResponse($res);
         }
     }
 

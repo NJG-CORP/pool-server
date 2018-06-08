@@ -102,16 +102,35 @@ class UserService
      * @param $email
      * @return null|string
      */
-    public function resetPassword($email){
+    public function makeResetPasswordToken($email){
         /**
          * @var User $user
          */
-        $user = User::where('email', $email)->first();
+        $user = User::where('email', $email)->where('source', null)->first();
         if ( $user ){
-            $broker = Password::broker();
-            return $broker->sendResetLink(
-                ['email' => $email]
+            $token = bcrypt($email . microtime());
+            Utils::sendMail(
+                "
+                    <a href='https://poolbuddy.ru/password/reset/$token'>Сбросить</a>
+                ", $email, "Сброс пароля на poolbuddy.ru"
             );
+            return Password::RESET_LINK_SENT;
+        }
+        return null;
+    }
+
+    public function resetPassword($token){
+        $pr = \DB::select("SELECT FROM password_resets WHERE token = '$token'");
+        if ( count($pr) ) {
+            $password = str_random(6);
+            $user = User::where('email', $pr[0]['email'])->where('source', null)->firstOrFail();
+            $user->password = bcrypt($password);
+            $user->save();
+
+            Utils::sendMail($password, $user->email, "Новый пароль на poolbuddy.ru");
+            \DB::delete("DELETE FROM password_resets WHERE token = '$token'");
+
+            return $user;
         }
         return null;
     }

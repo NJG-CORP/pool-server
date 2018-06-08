@@ -4,7 +4,7 @@ Route::middleware('cors')->group(function(){
     Route::prefix('auth')->group(function(){
         Route::post("login", "UserController@login");
         Route::post("register", "UserController@register");
-        Route::post('reset', "UserController@resetPassword");
+        Route::post('reset', "UserController@makeResetPassword");
         Route::post('social', 'UserController@social');
         Route::get('vkinfo', 'UserController@vkInfo');
     });
