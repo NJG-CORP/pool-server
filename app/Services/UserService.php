@@ -111,7 +111,7 @@ class UserService
             $token = md5($email . microtime());
             Utils::sendMail(
                 "
-                    Что-бы сбросить пароль пройдите по ссылке: https://poolbuddy.ru/api/auth/reset/$token
+                    Что бы сбросить пароль пройдите по ссылке: https://poolbuddy.ru/api/auth/reset/$token
                 ", $email, "Сброс пароля на poolbuddy.ru"
             );
             \DB::insert("INSERT INTO password_resets SET email = '$email', token = '$token', created_at=NOW()");

@@ -135,7 +135,7 @@ class UserController extends Controller
     public function realResetPassword(Request $request, $token){
         $res = $this->users->resetPassword($token);
         if ( !$res ){
-            return $this->responder->errorResponse();
+            return R::USER_PASS_RESET_WRONG_TOKEN;
         } else {
             return R::USER_PASS_RESET_SENT .' '.$res->email;
         }
