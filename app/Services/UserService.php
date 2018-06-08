@@ -108,10 +108,10 @@ class UserService
          */
         $user = User::where('email', $email)->where('source', null)->first();
         if ( $user ){
-            $token = bcrypt($email . microtime());
+            $token = md5($email . microtime());
             Utils::sendMail(
                 "
-                    Что-бы сбросить пароль пройдите по ссылке: https://poolbuddy.ru/password/reset/$token
+                    Что-бы сбросить пароль пройдите по ссылке: https://poolbuddy.ru/api/password/reset/$token
                 ", $email, "Сброс пароля на poolbuddy.ru"
             );
             \DB::insert("INSERT INTO password_resets SET email = '$email', token = '$token', created_at=NOW()");
@@ -121,10 +121,10 @@ class UserService
     }
 
     public function resetPassword($token){
-        $pr = \DB::select("SELECT FROM password_resets WHERE token = '$token'");
+        $pr = \DB::select("SELECT * FROM password_resets WHERE token = '$token' ORDER BY created_at DESC");
         if ( count($pr) ) {
             $password = str_random(6);
-            $user = User::where('email', $pr[0]['email'])->where('source', null)->firstOrFail();
+            $user = User::where('email', $pr[0]->email)->where('source', null)->firstOrFail();
             $user->password = bcrypt($password);
             $user->save();
 

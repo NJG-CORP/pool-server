@@ -137,7 +137,7 @@ class UserController extends Controller
         if ( !$res ){
             return $this->responder->errorResponse();
         } else {
-            return $this->responder->successResponse($res);
+            return R::USER_PASS_RESET_SENT . $res->email;
         }
     }
 
