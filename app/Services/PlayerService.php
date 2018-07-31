@@ -59,30 +59,29 @@ class PlayerService
                 ->havingRaw(\DB::raw('`calculated_rating` >= ' . $rating));
         }
 
-        if ( $gameType = $query->get('game_type') ){
-            $anyType = Term::where(['name' => 'Любой'])->first();
-            if ( $gameType != $anyType->id ) {
-                $dbQuery->getAllByTermId($gameType);
-            }
+        if ( $gameTypes = $query->get('game_type') ){
+            $dbQuery->getAllByTermId($gameTypes);
         }
 
-        if ( $gamePaymentType = $query->get('game_payment_type') ){
+        if ( $gamePaymentTypes = $query->get('game_payment_type') ){
             $v = \Taxonomy::getVocabularyByName('GamePaymentType');
             /**
              * @var Collection $terms
              */
             $terms = $v->terms;
             $formattedTerms = [];
+            $queryTerms = [];
             foreach ($terms as $term){
                 $formattedTerms[$term->name] = $term->id;
             }
-            if ( $gamePaymentType != $formattedTerms['Не имеет значения'] ) {
+            foreach ($gamePaymentTypes as $gamePaymentType){
                 if ( $gamePaymentType == $formattedTerms['За счет партнера'] )
                     $gamePaymentType = $formattedTerms['Беру на себя'];
                 else if ( $gamePaymentType == $formattedTerms['Беру на себя'] )
                     $gamePaymentType = $formattedTerms['За счет партнера'];
-                $dbQuery->getAllByTermId($gamePaymentType);
+                $queryTerms[] = $gamePaymentType;
             }
+            $dbQuery->getAllByTermId($queryTerms);
         }
         $total = $dbQuery->get()->count();
 

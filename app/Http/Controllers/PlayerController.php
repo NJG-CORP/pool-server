@@ -84,8 +84,8 @@ class PlayerController extends Controller
             "time.to" => "string|nullable",
             "city_id" => "numeric",
             'rating' => 'numeric|min:1|max:5|nullable',
-            "game_type" => "numeric|nullable",
-            "game_payment_type" => "numeric|nullable"
+            "game_type" => "array|nullable",
+            "game_payment_type" => "array|nullable"
         ]);
         try {
             $query = collect([
