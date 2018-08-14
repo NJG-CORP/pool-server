@@ -33,22 +33,4 @@
     }
 ```
 
-**Убрать игрока из избранного**
-
-**POST /favourites/remove/{PLAYER_ID}**
-```
-    None
-```
-```
-    {
-        player: { //удаленный игрок
-                id: number,
-                name: string, 
-                surname: string,
-                status: boolean
-            }
-    }
-```
-
-
 

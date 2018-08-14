@@ -23,4 +23,16 @@ class DeviceService
             'platform' => $platform
         ]);
     }
+
+    /**
+     * @param $deviceToken
+     * @return null
+     */
+    public function deleteDevice($deviceToken){
+        $device = Device::where('device_token', $deviceToken)->first();
+        if ( $device ){
+            return $device->delete();
+        }
+        return null;
+    }
 }

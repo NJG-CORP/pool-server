@@ -172,4 +172,17 @@ class UserController extends Controller
             'device' => $res
         ]);
     }
+
+    /**
+     * @throws \App\Exceptions\ControllableException
+     */
+    public function deleteDevice(){
+        $this->validateRequestData([
+            'device_token' => 'string|required',
+        ]);
+        $res = $this->devices->deleteDevice($this->request->get('device_token'));
+        return $this->responder->successResponse([
+            "success" => $res
+        ]);
+    }
 }

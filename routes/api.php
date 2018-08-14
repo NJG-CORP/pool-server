@@ -11,6 +11,7 @@ Route::middleware('cors')->group(function(){
     });
     Route::middleware(['auth.token'])->prefix('devices')->group(function(){
         Route::post('ensure', 'UserController@ensureDevice');
+        Route::post('delete', 'UserController@deleteDevice');
     });
     Route::middleware(['auth.token'])->group(function(){
         Route::prefix('players')->group(function(){
