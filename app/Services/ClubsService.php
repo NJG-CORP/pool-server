@@ -11,7 +11,9 @@ use Illuminate\Support\Facades\Mail;
 class ClubsService
 {
     public function getList(){
-        return Club::with(['rating', 'location', 'images'])->get();
+        return Club::with(['rating', 'location', 'images'])
+            ->setAppends(['calculated_rating'])
+            ->get();
     }
 
     public function getOne($id){
