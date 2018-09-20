@@ -12,8 +12,10 @@ class ClubsService
 {
     public function getList(){
         return Club::with(['rating', 'location', 'images'])
-            ->setAppends(['calculated_rating'])
-            ->get();
+            ->get()
+            ->map(function($e){
+                return $e->setAppends(['calculated_rating']);
+            });
     }
 
     public function getOne($id){
