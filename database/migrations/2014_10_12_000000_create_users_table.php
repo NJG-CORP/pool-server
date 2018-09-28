@@ -20,7 +20,7 @@ class CreateUsersTable extends Migration
             $table->unsignedTinyInteger('age')->nullable();
             $table->string('name');
             $table->string('surname')->nullable();
-            $table->unsignedTinyInteger('gender')->default(1);
+            $table->unsignedTinyInteger('gender')->default(0);
             $table->unsignedInteger('location_id')->nullable();
             $table->unsignedBigInteger('city_id')->nullable();
             $table->time('game_time_from')->nullable();
