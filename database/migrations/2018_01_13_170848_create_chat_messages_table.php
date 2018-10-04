@@ -18,6 +18,7 @@ class CreateChatMessagesTable extends Migration
             $table->unsignedInteger('sender_id');
             $table->unsignedInteger('receiver_id');
             $table->text('text');
+            $table->boolean('is_read')->default(0);
             $table->timestamps();
         });
     }
