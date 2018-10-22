@@ -9177,7 +9177,7 @@ namespace Illuminate\Support\Facades {
         }
         
         /**
-         * Static version of prepareResponse.
+         * Hstatic version of prepareResponse.
          *
          * @param \Symfony\Component\HttpFoundation\Request $request
          * @param mixed $response
