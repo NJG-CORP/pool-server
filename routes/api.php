@@ -52,3 +52,7 @@ Route::middleware('cors')->group(function(){
     });
 });
 
+Route::get('info', function(){
+    phpinfo();
+});
+
