@@ -155,4 +155,28 @@ class UserService
         return json_decode($res->getBody(), true);
     }
 
+
+    public function getOrRegisterUserViaVk(\Laravel\Socialite\Contracts\User $vkUser)
+    {
+        $email = isset($vkUser->accessTokenResponseBody['email']) ? $vkUser->accessTokenResponseBody['email'] : null;
+
+        $user = $this->getUserViaVkId($vkUser->user['id']);
+        $user = $user ?? $this->register(
+                $email,
+                $vkUser->user['first_name'],
+                $vkUser->user['last_name'],
+                'vk',
+                $vkUser->user['id'],
+                null);
+
+        if ($user) {
+            return $user;
+        }
+        return null;
+    }
+
+    protected function getUserViaVkId($externalId)
+    {
+        return User::where(['external_id' => $externalId, 'source' => 'vk'])->first() ?? null;
+    }
 }

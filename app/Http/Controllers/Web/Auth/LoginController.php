@@ -49,28 +49,15 @@ class LoginController extends Controller
     public function handleCallback()
     {
         $vkUser = Socialite::driver('vkontakte')->user();
-
-        $email = isset($vkUser->accessTokenResponseBody['email']) ? $vkUser->accessTokenResponseBody['email'] : null;
-
-        $user = $this->getUserWithVkId($vkUser->user['id']);
-        $user = $user ?? $this->users->register(
-            $email,
-            $vkUser->user['first_name'],
-            $vkUser->user['last_name'],
-            'vk',
-                $vkUser->user['id'],
-            null);
-
-        if ($user) {
+        $user = $this->users->getOrRegisterUserViaVk($vkUser);
+        if ($user)
+        {
             return $this->loginViaModel($user);
         }
-        return '';
+        return 'Something went wrong.';
     }
 
-    public function getUserWithVkId($externalId)
-    {
-        return User::where(['external_id' => $externalId, 'source' => 'vk'])->first() ?? null;
-    }
+
 
     public function loginViaModel(User $user)
     {
