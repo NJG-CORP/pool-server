@@ -1,4 +1,4 @@
-$('form').on('submit', function (e) {
+$('form.os-ajax').on('submit', function (e) {
     const _this = $(this);
     e.preventDefault();
     $.ajaxSetup({
@@ -11,6 +11,9 @@ $('form').on('submit', function (e) {
         method: $(this).attr('method'),
         data: $(this).serialize(),
         success: function (data) {
+            if (data.redirectTo) {
+                window.location.href = data.redirectTo;
+            }
             $.each(data.errors, function (key, value) {
                 $('.alert-danger').show();
                 $('.alert-danger').append('<p>' + value + '</p>');

@@ -15,6 +15,8 @@
     <meta name="robots" content="index,follow">
     <link rel="canonical" href="">
     <link rel="stylesheet" href="{{ asset('css/site.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/magnific-popup.css') }}">
+
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="format-detection" content="telephone=no">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -111,11 +113,18 @@
         </div>
     </div>
 </footer>
+@stack('modals')
+
 <script
         src="https://code.jquery.com/jquery-3.3.1.min.js"
         integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
         crossorigin="anonymous"></script>
 <script src="{{ asset('js/main.js') }}"></script>
 <script src="{{ asset('js/form.js') }}"></script>
+<script src="{{ asset('js/jquery.magnific-popup.min.js') }}"></script>
+<script>
+
+</script>
+@stack('scripts')
 </body>
 </html>

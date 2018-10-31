@@ -34,7 +34,7 @@
                     </li>
                 </ul>
             </div>
-
+            @if(Auth::guest())
             <div class="top_section_personal_block">
                 <div class="the_tabs top_section_personal_block_tabs">
                     <div class="the_tabs_head clearfix">
@@ -48,7 +48,8 @@
                             <div class="top_section_personal_div">
                                 <br/><br/>
                                 <div class="the_form">
-                                    <?= view('site.main._form._signup') ?>
+                                    @include('site.main._form._signup')
+
                                 </div>
                             </div>
                         </div>
@@ -58,11 +59,11 @@
                                 <div class="social">
                                     <p>Войти через соцсети:</p>
                                     <a href="#" class="fb"></a>
-                                    <a href="" class="vk"></a>
+                                    <a href="{{route('vk.auth')}}" class="vk"></a>
                                 </div>
 
                                 <div class="the_form">
-                                    <?= view('site.main._form._signin') ?>
+                                    @include('site.main._form._signin')
                                 </div>
                             </div>
                         </div>
@@ -77,6 +78,7 @@
                     </div>
                 </div>
             </div>
+            @endif
 
         </section>
 
@@ -251,4 +253,6 @@
             </div>
         </section>
     </main>
+
+    
 @endsection
