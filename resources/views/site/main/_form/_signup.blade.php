@@ -1,12 +1,11 @@
 <div class="the_form">
     <div id="p0" data-pjax-container="" data-pjax-timeout="1000">
-        <form id="signup-form" class="frm1" action="/user/signup" method="post" data-pjax="">
-            <input type="hidden" name="_csrf-frontend"
-                   value="{{ csrf_token() }}">
+        <form id="signup-form" class="frm1 not-ajax" action="/register" method="post">
+            {{csrf_field()}}
             <div class="the_form_div">
                 <div class="form-group field-signupform-username required has-success">
 
-                    <input type="text" id="signupform-username" class="input_type_name" name="SignupForm[username]"
+                    <input type="text" id="signupform-username" class="input_type_name" name="name"
                            placeholder="Имя" aria-required="true" aria-invalid="false">
 
                     <div class="help-block"></div>
@@ -16,7 +15,7 @@
             <div class="the_form_div">
                 <div class="form-group field-signupform-email required">
 
-                    <input type="text" id="signupform-email" class="input_type_mail" name="SignupForm[email]"
+                    <input type="text" id="signupform-email" class="input_type_mail" name="email"
                            placeholder="E-mail" aria-required="true">
 
                     <div class="help-block"></div>
@@ -27,7 +26,7 @@
                 <div class="form-group field-signupform-password required has-success">
 
                     <input type="password" id="signupform-password" class="input_type_password"
-                           name="SignupForm[password]" placeholder="Пароль" aria-required="true" aria-invalid="false">
+                           name="password" placeholder="Пароль" aria-required="true" aria-invalid="false">
 
                     <div class="help-block"></div>
                 </div>

@@ -54,15 +54,15 @@ class UserService
     }
 
     /**
-     * @param $email
+     * @param null $email
      * @param $name
      * @param $surname
      * @param $source
      * @param $external_id
+     * @param $password
      * @return null
      */
-    public function register($email = null, $name, $surname, $source, $external_id){
-        $password = str_random(6);
+    public function register($email = null, $name, $surname, $source, $external_id, $password){
         $createdUser = User::create([
             "email" => $email,
             "password" => bcrypt($password),
@@ -90,6 +90,7 @@ class UserService
             $createdUser->addTerm(
                 $v->terms()->where('name', 'Стандартный')->first()
             );
+
             Utils::sendMail(
                 $password, $createdUser->email, R::USER_REGISTRATION_EMAIL_SUBJECT
             );
@@ -106,12 +107,12 @@ class UserService
         /**
          * @var User $user
          */
-        $user = User::where('email', $email)->where('source', null)->first();
+        $user = User::where('email', $email)->first();
         if ( $user ){
             $token = md5($email . microtime());
             Utils::sendMail(
                 "
-                    Что бы сбросить пароль пройдите по ссылке: https://poolbuddy.ru/api/auth/reset/$token
+                    Что бы сбросить пароль пройдите по ссылке: https://poolbuddy.ru/password/reset/$token
                 ", $email, "Сброс пароля на poolbuddy.ru"
             );
             \DB::insert("INSERT INTO password_resets SET email = '$email', token = '$token', created_at=NOW()");
@@ -120,11 +121,10 @@ class UserService
         return null;
     }
 
-    public function resetPassword($token){
+    public function resetPassword($token, $password){
         $pr = \DB::select("SELECT * FROM password_resets WHERE token = '$token' ORDER BY created_at DESC");
         if ( count($pr) ) {
-            $password = str_random(6);
-            $user = User::where('email', $pr[0]->email)->where('source', null)->firstOrFail();
+            $user = User::where('email', $pr[0]->email)->firstOrFail();
             $user->password = bcrypt($password);
             $user->save();
 
@@ -153,5 +153,30 @@ class UserService
             ]
         );
         return json_decode($res->getBody(), true);
+    }
+
+
+    public function getOrRegisterUserViaVk(\Laravel\Socialite\Contracts\User $vkUser)
+    {
+        $email = isset($vkUser->accessTokenResponseBody['email']) ? $vkUser->accessTokenResponseBody['email'] : null;
+
+        $user = $this->getUserViaVkId($vkUser->user['id']);
+        $user = $user ?? $this->register(
+                $email,
+                $vkUser->user['first_name'],
+                $vkUser->user['last_name'],
+                'vk',
+                $vkUser->user['id'],
+                null);
+
+        if ($user) {
+            return $user;
+        }
+        return null;
+    }
+
+    protected function getUserViaVkId($externalId)
+    {
+        return User::where(['external_id' => $externalId, 'source' => 'vk'])->first() ?? null;
     }
 }
