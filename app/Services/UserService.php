@@ -90,10 +90,10 @@ class UserService
             $createdUser->addTerm(
                 $v->terms()->where('name', 'Стандартный')->first()
             );
-            //TODO uncomment
-//            Utils::sendMail(
-//                $password, $createdUser->email, R::USER_REGISTRATION_EMAIL_SUBJECT
-//            );
+
+            Utils::sendMail(
+                $password, $createdUser->email, R::USER_REGISTRATION_EMAIL_SUBJECT
+            );
             return $createdUser;
         }
         return null;
