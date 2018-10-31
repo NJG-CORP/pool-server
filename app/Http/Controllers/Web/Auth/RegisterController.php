@@ -75,9 +75,9 @@ class RegisterController extends Controller
 
         if ($user) {
             $this->guard()->login($user);
-            return $request->wantsJson() ? response()->json(['success' => true, 'redirectTo' => '/'], 201) : redirect('/');
+            return response()->json(['success' => true, 'redirectTo' => '/'], 201);
         }
-        return $request->wantsJson() ? response()->json(['success' => false, 'redirectTo' => '/'], 403) : redirect('/');
+        return response()->json(['success' => false, 'redirectTo' => '/'], 403);
     }
 
     /**
