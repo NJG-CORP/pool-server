@@ -15,17 +15,17 @@ class PlayerController extends Controller
     /**
      * @var PlayerService $players
      */
-    private $players;
+    protected $players;
 
     /**
      * @var CityService $cities
      */
-    private $cities;
+    protected $cities;
 
     /**
      * @var ImageService $images
      */
-    private $images;
+    protected $images;
 
     /**
      * PlayerController constructor.

@@ -10,7 +10,7 @@ class CityController extends Controller
     /**
      * @var CityService
      */
-    private $cities;
+    protected $cities;
 
     /**
      * CityController constructor.

@@ -11,10 +11,13 @@ namespace App\Http\Controllers\Web\Auth;
 use App\Http\Controllers\Web\Controller;
 use App\Models\User;
 use App\Services\UserService;
+use Illuminate\Foundation\Auth\RedirectsUsers;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Auth\Events\Registered;
 
 class RegisterController extends Controller
 {
@@ -64,8 +67,9 @@ class RegisterController extends Controller
         ]);
         $user = $this->userService->register(
             $request->post('email'),
-            null,
+            $request->post('name'),
             $request->post('source', ''),
+            null,
             null,
             $request->post('password')
         );
