@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Services\UserService;
 use Devfactory\Taxonomy\Models\Term;
 use Devfactory\Taxonomy\Models\TermRelation;
 use Devfactory\Taxonomy\TaxonomyTrait;
@@ -25,6 +26,9 @@ class User extends Authenticatable
     //protected $appends = ['calculated_rating'];
 
     protected $dates = ['created_at', 'updated_at', 'deleted_at'];
+
+    const
+        STATUS_PRO = 1;
 
     public function avatar(){
         return $this->morphOne(Image::class, 'imageable');
@@ -90,5 +94,15 @@ class User extends Authenticatable
     
     public function devices(){
         return $this->hasMany(Device::class);
+    }
+
+    public function getUserName()
+    {
+        return (new UserService())->getUserName($this);
+    }
+
+    public function isPro()
+    {
+        return $this->status === self::STATUS_PRO;
     }
 }

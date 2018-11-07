@@ -179,4 +179,9 @@ class UserService
     {
         return User::where(['external_id' => $externalId, 'source' => 'vk'])->first() ?? null;
     }
+
+    public function getUserName(User $user)
+    {
+        return $user->surname . ' ' . $user->name;
+    }
 }

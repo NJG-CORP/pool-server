@@ -14,7 +14,8 @@ Route::group(['namespace' => 'Web'], function(){
         Route::post('/password/reset', 'PasswordResetController@reset')->name('password.reset.post');
     });
     Route::get('/', 'HomeController@index');
-
-
+    Route::group(['namespace' => 'User'], function() {
+        Route::get('/invites', 'ProfileController@invites');
+    });
 });
 
