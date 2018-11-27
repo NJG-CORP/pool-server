@@ -18,6 +18,10 @@ class User extends Authenticatable
      *
      * @var array
      */
+    protected $fillable = [
+        'email', 'age', 'sex', 'phone', 'street', 'game_time_to', 'types', 'days', 'payment'
+    ];
+
     protected $hidden = [
         'password', 'remember_token', 'api_token', 'deleted_at'
     ];

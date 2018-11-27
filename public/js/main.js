@@ -8138,4 +8138,7 @@ $(document).on("pjax:end", function () {
 });
 
 
+$('#profileform-location').kladr({
+    oneString: true
+});
 /* MAIN JS END */

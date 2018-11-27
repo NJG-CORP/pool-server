@@ -14,6 +14,8 @@
     <meta name="twitter:title" content="">
     <meta name="robots" content="index,follow">
     <link rel="canonical" href="">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{{ asset('css/jquery.kladr.min.css') }}">
     <link rel="stylesheet" href="{{ asset('css/site.css') }}">
     <link rel="stylesheet" href="{{ asset('css/magnific-popup.css') }}">
 
@@ -47,6 +49,53 @@
                 </ul>
             </nav>
         </div>
+        @if(\Illuminate\Support\Facades\Auth::user())
+            <div class="header_personal">
+                <div class="header_personal_inner clearfix">
+                    <ul>
+                        <li>
+                            <a href="">
+                                <img src="{{ asset('img/player1.png') }}" alt="">
+                                <span>Fake</span>
+                            </a>
+
+                            <ul class="">
+                                <li>
+                                    <a href="{{ route('profile.index') }}">
+                                        <span>Личный кабинет</span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="{{ route('profile.card') }}">
+                                        <span>Моя карточка</span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="{{ route('profile.invites') }}">
+                                        <span>Мои приглашения</span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="{{ route('profile.partners') }}">
+                                        <span>Мои партнеры</span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="{{ route('profile.chat') }}">
+                                        <span>Чат</span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="{{ route('logout') }}">
+                                        <span>Выход</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        @endif
     </div>
 </header>
 @yield('content')
@@ -119,6 +168,7 @@
         src="https://code.jquery.com/jquery-3.3.1.min.js"
         integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
         crossorigin="anonymous"></script>
+<script src="{{ asset('js/jquery.kladr.min.js') }}"></script>
 <script src="{{ asset('js/main.js') }}"></script>
 <script src="{{ asset('js/form.js') }}"></script>
 <script src="{{ asset('js/jquery.magnific-popup.min.js') }}"></script>
