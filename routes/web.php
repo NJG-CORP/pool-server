@@ -2,6 +2,9 @@
 
 Route::group(['namespace' => 'Web'], function(){
     Route::get('/', 'HomeController@index');
+    Route::get('/contacts', 'ContactsController@index')->name('contacts');
+    Route::post('/contacts', 'ContactsController@review')->name('send.review');
+
 
     Route::group(['namespace' => 'Auth'], function(){
         Route::get('/login/vk/callback', 'LoginController@handleCallback');

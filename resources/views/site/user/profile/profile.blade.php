@@ -1,7 +1,13 @@
 @extends('layouts.default')
 
+@section('title', 'Мой профиль')
+
 @section('content')
 
+    <?php
+        $voc_type = \App\Models\Vocabulary::where('name', 'GameType')->first()->id;
+        $voc_payment = \App\Models\Vocabulary::where('name', 'GamePaymentType')->first()->id;
+    ?>
     <main class="main inner_page_main profile_inner_page_main">
 
         <section class="the_content_section">
@@ -21,7 +27,20 @@
                         </ul>
                     </div>
                 @endif
-
+                @if(session('success'))
+                    <div class="alert alert-success">
+                        <ul>
+                            <li>{{ session('success') }}</li>
+                        </ul>
+                    </div>
+                @endif
+                @if(session('error'))
+                    <div class="alert alert-danger">
+                        <ul>
+                            <li>{{ session('error') }}</li>
+                        </ul>
+                    </div>
+                @endif
                 <div class="profile_page_block">
                     <form action="{{ route('profile.update') }}" method="POST" enctype="multipart/form-data">
                         <div class="the_form the_players_search_form profile_form clearfix">
@@ -74,7 +93,7 @@
                                             <label class="control-label" for="profileform-location">Город,
                                                 страна</label>
                                             <input type="text" id="profileform-location" class="form-control"
-                                                   name="location" value=""
+                                                   name="location" value="{{ $user->street }}"
                                                    placeholder="Улица, номер, город, страна" autocomplete="off">
                                             <div class="help-block"></div>
                                         </div>
@@ -96,11 +115,11 @@
                                             <input type="hidden" name="sex" value="">
                                             <div id="profileform-sex" aria-required="true"><label>
                                                     <div class="ez-radio"><input type="radio" name="sex"
-                                                                                 value="0" class="ez-hide"></div>
+                                                        value="0" class="ez-hide" {{ $user->sex == 0 ? 'checked' : '' }}></div>
                                                     Мужчина</label>
                                                 <label>
                                                     <div class="ez-radio"><input type="radio" name="sex"
-                                                                                 value="1" class="ez-hide"></div>
+                                                         value="1" class="ez-hide" {{ $user->sex == 1 ? 'checked' : '' }}></div>
                                                     Женщина</label></div>
                                             <div class="help-block"></div>
                                         </div>
@@ -116,23 +135,23 @@
                                                  options="{&quot;&quot;:{&quot;selected&quot;:true}}"><label>
                                                     <div class="ez-checkbox"><input type="checkbox"
                                                                                     name="types[]"
-                                                                                    value="pool" class="ez-hide"></div>
+                                                                                    value="3" class="ez-hide" {{ !empty(\App\Models\TermRelation::where('relationable_id', $user->id)->where('vocabulary_id', $voc_type)->where('term_id', 3)->first()) ? 'checked' : '' }}></div>
                                                     Пул</label>
                                                 <label>
                                                     <div class="ez-checkbox"><input type="checkbox"
                                                                                     name="types[]"
-                                                                                    value="snooker" class="ez-hide">
+                                                                                    value="2" class="ez-hide" {{ !empty(\App\Models\TermRelation::where('relationable_id', $user->id)->where('vocabulary_id', $voc_type)->where('term_id', 2)->first()) ? 'checked' : '' }}>
                                                     </div>
                                                     Снукер</label>
                                                 <label>
                                                     <div class="ez-checkbox"><input type="checkbox"
                                                                                     name="types[]"
-                                                                                    value="rus" class="ez-hide"></div>
+                                                                                    value="1" class="ez-hide" {{ !empty(\App\Models\TermRelation::where('relationable_id', $user->id)->where('vocabulary_id', $voc_type)->where('term_id', 1)->first()) ? 'checked' : '' }}></div>
                                                     Русский бильярд</label>
                                                 <label>
                                                     <div class="ez-checkbox"><input type="checkbox"
                                                                                     name="types[]"
-                                                                                    value="carambol" class="ez-hide">
+                                                                                    value="4" class="ez-hide" {{ !empty(\App\Models\TermRelation::where('relationable_id', $user->id)->where('vocabulary_id', $voc_type)->where('term_id', 4)->first()) ? 'checked' : '' }}>
                                                     </div>
                                                     Карамболь</label></div>
                                             <div class="help-block"></div>
@@ -143,7 +162,7 @@
                                         <div class="form-group field-profileform-time">
                                             <label class="control-label" for="profileform-time">Время игры</label>
                                             <input type="time" id="profileform-time" class="form-control"
-                                                   name="time" placeholder="Время игры">
+                                                   name="time" placeholder="Время игры" value="{{ $user->game_time_to }}">
 
                                             <div class="help-block"></div>
                                         </div>
@@ -157,43 +176,50 @@
                                                  options="{&quot;&quot;:{&quot;selected&quot;:true}}"><label>
                                                     <div class="ez-checkbox"><input type="checkbox"
                                                                                     name="days[]"
-                                                                                    value="monday" class="ez-hide">
+                                                                                    value="1" class="ez-hide"
+                                                                {{ count(\App\Models\GameTime::where('user_id', $user->id)->where('weekday_id', '1')->get()) ? 'checked' : '' }}>
                                                     </div>
                                                     Понедельник</label>
                                                 <label>
                                                     <div class="ez-checkbox"><input type="checkbox"
                                                                                     name="days[]"
-                                                                                    value="tuesday" class="ez-hide">
+                                                                                    value="2" class="ez-hide"
+                                                                {{ count(\App\Models\GameTime::where('user_id', $user->id)->where('weekday_id', '2')->get()) ? 'checked' : '' }}>
                                                     </div>
                                                     Вторник</label>
                                                 <label>
                                                     <div class="ez-checkbox"><input type="checkbox"
                                                                                     name="days[]"
-                                                                                    value="wednesday" class="ez-hide">
+                                                                                    value="3" class="ez-hide"
+                                                                {{ count(\App\Models\GameTime::where('user_id', $user->id)->where('weekday_id', '3')->get()) ? 'checked' : '' }}>
                                                     </div>
                                                     Среда</label>
                                                 <label>
                                                     <div class="ez-checkbox"><input type="checkbox"
                                                                                     name="days[]"
-                                                                                    value="thursday" class="ez-hide">
+                                                                                    value="4" class="ez-hide"
+                                                                {{ count(\App\Models\GameTime::where('user_id', $user->id)->where('weekday_id', '4')->get()) ? 'checked' : '' }}>
                                                     </div>
                                                     Четверг</label>
                                                 <label>
                                                     <div class="ez-checkbox"><input type="checkbox"
                                                                                     name="days[]"
-                                                                                    value="friday" class="ez-hide">
+                                                                                    value="5" class="ez-hide"
+                                                                {{ count(\App\Models\GameTime::where('user_id', $user->id)->where('weekday_id', '5')->get()) ? 'checked' : '' }}>
                                                     </div>
                                                     Пятница</label>
                                                 <label>
                                                     <div class="ez-checkbox"><input type="checkbox"
                                                                                     name="days[]"
-                                                                                    value="saturday" class="ez-hide">
+                                                                                    value="6" class="ez-hide"
+                                                                {{ count(\App\Models\GameTime::where('user_id', $user->id)->where('weekday_id', '6')->get()) ? 'checked' : '' }}>
                                                     </div>
                                                     Суббота</label>
                                                 <label>
                                                     <div class="ez-checkbox"><input type="checkbox"
                                                                                     name="days[]"
-                                                                                    value="sunday" class="ez-hide">
+                                                                                    value="7" class="ez-hide"
+                                                                {{ count(\App\Models\GameTime::where('user_id', $user->id)->where('weekday_id', '7')->get()) ? 'checked' : '' }}>
                                                     </div>
                                                     Воскресенье</label></div>
 
@@ -209,22 +235,26 @@
                                                  options="{&quot;&quot;:{&quot;selected&quot;:true}}"><label>
                                                     <div class="ez-checkbox"><input type="checkbox"
                                                                                     name="payment[]"
-                                                                                    value="0" class="ez-hide"></div>
+                                                                                    value="5" class="ez-hide"
+                                                                {{ !empty(\App\Models\TermRelation::where('relationable_id', $user->id)->where('vocabulary_id', $voc_payment)->where('term_id', 5)->first()) ? 'checked' : '' }}></div>
                                                     Пополам</label>
                                                 <label>
                                                     <div class="ez-checkbox"><input type="checkbox"
                                                                                     name="payment[]"
-                                                                                    value="1" class="ez-hide"></div>
+                                                                                    value="6" class="ez-hide"
+                                                                {{ !empty(\App\Models\TermRelation::where('relationable_id', $user->id)->where('vocabulary_id', $voc_payment)->where('term_id', 6)->first()) ? 'checked' : '' }}></div>
                                                     Беру на себя</label>
                                                 <label>
                                                     <div class="ez-checkbox"><input type="checkbox"
                                                                                     name="payment[]"
-                                                                                    value="2" class="ez-hide"></div>
+                                                                                    value="7" class="ez-hide"
+                                                                {{ !empty(\App\Models\TermRelation::where('relationable_id', $user->id)->where('vocabulary_id', $voc_payment)->where('term_id', 7)->first()) ? 'checked' : '' }}></div>
                                                     За счет партнера</label>
                                                 <label>
                                                     <div class="ez-checkbox"><input type="checkbox"
                                                                                     name="payment[]"
-                                                                                    value="3" class="ez-hide"></div>
+                                                                                    value="8" class="ez-hide"
+                                                                {{ !empty(\App\Models\TermRelation::where('relationable_id', $user->id)->where('vocabulary_id', $voc_payment)->where('term_id', 8)->first()) ? 'checked' : '' }}></div>
                                                     Не имеет значения</label></div>
 
                                             <div class="help-block"></div>

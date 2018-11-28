@@ -28,7 +28,7 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title></title>
+    <title>@yield('title')</title>
 </head>
 <body>
 <header>
@@ -45,7 +45,7 @@
                     <li><a href=">">Мероприятия</a></li>
                     <li><a href="">Новости</a></li>
                     <li><a href="">Блог</a></li>
-                    <li><a href="">Контакты</a></li>
+                    <li><a href="{{ route('contacts') }}">Контакты</a></li>
                 </ul>
             </nav>
         </div>
