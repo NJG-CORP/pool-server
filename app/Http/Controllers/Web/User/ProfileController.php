@@ -7,6 +7,9 @@ use App\Models\GamePayment;
 use App\Models\GameTime;
 use App\Models\GameType;
 use App\Models\TermRelation;
+use App\Models\UserGameTime;
+use App\Models\UserGameTypes;
+use App\Models\UserPayment;
 use App\Services\InvitationService;
 use App\Models\Vocabulary;
 use Illuminate\Support\Facades\Auth;
@@ -18,7 +21,10 @@ class ProfileController extends Controller
     public function index()
     {
         $user = Auth::user();
-        return view('site.user.profile.profile', compact('user'));
+        $types = UserGameTypes::where('user_id', $user->id)->first();
+        $payments = UserPayment::where('user_id', $user->id)->first();
+        $days = UserGameTime::where('user_id', $user->id)->first();
+        return view('site.user.profile.profile', compact('user', 'types', 'payments', 'days'));
     }
 
     public function card(){
@@ -57,48 +63,68 @@ class ProfileController extends Controller
         $base_user = Auth::user()->id;
         if ($req_user == $base_user){
             $user = Auth::user();
-            $game_times = GameTime::where('user_id', $user->id)->get();
-            $terms = TermRelation::where('relationable_id', $user->id)->get();
-            $voc_type = Vocabulary::where('name', 'GameType')->first();
-            $voc_payment = Vocabulary::where('name', 'GamePaymentType')->first();
 
-            //сначала удаляем прежние дни, если есть их
-            if ($game_times){
-                foreach ($game_times as $game_time){
-                    $game_time->delete();
-                }
-            }
-            //потом добавляем новые отмеченные дни
-            foreach($request->days as $day){
-                $weekday = new GameTime();
-                $weekday->user_id = $user->id;
-                $weekday->weekday_id = $day;
-                $weekday->save();
+            //обновляем(добавляем) дни игры пользователья
+            $game_times = UserGameTime::where('user_id', $user->id)->first();
+            if ($game_times) {
+                in_array('monday', $request->days) ? $game_times->monday = 1 : $game_times->monday = 0;
+                in_array('tuesday', $request->days) ? $game_times->tuesday = 1 : $game_times->tuesday = 0;
+                in_array('wednesday', $request->days) ? $game_times->wednesday = 1 : $game_times->wednesday = 0;
+                in_array('thursday', $request->days) ? $game_times->thursday = 1 : $game_times->thursday = 0;
+                in_array('friday', $request->days) ? $game_times->friday = 1 : $game_times->friday = 0;
+                in_array('saturday', $request->days) ? $game_times->saturday = 1 : $game_times->saturday = 0;
+                in_array('sunday', $request->days) ? $game_times->sunday = 1 : $game_times->sunday = 0;
+                $game_times->save();
+            }else{
+                $days = new UserGameTime();
+                $days->user_id = $user->id;
+                in_array('monday', $request->days) ? $days->monday = 1 : '';
+                in_array('tuesday', $request->days) ? $days->tuesday = 1 : '';
+                in_array('wednesday', $request->days) ? $days->wednesday = 1 : '';
+                in_array('thursday', $request->days) ? $days->thursday = 1 : '';
+                in_array('friday', $request->days) ? $days->friday = 1 : '';
+                in_array('saturday', $request->days) ? $days->saturday = 1 : '';
+                in_array('sunday', $request->days) ? $days->sunday = 1 : '';
+                $days->save();
             }
 
-            //удаляем прежняя дата пользователья
-            if ($terms){
-                foreach ($terms as $term){
-                    $term->delete();
-                }
+
+            //обновляем(добавляем) типы игры пользователья
+            $game_types = UserGameTypes::where('user_id', $user->id)->first();
+            if ($game_types) {
+                in_array('snooker', $request->types) ? $game_types->snooker = 1 : $game_types->snooker = 0;
+                in_array('pool', $request->types) ? $game_types->pool = 1 : $game_types->pool = 0;
+                in_array('russian', $request->types) ? $game_types->russian = 1 : $game_types->russian = 0;
+                in_array('caromball', $request->types) ? $game_types->caromball = 1 : $game_types->caromball = 0;
+                $game_types->save();
+            }else{
+                $types = new UserGameTypes();
+                $types->user_id = $user->id;
+                in_array('snooker', $request->types) ? $types->snooker = 1 : '';
+                in_array('pool', $request->types) ? $types->pool = 1 : '';
+                in_array('russian', $request->types) ? $types->russian = 1 : '';
+                in_array('caromball', $request->types) ? $types->caromball = 1 : '';
+                $types->save();
             }
-            //потом добавляем новые отмеченные
-            foreach($request->types as $type){
-                $gametype = new TermRelation();
-                $gametype->relationable_id = $user->id;
-                $gametype->relationable_type = 'App\Models\User';
-                $gametype->term_id = $type;
-                $gametype->vocabulary_id = $voc_type->id;
-                $gametype->save();
+
+            //обновляем(добавляем) метод оплаты пользователья
+            $payments = UserPayment::where('user_id', $user->id)->first();
+            if ($payments) {
+                in_array('half', $request->payment) ? $payments->half = 1 : $payments->half = 0;
+                in_array('me', $request->payment) ? $payments->me = 1 : $payments->me = 0;
+                in_array('you', $request->payment) ? $payments->you = 1 : $payments->you = 0;
+                in_array('default', $request->payment) ? $payments->default = 1 : $payments->default = 0;
+                $payments->save();
+            }else{
+                $pay = new UserPayment();
+                $pay->user_id = $user->id;
+                in_array('half', $request->payment) ? $payments->half = 1 : '';
+                in_array('me', $request->payment) ? $payments->me = 1 : '';
+                in_array('you', $request->payment) ? $payments->you = 1 : '';
+                in_array('default', $request->payment) ? $payments->default = 1 : '';
+                $pay->save();
             }
-            foreach($request->payment as $payment){
-                $gamepayment = new TermRelation();
-                $gamepayment->relationable_id = $user->id;
-                $gamepayment->relationable_type = 'App\Models\User';
-                $gamepayment->term_id = $payment;
-                $gamepayment->vocabulary_id = $voc_payment->id;
-                $gamepayment->save();
-            }
+
 
             //если пользователь хочет изменить пароль
             if ($request->oldPassword){

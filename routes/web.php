@@ -2,6 +2,7 @@
 
 Route::group(['namespace' => 'Web'], function(){
     Route::get('/', 'HomeController@index');
+    Route::post('/search', 'HomeController@search')->name('search');
     Route::get('/contacts', 'ContactsController@index')->name('contacts');
     Route::post('/contacts', 'ContactsController@review')->name('send.review');
 

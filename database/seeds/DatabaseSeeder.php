@@ -17,7 +17,7 @@ class DatabaseSeeder extends Seeder
              CityTableSeeder::class,
              UsersTableSeeder::class,
              ClubsTableSeeder::class,
-             InvitationTableSeeder::class,
+             InvitationTableSeeder::class
          ]);
     }
 }

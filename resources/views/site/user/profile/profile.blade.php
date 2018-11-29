@@ -5,8 +5,7 @@
 @section('content')
 
     <?php
-        $voc_type = \App\Models\Vocabulary::where('name', 'GameType')->first()->id;
-        $voc_payment = \App\Models\Vocabulary::where('name', 'GamePaymentType')->first()->id;
+
     ?>
     <main class="main inner_page_main profile_inner_page_main">
 
@@ -135,23 +134,23 @@
                                                  options="{&quot;&quot;:{&quot;selected&quot;:true}}"><label>
                                                     <div class="ez-checkbox"><input type="checkbox"
                                                                                     name="types[]"
-                                                                                    value="3" class="ez-hide" {{ !empty(\App\Models\TermRelation::where('relationable_id', $user->id)->where('vocabulary_id', $voc_type)->where('term_id', 3)->first()) ? 'checked' : '' }}></div>
+                                                                                    value="pool" class="ez-hide" {{ $types && $types->pool == 1 ? 'checked' : '' }}></div>
                                                     Пул</label>
                                                 <label>
                                                     <div class="ez-checkbox"><input type="checkbox"
                                                                                     name="types[]"
-                                                                                    value="2" class="ez-hide" {{ !empty(\App\Models\TermRelation::where('relationable_id', $user->id)->where('vocabulary_id', $voc_type)->where('term_id', 2)->first()) ? 'checked' : '' }}>
+                                                                                    value="snooker" class="ez-hide" {{ $types && $types->snooker == 1 ? 'checked' : '' }}>
                                                     </div>
                                                     Снукер</label>
                                                 <label>
                                                     <div class="ez-checkbox"><input type="checkbox"
                                                                                     name="types[]"
-                                                                                    value="1" class="ez-hide" {{ !empty(\App\Models\TermRelation::where('relationable_id', $user->id)->where('vocabulary_id', $voc_type)->where('term_id', 1)->first()) ? 'checked' : '' }}></div>
+                                                                                    value="russian" class="ez-hide" {{ $types && $types->russian == 1 ? 'checked' : '' }}></div>
                                                     Русский бильярд</label>
                                                 <label>
                                                     <div class="ez-checkbox"><input type="checkbox"
                                                                                     name="types[]"
-                                                                                    value="4" class="ez-hide" {{ !empty(\App\Models\TermRelation::where('relationable_id', $user->id)->where('vocabulary_id', $voc_type)->where('term_id', 4)->first()) ? 'checked' : '' }}>
+                                                                                    value="caromball" class="ez-hide" {{ $types && $types->caromball == 1 ? 'checked' : '' }}>
                                                     </div>
                                                     Карамболь</label></div>
                                             <div class="help-block"></div>
@@ -176,50 +175,50 @@
                                                  options="{&quot;&quot;:{&quot;selected&quot;:true}}"><label>
                                                     <div class="ez-checkbox"><input type="checkbox"
                                                                                     name="days[]"
-                                                                                    value="1" class="ez-hide"
-                                                                {{ count(\App\Models\GameTime::where('user_id', $user->id)->where('weekday_id', '1')->get()) ? 'checked' : '' }}>
+                                                                                    value="monday" class="ez-hide"
+                                                                {{ $days && $days->monday == 1 ? 'checked' : '' }}>
                                                     </div>
                                                     Понедельник</label>
                                                 <label>
                                                     <div class="ez-checkbox"><input type="checkbox"
                                                                                     name="days[]"
-                                                                                    value="2" class="ez-hide"
-                                                                {{ count(\App\Models\GameTime::where('user_id', $user->id)->where('weekday_id', '2')->get()) ? 'checked' : '' }}>
+                                                                                    value="tuesday" class="ez-hide"
+                                                                {{ $days && $days->tuesday == 1 ? 'checked' : '' }}>
                                                     </div>
                                                     Вторник</label>
                                                 <label>
                                                     <div class="ez-checkbox"><input type="checkbox"
                                                                                     name="days[]"
-                                                                                    value="3" class="ez-hide"
-                                                                {{ count(\App\Models\GameTime::where('user_id', $user->id)->where('weekday_id', '3')->get()) ? 'checked' : '' }}>
+                                                                                    value="wednesday" class="ez-hide"
+                                                                {{ $days && $days->wednesday == 1 ? 'checked' : '' }}>
                                                     </div>
                                                     Среда</label>
                                                 <label>
                                                     <div class="ez-checkbox"><input type="checkbox"
                                                                                     name="days[]"
-                                                                                    value="4" class="ez-hide"
-                                                                {{ count(\App\Models\GameTime::where('user_id', $user->id)->where('weekday_id', '4')->get()) ? 'checked' : '' }}>
+                                                                                    value="thursday" class="ez-hide"
+                                                                {{ $days && $days->thursday == 1 ? 'checked' : '' }}>
                                                     </div>
                                                     Четверг</label>
                                                 <label>
                                                     <div class="ez-checkbox"><input type="checkbox"
                                                                                     name="days[]"
-                                                                                    value="5" class="ez-hide"
-                                                                {{ count(\App\Models\GameTime::where('user_id', $user->id)->where('weekday_id', '5')->get()) ? 'checked' : '' }}>
+                                                                                    value="friday" class="ez-hide"
+                                                                {{ $days && $days->friday == 1 ? 'checked' : '' }}>
                                                     </div>
                                                     Пятница</label>
                                                 <label>
                                                     <div class="ez-checkbox"><input type="checkbox"
                                                                                     name="days[]"
-                                                                                    value="6" class="ez-hide"
-                                                                {{ count(\App\Models\GameTime::where('user_id', $user->id)->where('weekday_id', '6')->get()) ? 'checked' : '' }}>
+                                                                                    value="saturday" class="ez-hide"
+                                                                {{ $days && $days->saturday == 1 ? 'checked' : '' }}>
                                                     </div>
                                                     Суббота</label>
                                                 <label>
                                                     <div class="ez-checkbox"><input type="checkbox"
                                                                                     name="days[]"
-                                                                                    value="7" class="ez-hide"
-                                                                {{ count(\App\Models\GameTime::where('user_id', $user->id)->where('weekday_id', '7')->get()) ? 'checked' : '' }}>
+                                                                                    value="sunday" class="ez-hide"
+                                                                {{ $days && $days->sunday == 1 ? 'checked' : '' }}>
                                                     </div>
                                                     Воскресенье</label></div>
 
@@ -235,26 +234,26 @@
                                                  options="{&quot;&quot;:{&quot;selected&quot;:true}}"><label>
                                                     <div class="ez-checkbox"><input type="checkbox"
                                                                                     name="payment[]"
-                                                                                    value="5" class="ez-hide"
-                                                                {{ !empty(\App\Models\TermRelation::where('relationable_id', $user->id)->where('vocabulary_id', $voc_payment)->where('term_id', 5)->first()) ? 'checked' : '' }}></div>
+                                                                                    value="half" class="ez-hide"
+                                                                {{ $payments && $payments->half == 1 ? 'checked' : '' }}></div>
                                                     Пополам</label>
                                                 <label>
                                                     <div class="ez-checkbox"><input type="checkbox"
                                                                                     name="payment[]"
-                                                                                    value="6" class="ez-hide"
-                                                                {{ !empty(\App\Models\TermRelation::where('relationable_id', $user->id)->where('vocabulary_id', $voc_payment)->where('term_id', 6)->first()) ? 'checked' : '' }}></div>
+                                                                                    value="me" class="ez-hide"
+                                                                {{ $payments && $payments->me == 1 ? 'checked' : '' }}></div>
                                                     Беру на себя</label>
                                                 <label>
                                                     <div class="ez-checkbox"><input type="checkbox"
                                                                                     name="payment[]"
-                                                                                    value="7" class="ez-hide"
-                                                                {{ !empty(\App\Models\TermRelation::where('relationable_id', $user->id)->where('vocabulary_id', $voc_payment)->where('term_id', 7)->first()) ? 'checked' : '' }}></div>
+                                                                                    value="you" class="ez-hide"
+                                                                {{ $payments && $payments->you == 1 ? 'checked' : '' }}></div>
                                                     За счет партнера</label>
                                                 <label>
                                                     <div class="ez-checkbox"><input type="checkbox"
                                                                                     name="payment[]"
-                                                                                    value="8" class="ez-hide"
-                                                                {{ !empty(\App\Models\TermRelation::where('relationable_id', $user->id)->where('vocabulary_id', $voc_payment)->where('term_id', 8)->first()) ? 'checked' : '' }}></div>
+                                                                                    value="default" class="ez-hide"
+                                                                {{ $payments && $payments->default == 1 ? 'checked' : '' }}></div>
                                                     Не имеет значения</label></div>
 
                                             <div class="help-block"></div>
