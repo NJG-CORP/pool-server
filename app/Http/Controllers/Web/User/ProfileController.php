@@ -100,10 +100,10 @@ class ProfileController extends Controller
             }else{
                 $types = new UserGameTypes();
                 $types->user_id = $user->id;
-                in_array('snooker', $request->types) ? $types->snooker = 1 : '';
-                in_array('pool', $request->types) ? $types->pool = 1 : '';
-                in_array('russian', $request->types) ? $types->russian = 1 : '';
-                in_array('caromball', $request->types) ? $types->caromball = 1 : '';
+                in_array('snooker', $request->types) ? $types->snooker = 1 : $types->snooker = 0;
+                in_array('pool', $request->types) ? $types->pool = 1 : $types->pool = 0;
+                in_array('russian', $request->types) ? $types->russian = 1 : $types->russian = 0;
+                in_array('caromball', $request->types) ? $types->caromball = 1 : $types->caromball = 0;
                 $types->save();
             }
 
@@ -113,15 +113,15 @@ class ProfileController extends Controller
                 in_array('half', $request->payment) ? $payments->half = 1 : $payments->half = 0;
                 in_array('me', $request->payment) ? $payments->me = 1 : $payments->me = 0;
                 in_array('you', $request->payment) ? $payments->you = 1 : $payments->you = 0;
-                in_array('default', $request->payment) ? $payments->default = 1 : $payments->default = 0;
+                in_array('unimportant', $request->payment) ? $payments->unimportant = 1 : $payments->unimportant = 0;
                 $payments->save();
             }else{
                 $pay = new UserPayment();
                 $pay->user_id = $user->id;
-                in_array('half', $request->payment) ? $payments->half = 1 : '';
-                in_array('me', $request->payment) ? $payments->me = 1 : '';
-                in_array('you', $request->payment) ? $payments->you = 1 : '';
-                in_array('default', $request->payment) ? $payments->default = 1 : '';
+                in_array('half', $request->payment) ? $pay->half = 1 : '';
+                in_array('me', $request->payment) ? $pay->me = 1 : '';
+                in_array('you', $request->payment) ? $pay->you = 1 : '';
+                in_array('unimportant', $request->payment) ? $pay->unimportant = 1 : '';
                 $pay->save();
             }
 

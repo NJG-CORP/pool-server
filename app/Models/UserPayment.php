@@ -8,7 +8,7 @@ class UserPayment extends Model
 {
     protected $table = 'user_payments';
     protected $fillable = [
-        'user_id', 'half', 'me', 'you', 'default'
+        'user_id', 'half', 'me', 'you', 'unimportant'
     ];
 
     public $timestamps = false;

@@ -19,7 +19,7 @@ class CreateUserPaymentsTable extends Migration
             $table->smallInteger('half')->default(0);
             $table->smallInteger('me')->default(0);
             $table->smallInteger('you')->default(0);
-            $table->smallInteger('default')->default(0);
+            $table->smallInteger('unimportant')->default(0);
         });
     }
 

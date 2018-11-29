@@ -252,8 +252,8 @@
                                                 <label>
                                                     <div class="ez-checkbox"><input type="checkbox"
                                                                                     name="payment[]"
-                                                                                    value="default" class="ez-hide"
-                                                                {{ $payments && $payments->default == 1 ? 'checked' : '' }}></div>
+                                                                                    value="unimportant" class="ez-hide"
+                                                                {{ $payments && $payments->unimportant == 1 ? 'checked' : '' }}></div>
                                                     Не имеет значения</label></div>
 
                                             <div class="help-block"></div>

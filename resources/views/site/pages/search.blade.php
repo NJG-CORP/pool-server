@@ -129,11 +129,11 @@
                                             Снукер</label></div>
                                     <div class="checkbox"><label>
                                             <div class="ez-checkbox"><input type="checkbox" name="types[]"
-                                                                            value="rus" class="ez-hide"></div>
+                                                                            value="russian" class="ez-hide"></div>
                                             Русский бильярд</label></div>
                                     <div class="checkbox"><label>
                                             <div class="ez-checkbox"><input type="checkbox" name="types[]"
-                                                                            value="carambol" class="ez-hide"></div>
+                                                                            value="caromball" class="ez-hide"></div>
                                             Карамболь</label></div>
                                 </div>
 
@@ -148,19 +148,19 @@
                                 <div id="searchform-payment" multiple="multiple" placeholder="Оплата">
                                     <div class="checkbox"><label>
                                             <div class="ez-checkbox"><input type="checkbox" name="payment[]"
-                                                                            value="0" class="ez-hide"></div>
+                                                                            value="half" class="ez-hide"></div>
                                             Пополам</label></div>
                                     <div class="checkbox"><label>
                                             <div class="ez-checkbox"><input type="checkbox" name="payment[]"
-                                                                            value="1" class="ez-hide"></div>
+                                                                            value="me" class="ez-hide"></div>
                                             Беру на себя</label></div>
                                     <div class="checkbox"><label>
                                             <div class="ez-checkbox"><input type="checkbox" name="payment[]"
-                                                                            value="2" class="ez-hide"></div>
+                                                                            value="you" class="ez-hide"></div>
                                             За счет партнера</label></div>
                                     <div class="checkbox"><label>
                                             <div class="ez-checkbox"><input type="checkbox" name="payment[]"
-                                                                            value="3" class="ez-hide"></div>
+                                                                            value="default" class="ez-hide"></div>
                                             Не имеет значения</label></div>
                                 </div>
 
