@@ -7,6 +7,7 @@ use App\Utils\R;
 use App\Utils\Utils;
 use Devfactory\Taxonomy\Models\Vocabulary;
 use GuzzleHttp\Client;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Password;
 
 class UserService
@@ -183,5 +184,11 @@ class UserService
     public function getUserName(User $user)
     {
         return $user->surname . ' ' . $user->name;
+    }
+
+    public function getUser()
+    {
+        $user = Auth::user();
+        return $user;
     }
 }

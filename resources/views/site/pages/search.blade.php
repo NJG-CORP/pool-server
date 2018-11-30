@@ -2,7 +2,6 @@
 
 @section('title', '')
 
-
 @section('content')
 
     <main class="main inner_page_main">
@@ -26,7 +25,8 @@
                     </div>
                 @endif
                 <div class="the_form the_players_search_form clearfix">
-                    <form id="frm44" class="frm4 clearfix" action="{{ route('search') }}" method="post" data-pjax="" enctype="multipart/form-data">
+                    <form id="frm44" class="frm4 clearfix" action="{{ route('search') }}" method="post" data-pjax=""
+                          enctype="multipart/form-data">
                         <input type="hidden" name="_csrf-frontend"
                                value="T9bCrVWUPUKshG05Jpfi2PWPIcQUj7SItaFrtwWMi_UVju_KPPFtNM7yIHdv8rS5sb9zvSDexbH65gjSScbAjw==">
                         <div class="the_form_div the_form_div_half">
@@ -40,7 +40,6 @@
                         </div>
 
                         <div class="form-group field-searchform-locationcity">
-
 
 
                             <p class="help-block help-block-error"></p>
@@ -85,30 +84,13 @@
                         </div>
 
                         <div class="the_form_div the_form_div_half">
-                            <span class="irs js-irs-0"><span class="irs"><span class="irs-line" tabindex="0"><span
-                                                class="irs-line-left"></span><span class="irs-line-mid"></span><span
-                                                class="irs-line-right"></span></span><span class="irs-min"
-                                                                                           style="visibility: hidden;">0:00</span><span
-                                            class="irs-max" style="visibility: hidden;">23:00</span><span
-                                            class="irs-from"
-                                            style="visibility: visible; left: -1.59065%;">0:00</span><span
-                                            class="irs-to"
-                                            style="visibility: visible; left: 94.2485%;">23:00</span><span
-                                            class="irs-single"
-                                            style="visibility: hidden; left: 42.6503%;">0:00 — 23:00</span></span><span
-                                        class="irs-grid"></span><span class="irs-bar"
-                                                                      style="left: 1.8018%; width: 96.3964%;"></span><span
-                                        class="irs-shadow shadow-from" style="display: none;"></span><span
-                                        class="irs-shadow shadow-to" style="display: none;"></span><span
-                                        class="irs-slider from" style="left: 0%;"></span><span class="irs-slider to"
-                                                                                               style="left: 96.3964%;"></span></span>
-                            <div id="slider-search" class="irs-hidden-input" tabindex="-1"></div>
-                            <div class="form-group field-searchform-time-from required">
 
+                            <div><input type="text" id="range" name="time" value=""></div>
+                            <div class="form-group field-searchform-time-from required" id="">
 
                                 <p class="help-block help-block-error"></p>
                             </div>
-                            <div class="form-group field-searchform-time-to required">
+                            <div class="form-group field-searchform-time-to required" id="">
 
 
                                 <p class="help-block help-block-error"></p>
@@ -160,7 +142,7 @@
                                             За счет партнера</label></div>
                                     <div class="checkbox"><label>
                                             <div class="ez-checkbox"><input type="checkbox" name="payment[]"
-                                                                            value="default" class="ez-hide"></div>
+                                                                            value="unimportant" class="ez-hide"></div>
                                             Не имеет значения</label></div>
                                 </div>
 
@@ -172,12 +154,12 @@
                             <div class="rating">
                                 <p>Рейтинг игрока</p>
                                 <div class="form-group field-searchform-rating required">
-
                                     <p class="help-block help-block-error"></p>
                                 </div>
                                 <div class="stars stars_big dynamic_stars">
                                     <div><span></span></div>
                                 </div>
+                                <input type="hidden" name="rating" class="ratings">
                             </div>
                         </div>
 
@@ -243,14 +225,101 @@
                     </form>
                 </div>
             </div>
-
-
             <div class="players_table_wrap">
                 <div class="inner_section">
-                    <p>По Вашему запросу не найдено игроков</p></div>
+                    @if(!empty($results))
+                        <div class="players_table">
+                            <div class="players_table_head">
+                                <p>Игрок</p>
+                                <p>Рейтинг</p>
+                                <p>Вид игры</p>
+                            </div>
+                            <div class="players_table_content">
+                                @foreach($results as $result)
+
+                                    <div class="players_table_row">
+                                        <div class="img" style="cursor: pointer"
+                                             onclick="window.open('/user/2-%D0%94%D0%B5%D0%BD%D0%B8%D1%81+%D0%A1%D0%B8%D0%B4%D0%BE%D1%80%D0%BE%D0%B2.html')">
+                                            <img src="/img/news7.png" alt="">
+                                        </div>
+                                        <div class="specs">
+                                            <div class="text" style="cursor: pointer"
+                                                 onclick="window.open('/user/2-%D0%94%D0%B5%D0%BD%D0%B8%D1%81+%D0%A1%D0%B8%D0%B4%D0%BE%D1%80%D0%BE%D0%B2.html')">
+                                                <p class="name">{{ $result->name }}, 222 год</p>
+
+                                                <p>Sankt Petersburg</p>
+                                            </div>
+
+                                            <div class="stars">
+                                                <span class="star4"></span>
+                                            </div>
+
+                                            <div class="descr">
+                                                <p>Вид игры: Снукер</p>
+                                            </div>
+
+                                            <div class="status">
+                                                <!--<p>Статус <span class="status_span">Pro</span></p>-->        </div>
+
+                                            <a class="button invite_button" data-toggle="modal"
+                                               data-target="#InvitationModal"
+                                               onclick="$('#invitationform-invitedid').val(2)">Пригласить</a>
+                                        </div>
+                                    </div>
+                                @endforeach
+
+                            </div>
+                        </div>
+                    @else
+                        <p>По Вашему запросу не найдено игроков</p>
+                    @endif
+                </div>
             </div>
         </section>
 
     </main>
+
+    <div id="InvitationModal" class="fade modal" role="dialog" tabindex="-1" style="display: none;">
+        <div class="modal-dialog ">
+            <div class="modal-content">
+                <div id="myModalLabel" class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                    <h4>Приглашение</h4>
+                </div>
+                <div class="modal-body">
+                    <div id="InvitationForm" data-pjax-container="" data-pjax-timeout="1000"><form id="w0" action="/user/invitation" method="post" data-pjax="">
+                            <input type="hidden" name="_csrf-frontend" value="PJj63wxovr5u8AE1JqiEfMnh2F_6vE7DbxJtjic6WJxj656wSB3W2wmDZENkwrRNj5ihPqz3fpM2dS-9fnQqrw==">
+                            <div class="form-group field-invitationform-inviterid required">
+                                <label class="control-label" for="invitationform-inviterid"></label>
+                                <input type="hidden" id="invitationform-inviterid" class="form-control" name="InvitationForm[inviterId]" value="39">
+                                <div class="help-block"></div>
+                            </div><div class="form-group field-invitationform-invitedid required">
+                                <label class="control-label" for="invitationform-invitedid"></label>
+                                <input type="hidden" id="invitationform-invitedid" class="form-control" name="InvitationForm[invitedId]" value="2">
+                                <div class="help-block"></div>
+                            </div>
+                            <div class="form-group field-invitationform-clubid required">
+                                <label class="control-label" for="invitationform-clubid">Клуб</label>
+                                <input type="text" id="invitationform-clubid" class="form-control" name="InvitationForm[clubId]" list="clubs-list" aria-required="true">
+                                <div class="help-block"></div>
+                            </div>
+                            <datalist id="clubs-list"></datalist>
+                            <label>Время встречи</label>
+                            <div class="time-picker">
+                                <div class="half-time-picker field-invitationform-meetingat required">
+                                    <label class="control-label" for="invitationform-meetingat"></label>
+                                    <div class="input-group datetime"><span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span><input type="text" id="invitationform-meetingat" class="form-control hasDatepicker" name="InvitationForm[meetingAt]"></div>
+                                    <div class="help-block"></div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <button type="submit" class="btn btn-success" name="login-button">Пригласить</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
 @endsection

@@ -18,6 +18,9 @@
     <link rel="stylesheet" href="{{ asset('css/jquery.kladr.min.css') }}">
     <link rel="stylesheet" href="{{ asset('css/site.css') }}">
     <link rel="stylesheet" href="{{ asset('css/magnific-popup.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/normalize.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/ion.rangeSlider.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/ion.rangeSlider.skinFlat.css') }}">
 
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="format-detection" content="telephone=no">
@@ -169,6 +172,7 @@
         integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
         crossorigin="anonymous"></script>
 <script src="{{ asset('js/jquery.kladr.min.js') }}"></script>
+<script src="{{ asset('js/ion.rangeSlider.min.js') }}"></script>
 <script src="{{ asset('js/main.js') }}"></script>
 <script src="{{ asset('js/form.js') }}"></script>
 <script src="{{ asset('js/jquery.magnific-popup.min.js') }}"></script>
