@@ -32,6 +32,14 @@ Route::group(['namespace' => 'Web'], function(){
             Route::post('/profile', 'ProfileController@updateProfile')->name('profile.update');
         });
     });
+});
+Route::group(['middleware' => 'authenticated'], function() {
+
+    Route::post('/invite', 'InvitationController@inviteUser')->name('send.invite');
+    Route::get('/invite/accept/{id}', 'InvitationController@invitationAccept')->name('accept.invite');
 
 });
+
+
+
 

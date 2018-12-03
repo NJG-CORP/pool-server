@@ -183,92 +183,23 @@ class PlayerService
 
     public function save($fields)
     {
-        $user = new UserService();
-        $user = $user->getUser();
+        $user = (new UserService())->getUser();
+        $days = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
+        $types = ['pool', 'snooker', 'russian', 'caromball'];
+        $payments = ['half', 'me', 'you', 'unimportant'];
+
         //обновляем(добавляем) дни игры пользователья
-        $game_times = UserGameTime::where('user_id', $user->id)->first();
-        if ($game_times) {
-            in_array('monday', $fields['days']) ? $game_times->monday = 1 : $game_times->monday = 0;
-            in_array('tuesday', $fields['days']) ? $game_times->tuesday = 1 : $game_times->tuesday = 0;
-            in_array('wednesday', $fields['days']) ? $game_times->wednesday = 1 : $game_times->wednesday = 0;
-            in_array('thursday', $fields['days']) ? $game_times->thursday = 1 : $game_times->thursday = 0;
-            in_array('friday', $fields['days']) ? $game_times->friday = 1 : $game_times->friday = 0;
-            in_array('saturday', $fields['days']) ? $game_times->saturday = 1 : $game_times->saturday = 0;
-            in_array('sunday', $fields['days']) ? $game_times->sunday = 1 : $game_times->sunday = 0;
-            $game_times->save();
-        }else{
-            $days = new UserGameTime();
-            $days->user_id = $user;
-            in_array('monday', $fields['days']) ? $days->monday = 1 : '';
-            in_array('tuesday', $fields['days']) ? $days->tuesday = 1 : '';
-            in_array('wednesday', $fields['days']) ? $days->wednesday = 1 : '';
-            in_array('thursday', $fields['days']) ? $days->thursday = 1 : '';
-            in_array('friday', $fields['days']) ? $days->friday = 1 : '';
-            in_array('saturday', $fields['days']) ? $days->saturday = 1 : '';
-            in_array('sunday', $fields['days']) ? $days->sunday = 1 : '';
-            $days->save();
-        }
-
-
+        $game_times = (new UserService())->setGameTime($days, $fields['days'], $user);
+        $game_times->save();
         //обновляем(добавляем) типы игры пользователья
-        $game_types = UserGameTypes::where('user_id', $user->id)->first();
-        if ($game_types) {
-            in_array('snooker', $fields['types']) ? $game_types->snooker = 1 : $game_types->snooker = 0;
-            in_array('pool', $fields['types']) ? $game_types->pool = 1 : $game_types->pool = 0;
-            in_array('russian', $fields['types']) ? $game_types->russian = 1 : $game_types->russian = 0;
-            in_array('caromball', $fields['types']) ? $game_types->caromball = 1 : $game_types->caromball = 0;
-            $game_types->save();
-        }else{
-            $types = new UserGameTypes();
-            $types->user_id = $user;
-            in_array('snooker', $fields['types']) ? $types->snooker = 1 : $types->snooker = 0;
-            in_array('pool', $fields['types']) ? $types->pool = 1 : $types->pool = 0;
-            in_array('russian', $fields['types']) ? $types->russian = 1 : $types->russian = 0;
-            in_array('caromball', $fields['types']) ? $types->caromball = 1 : $types->caromball = 0;
-            $types->save();
-        }
-
+        $game_types = (new UserService())->setGameType($types, $fields['types'], $user);
+        $game_types->save();
         //обновляем(добавляем) метод оплаты пользователья
-        $payments = UserPayment::where('user_id', $user->id)->first();
-        if ($payments) {
-            in_array('half', $fields['payment']) ? $payments->half = 1 : $payments->half = 0;
-            in_array('me', $fields['payment']) ? $payments->me = 1 : $payments->me = 0;
-            in_array('you', $fields['payment']) ? $payments->you = 1 : $payments->you = 0;
-            in_array('unimportant', $fields['payment']) ? $payments->unimportant = 1 : $payments->unimportant = 0;
-            $payments->save();
-        }else{
-            $pay = new UserPayment();
-            $pay->user_id = $user;
-            in_array('half', $fields['payment']) ? $pay->half = 1 : '';
-            in_array('me', $fields['payment']) ? $pay->me = 1 : '';
-            in_array('you', $fields['payment']) ? $pay->you = 1 : '';
-            in_array('unimportant', $fields['payment']) ? $pay->unimportant = 1 : '';
-            $pay->save();
-        }
-
-
-        //если пользователь хочет изменить пароль
-        if ($fields['oldPassword']){
-            //проверяем совпадение
-            if (Hash::check($fields['oldPassword'], $user->password)){
-                $new_pass = $fields['newPassword'];
-                $new_pass = Hash::make($new_pass);
-            }else{
-                return redirect()->back()->with('error', 'Вы ввели неправильный пароль!');
-            }
-        }
-
-
+        $game_payments = (new UserService())->setGamePayment($payments, $fields['payment'], $user);
+        $game_payments->save();
         //сохраняем данные
-        $user->email = $fields['email'];
-        $user->age = $fields['age'];
-        $user->gender = $fields['sex'];
-        $user->phone = $fields['phone'];
-        $user->street = $fields['location'];
-        $user->game_time_from = $fields['time_from'];
-        $user->game_time_to = $fields['time_to'];
-        if (!empty($new_pass)){$user->password = $new_pass;}
-        if($user->save()){
+        $data = (new UserService())->setUserData($fields, $user);
+        if($data->save()){
             return $user;
         }
         return false;

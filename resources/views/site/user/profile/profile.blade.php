@@ -3,10 +3,6 @@
 @section('title', 'Мой профиль')
 
 @section('content')
-
-    <?php
-
-    ?>
     <main class="main inner_page_main profile_inner_page_main">
 
         <section class="the_content_section">
@@ -46,11 +42,11 @@
 
                             <div class="profile_page_avatar">
                                 <div class="img">
-                                    <img src="{{ asset('img/player1.png') }}" alt="">
+                                    <img src="{{ asset('img/' . $user->avatar) }}" alt="">
                                 </div>
 
                                 <div class="text">
-                                    <p class="name">Fake</p>
+                                    <p class="name">{{ $user->name }}</p>
                                 </div>
 
                                 <a class="bell_button" href=""></a>
@@ -114,11 +110,11 @@
                                             <input type="hidden" name="sex" value="">
                                             <div id="profileform-sex" aria-required="true"><label>
                                                     <div class="ez-radio"><input type="radio" name="sex"
-                                                        value="0" class="ez-hide" {{ $user->sex == 0 ? 'checked' : '' }}></div>
+                                                        value="0" class="ez-hide" {{ $user->gender == 0 ? 'checked' : '' }}></div>
                                                     Мужчина</label>
                                                 <label>
                                                     <div class="ez-radio"><input type="radio" name="sex"
-                                                         value="1" class="ez-hide" {{ $user->sex == 1 ? 'checked' : '' }}></div>
+                                                         value="1" class="ez-hide" {{ $user->gender == 1 ? 'checked' : '' }}></div>
                                                     Женщина</label></div>
                                             <div class="help-block"></div>
                                         </div>

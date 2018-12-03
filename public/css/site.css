@@ -9487,6 +9487,7 @@ a.button.invite_button {
 }
 
 a.button.invite_button:hover {
+    cursor: pointer;
 }
 
 /*club_card*/

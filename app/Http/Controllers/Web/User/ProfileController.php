@@ -24,13 +24,11 @@ class ProfileController extends Controller
         $types = $player->getUserGameType($user->id);
         $payments = $player->getUserGamePayment($user->id);
         $days = $player->getUserGameTime($user->id);
-        return view('site.user.profile.profile', compact('user', 'types', 'payments', 'days'));
+        return view('site.user.profile.profile', compact('types', 'payments', 'days'));
     }
 
     public function card(){
-        $user = new UserService();
-        $user = $user->getUser();
-        return view('site.user.profile.card', compact('user'));
+        return view('site.user.profile.card');
     }
 
     public function invites()
@@ -61,10 +59,8 @@ class ProfileController extends Controller
             'sex' => 'required',
         ]);
         $fields = $request->all();
-
-        $req_user = $request->id;
-        $base_user = new UserService();
-        $base_user = $base_user->getUser()->id;
+        $req_user = $fields['id'];
+        $base_user = (new UserService())->getUser()->id;
         if ($req_user == $base_user){
             $profile = new PlayerService();
             $profile->save($fields);
