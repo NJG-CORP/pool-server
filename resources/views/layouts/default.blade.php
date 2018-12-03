@@ -14,8 +14,13 @@
     <meta name="twitter:title" content="">
     <meta name="robots" content="index,follow">
     <link rel="canonical" href="">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{{ asset('css/jquery.kladr.min.css') }}">
     <link rel="stylesheet" href="{{ asset('css/site.css') }}">
     <link rel="stylesheet" href="{{ asset('css/magnific-popup.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/normalize.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/ion.rangeSlider.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/ion.rangeSlider.skinFlat.css') }}">
 
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="format-detection" content="telephone=no">
@@ -26,7 +31,7 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title></title>
+    <title>@yield('title')</title>
 </head>
 <body>
 <header>
@@ -43,10 +48,57 @@
                     <li><a href=">">Мероприятия</a></li>
                     <li><a href="">Новости</a></li>
                     <li><a href="">Блог</a></li>
-                    <li><a href="">Контакты</a></li>
+                    <li><a href="{{ route('contacts') }}">Контакты</a></li>
                 </ul>
             </nav>
         </div>
+        @if($user)
+            <div class="header_personal">
+                <div class="header_personal_inner clearfix">
+                    <ul>
+                        <li>
+                            <a href="">
+                                <img src="{{ asset('img/' . $user->avatar) }}" alt="">
+                                <span>{{ $user->name }}</span>
+                            </a>
+
+                            <ul class="">
+                                <li>
+                                    <a href="{{ route('profile.index') }}">
+                                        <span>Личный кабинет</span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="{{ route('profile.card') }}">
+                                        <span>Моя карточка</span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="{{ route('profile.invites') }}">
+                                        <span>Мои приглашения</span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="{{ route('profile.partners') }}">
+                                        <span>Мои партнеры</span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="{{ route('profile.chat') }}">
+                                        <span>Чат</span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="{{ route('logout') }}">
+                                        <span>Выход</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        @endif
     </div>
 </header>
 @yield('content')
@@ -119,6 +171,9 @@
         src="https://code.jquery.com/jquery-3.3.1.min.js"
         integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
         crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+<script src="{{ asset('js/jquery.kladr.min.js') }}"></script>
+<script src="{{ asset('js/ion.rangeSlider.min.js') }}"></script>
 <script src="{{ asset('js/main.js') }}"></script>
 <script src="{{ asset('js/form.js') }}"></script>
 <script src="{{ asset('js/jquery.magnific-popup.min.js') }}"></script>

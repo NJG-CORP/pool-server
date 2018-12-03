@@ -7,7 +7,7 @@
 <div class="players_table_row">
     <div class="img" style="cursor: pointer"
          onclick="window.open('{{ url('user', [$invite->inviter->id]) }}')">
-        <img src="{{$invite->inviter->avatar->getUrlAttribute() }}" alt="">
+        {{--<img src="{{$invite->inviter->avatar->getUrlAttribute() }}" alt="">--}}
     </div>
 
     <div class="specs">

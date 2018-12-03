@@ -1696,7 +1696,7 @@ section h1 {
 .the_form .the_form_div label {
     font-size: 14px;
     color: #000;
-    line-height: 38px;
+    /*line-height: 38px;*/
     min-width: 111px;
     display: inline-block;
     vertical-align: middle;
@@ -9487,6 +9487,7 @@ a.button.invite_button {
 }
 
 a.button.invite_button:hover {
+    cursor: pointer;
 }
 
 /*club_card*/

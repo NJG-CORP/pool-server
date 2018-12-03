@@ -7518,6 +7518,7 @@ $(document).ready(function () {
             if (mx1 <= big_star1) {
                 calculated_rating = "star1";
             }
+
         } else {
             if (mx1 <= small_star5) {
                 calculated_rating = "star5";
@@ -7547,6 +7548,7 @@ $(document).ready(function () {
         var my = e.pageY - m_offset.top;
 
         selected_rating = figureOutStars($(this), mx);
+        $('.ratings').val(selected_rating);
         $(this).find('span').html(selected_rating.substr(-1, 1))
     });
 
@@ -8138,4 +8140,23 @@ $(document).on("pjax:end", function () {
 });
 
 
+$('#profileform-location').kladr({
+    oneString: true
+});
+
+$("#range").ionRangeSlider({
+    type: "double",
+    min: 0,
+    max: 23,
+    from: 0,
+    to: 23,
+    step: 1,
+    prettify: function (num) {
+        return num+":00";
+    },
+    onFinish:  function (data) {
+        $("#searchform-time-from").val(data.from);
+        $("#searchform-time-to").val(data.to);
+    },
+});
 /* MAIN JS END */

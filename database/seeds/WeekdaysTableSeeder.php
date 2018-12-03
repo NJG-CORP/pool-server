@@ -12,13 +12,13 @@ class WeekdaysTableSeeder extends Seeder
     public function run()
     {
         foreach ([
-                    "Понедельник",
-                    "Вторник",
-                    "Среда",
-                    "Четверг",
-                    "Пятница",
-                    "Суббота",
-                    "Воскресенье"
+                     "Понедельник",
+                     "Вторник",
+                     "Среда",
+                     "Четверг",
+                     "Пятница",
+                     "Суббота",
+                     "Воскресенье"
                  ] as $day){
             \App\Models\Weekday::create([
                 "name" => $day

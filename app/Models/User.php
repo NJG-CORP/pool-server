@@ -18,6 +18,10 @@ class User extends Authenticatable
      *
      * @var array
      */
+    protected $fillable = [
+        'email', 'age', 'sex', 'phone', 'street', 'game_time_to', 'types', 'days', 'payment', 'gender'
+    ];
+
     protected $hidden = [
         'password', 'remember_token', 'api_token', 'deleted_at'
     ];
@@ -105,4 +109,6 @@ class User extends Authenticatable
     {
         return $this->status === self::STATUS_PRO;
     }
+
+
 }

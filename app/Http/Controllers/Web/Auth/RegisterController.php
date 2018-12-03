@@ -60,11 +60,12 @@ class RegisterController extends Controller
     public function register(Request $request)
     {
         $this->validator($request->all())->validate();
-        $user = User::create([
-            'name' =>  $request->post('name'),
-            'password' => bcrypt($request->post('password')),
-            'email' => $request->post('email'),
-        ]);
+
+        $user = new User();
+        $user->name = $request->post('name');
+        $user->password = Hash::make($request->post('password'));
+        $user->email = $request->post('email');
+        $user->save();
         $user = $this->userService->register(
             $request->post('email'),
             $request->post('name'),

@@ -38,6 +38,7 @@ class InvitationController extends Controller
             'club_id' => 'integer',
             'meeting_at' => 'required'
         ]);
+
         $currentUser = \Auth::user();
         $invitation = $this->invitation->invite(
             \Auth::user(),
@@ -58,6 +59,7 @@ class InvitationController extends Controller
                 'invitation' => $invitation
             ]);
         }
+
         return $this->responder->errorResponse();
     }
 
@@ -77,6 +79,7 @@ class InvitationController extends Controller
                 'invitation' => $invitation
             ]);
         }
+        dd('asa');
         return $this->responder->errorResponse();
     }
 

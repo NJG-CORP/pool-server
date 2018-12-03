@@ -3,10 +3,15 @@ namespace App\Services;
 
 use App\Exceptions\ControllableException;
 use App\Models\User;
+use App\Models\UserGameTime;
+use App\Models\UserGameTypes;
+use App\Models\UserPayment;
 use App\Utils\R;
 use App\Utils\Utils;
 use Devfactory\Taxonomy\Models\Vocabulary;
 use GuzzleHttp\Client;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Password;
 
 class UserService
@@ -183,5 +188,110 @@ class UserService
     public function getUserName(User $user)
     {
         return $user->surname . ' ' . $user->name;
+    }
+
+    public function getUser()
+    {
+        $user = Auth::user();
+        if ($user){
+            $user->avatar = $this->getAvatarPath($user);
+            return $user;
+        }
+        return false;
+    }
+
+    public function getAvatarPath($user) {
+        if ($user){
+            return $user->avatar()->first()->path;
+        }
+        return false;
+    }
+
+    public function setGameTime($days, $fields, $user) {
+        $game_times = UserGameTime::where('user_id', $user->id)->first();
+        if ($game_times) {
+            foreach ($days as $day) {
+                in_array($day, $fields) ? $game_times->$day = 1 : $game_times->$day = 0;
+            }
+        }else{
+            $game_times = new UserGameTime();
+            $game_times->user_id = $user->id;
+            foreach ($days as $day){
+                in_array($day, $fields) ? $game_times->$day = 1 : $game_times->$day = 0;
+            }
+        }
+        return $game_times;
+    }
+
+    public function setGameType($types, $fields, $user) {
+        $game_types = UserGameTypes::where('user_id', $user->id)->first();
+        if ($game_types) {
+            foreach ($types as $type) {
+                in_array($type, $fields) ? $game_types->$type = 1 : $game_types->$type = 0;
+            }
+        }else{
+            $game_types = new UserGameTypes();
+            $game_types->user_id = $user;
+            foreach ($types as $type) {
+                in_array($type, $fields) ? $game_types->$type = 1 : $game_types->$type = 0;
+            }
+        }
+        return $game_types;
+    }
+
+    public function setGamePayment($payments, $fields, $user) {
+        $payment_type = UserPayment::where('user_id', $user->id)->first();
+        if ($payment_type) {
+            foreach ($payments as $payment) {
+                in_array($payment, $fields) ? $payment_type->$payment = 1 : $payment_type->$payment = 0;
+            }
+        }else{
+            $payment_type = new UserPayment();
+            $payment_type->user_id = $user;
+            foreach ($payments as $payment) {
+                in_array($payment, $fields) ? $payment_type->half = 1 : $payment_type->$payment = 0;
+            }
+        }
+        return $payment_type;
+    }
+
+    public function setChangedPassword($old, $new, $user) {
+        //проверяем совпадение
+        if ($this->checkHashedPassword($old, $user->password)){
+            $new_pass = $this->hashPassword($new);
+            return $new_pass;
+        }else{
+            return redirect()->back()->with('error', 'Вы ввели неправильный пароль!');
+        }
+    }
+
+    public function setUserData($fields, $user) {
+        //если пользователь хочет изменить пароль
+        if ($fields['oldPassword']){
+            $changed_pass = $this->setChangedPassword($fields['oldPassword'], $fields['newPassword'], $user);
+        }
+        //передаем данные
+        $user->email = $fields['email'];
+        $user->age = $fields['age'];
+        $user->gender = $fields['sex'];
+        $user->phone = $fields['phone'];
+        $user->street = $fields['location'];
+        $user->game_time_from = $fields['time_from'];
+        $user->game_time_to = $fields['time_to'];
+        !empty($changed_pass) ? $user->password = $changed_pass : '';
+
+        return $user;
+    }
+
+    public function checkHashedPassword($curr, $filled) {
+        if (Hash::check($curr, $filled)){
+            return true;
+        }
+        return false;
+    }
+
+    public function hashPassword($password) {
+        $password = Hash::make($password);
+        return $password;
     }
 }

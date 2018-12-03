@@ -6,7 +6,7 @@
         <section class="the_content_section">
 
             <div class="breadcrumbs inner_section">
-                <p><a href="/">Главная</a> / <a href="/profile">
+                <p><a href="/">Главная</a> / <a href="{{ route('profile.index') }}">
                         Мой профиль
                     </a> / <span>Приглашения</span></p>
             </div>
