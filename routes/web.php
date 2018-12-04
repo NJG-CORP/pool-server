@@ -32,6 +32,10 @@ Route::group(['namespace' => 'Web'], function(){
             Route::post('/profile', 'ProfileController@updateProfile')->name('profile.update');
         });
     });
+    Route::group(['namespace' => 'Events'], function () {
+        Route::get('/events', 'MainController@list');
+        Route::get('/events/{id}', 'MainController@view');
+    });
 });
 Route::group(['middleware' => 'authenticated'], function() {
 
