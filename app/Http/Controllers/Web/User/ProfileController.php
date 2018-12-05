@@ -13,6 +13,7 @@ use App\Services\PlayerService;
 use App\Services\UserService;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class ProfileController extends Controller
 {
@@ -22,9 +23,9 @@ class ProfileController extends Controller
         $user = $user->getUser();
         $player = new PlayerService();
         $types = $player->getUserGameType($user->id);
-        $payments = $player->getUserGamePayment($user->id);
+        $payment = $player->getUserGamePayment($user->id);
         $days = $player->getUserGameTime($user->id);
-        return view('site.user.profile.profile', compact('types', 'payments', 'days'));
+        return view('site.user.profile.profile', compact('types', 'payment', 'days'));
     }
 
     public function card(){
@@ -50,7 +51,7 @@ class ProfileController extends Controller
     public function updateProfile(Request $request)
     {
         // валидация полей
-        $request->validate([
+        $validator = Validator::make($request->all(), [
             'email' => 'required|email',
             'age' => 'required|numeric',
             'types' => 'required',
@@ -58,6 +59,10 @@ class ProfileController extends Controller
             'payment' => 'required',
             'sex' => 'required',
         ]);
+        if ($validator->fails()){
+            return redirect()->back()->withErrors($validator)->withInput();
+        }
+
         $fields = $request->all();
         $req_user = $fields['id'];
         $base_user = (new UserService())->getUser()->id;

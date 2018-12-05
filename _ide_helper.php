@@ -12358,9 +12358,9 @@ namespace Devfactory\Taxonomy\Facades {
          * @thrown Illuminate\Database\Eloquent\ModelNotFoundException
          * @static 
          */ 
-        public static function createTerm($vid, $name, $parent = 0, $weight = 0)
+        public static function createTerm($vid, $name, $key, $parent = 0, $weight = 0)
         {
-            return \Devfactory\Taxonomy\Taxonomy::createTerm($vid, $name, $parent, $weight);
+            return \Devfactory\Taxonomy\Taxonomy::createTerm($vid, $name, $key, $parent, $weight);
         }
          
     }

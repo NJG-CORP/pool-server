@@ -1,15 +1,21 @@
 <?php
 namespace App\Services;
 
+use App\Models\GameTime;
 use App\Models\Location;
+use App\Models\TermRelation;
 use App\Models\User;
 use App\Models\UserGameTime;
 use App\Models\UserGameTypes;
 use App\Models\UserPayment;
+use App\Models\Weekday;
 use Devfactory\Taxonomy\Models\Term;
+use Devfactory\Taxonomy\Models\Vocabulary;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Input;
 
 class PlayerService
 {
@@ -184,19 +190,25 @@ class PlayerService
     public function save($fields)
     {
         $user = (new UserService())->getUser();
-        $days = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
-        $types = ['pool', 'snooker', 'russian', 'caromball'];
-        $payments = ['half', 'me', 'you', 'unimportant'];
+
+        //обновляем(добавляем) типы игры пользователья
+        $game_types = (new UserService())->setGameType($fields['types'], $user);
+        foreach ($game_types as $game_type){
+            $game_type->save();
+        }
+
+        //обновляем(добавляем) метод оплаты пользователья
+        $game_payments = (new UserService())->setGamePayment($fields['payment'], $user);
+        foreach ($game_payments as $game_payment){
+            $game_payment->save();
+        }
 
         //обновляем(добавляем) дни игры пользователья
-        $game_times = (new UserService())->setGameTime($days, $fields['days'], $user);
-        $game_times->save();
-        //обновляем(добавляем) типы игры пользователья
-        $game_types = (new UserService())->setGameType($types, $fields['types'], $user);
-        $game_types->save();
-        //обновляем(добавляем) метод оплаты пользователья
-        $game_payments = (new UserService())->setGamePayment($payments, $fields['payment'], $user);
-        $game_payments->save();
+        $game_times = (new UserService())->setGameTime($fields['days'], $user);
+        foreach ($game_times as $game_time) {
+            $game_time->save();
+        }
+
         //сохраняем данные
         $data = (new UserService())->setUserData($fields, $user);
         if($data->save()){
@@ -331,18 +343,35 @@ class PlayerService
     }
 
     public function getUserGameTime($user_id){
-        $game_time = UserGameTime::where('user_id', $user_id)->first();
-        return $game_time;
+        $game_times = GameTime::where('user_id', $user_id)->get();
+        $data = [];
+        foreach ($game_times as $game_time){
+            $day = Weekday::where('id', $game_time->weekday_id)->first();
+            $data[] = $day->key;
+        }
+        return $data;
     }
 
     public function getUserGameType($user_id){
-        $game_type = UserGameTypes::where('user_id', $user_id)->first();
-        return $game_type;
+        $vocabulary = Vocabulary::where('name', 'GameType')->first();
+        $term_relations = TermRelation::where('relationable_id', $user_id)->where('vocabulary_id', $vocabulary->id)->get();
+        $data = [];
+        foreach ($term_relations as $term_relation){
+            $terms = Term::where('id', $term_relation->term_id)->first();
+            $data[] = $terms->key;
+        }
+        return $data;
     }
 
     public function getUserGamePayment($user_id){
-        $game_payment = UserPayment::where('user_id', $user_id)->first();
-        return $game_payment;
+        $vocabulary = Vocabulary::where('name', 'GamePaymentType')->first();
+        $term_relations = TermRelation::where('relationable_id', $user_id)->where('vocabulary_id', $vocabulary->id)->get();
+        $data = [];
+        foreach ($term_relations as $term_relation){
+            $terms = Term::where('id', $term_relation->term_id)->first();
+            $data[] = $terms->key;
+        }
+        return $data;
     }
 
     /**
@@ -379,4 +408,5 @@ class PlayerService
             'longitude' => $location['longitude']
         ]);
     }
+
 }

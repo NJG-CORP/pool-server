@@ -62,19 +62,19 @@ class User extends Authenticatable
         return $this->belongsToMany(User::class, 'favourites', 'to_id', 'from_id');
     }
 
-    public function gameType(){
+    public function getGameType(){
         $vocabulary = \Taxonomy::getVocabularyByName('GameType');
         return $this->related()
             ->where('vocabulary_id', $vocabulary->id)->with(['term']);
     }
 
-    public function skillLevel(){
+    public function getSkillLevel(){
         $vocabulary = \Taxonomy::getVocabularyByName('SkillLevel');
         return $this->related()
             ->where('vocabulary_id', $vocabulary->id)->with(['term']);
     }
 
-    public function gamePaymentType(){
+    public function getGamePaymentType(){
         $vocabulary = \Taxonomy::getVocabularyByName('GamePaymentType');
         return $this->related()
             ->where('vocabulary_id', $vocabulary->id)->with(['term']);
