@@ -11,17 +11,20 @@ class WeekdaysTableSeeder extends Seeder
      */
     public function run()
     {
-        foreach ([
-                     "Понедельник",
-                     "Вторник",
-                     "Среда",
-                     "Четверг",
-                     "Пятница",
-                     "Суббота",
-                     "Воскресенье"
-                 ] as $day){
+        $weekdays = [
+            'monday' => 'Понедельник',
+            'tuesday' => 'Вторник',
+            'wednesday' => 'Среда',
+            'thursday' => 'Четверг',
+            'friday' => 'Пятница',
+            'saturday' => 'Суббота',
+            'sunday' => 'Воскресенье',
+            ];
+
+        foreach ($weekdays as $key => $name){
             \App\Models\Weekday::create([
-                "name" => $day
+                "key" => $key,
+                "name" => $name,
             ]);
         }
     }

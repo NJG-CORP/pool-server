@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Weekday extends Model
 {
+    protected $fillable = ['key', 'name'];
     public $timestamps = false;
 
     public function usersOnThisDay(){
