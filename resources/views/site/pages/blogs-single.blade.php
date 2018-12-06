@@ -44,7 +44,7 @@
                                         <a href="{{ route('blog.show', $item->id) }}">{{ $item->title }} </a>
                                     </p>
                                     <span class="date">{{ $item->created_at }}</span>
-                                    <p>{{ $item->description }}</p>
+                                    <p>{{ substr($item->description, 0, 200) }}</p>
                                 </div>
                             </div>
                         @endforeach

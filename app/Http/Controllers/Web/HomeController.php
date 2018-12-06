@@ -24,25 +24,11 @@ class HomeController extends Controller
     public function index()
     {
 
-        if ((new UserService())->getUser()){
+        if ((new UserService())->getUser()) {
             return view('site.pages.search');
-        }
-        else{
+        } else {
             return view('site.main.main');
         }
-    }
-
-    public function news()
-    {
-        $news = (new News())->getAll();
-        return view('site.pages.news', compact('news'));
-    }
-
-    public function showNews($id)
-    {
-        $news = (new News())->getNews($id);
-        $rec_news = (new News())->getLastNews($id);
-        return view('site.pages.news-single', compact('news', 'rec_news'));
     }
 
     public function search(Request $request)
