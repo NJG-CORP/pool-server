@@ -12,6 +12,8 @@
 
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+    <link rel="stylesheet" href="/css/admin_panel.css">
+    @yield('css')
 </head>
 <body>
     <div id="app">
@@ -20,13 +22,18 @@
     
         <div class="container">
 
+            @include('admin_panel.flashes')
+
             @yield('content')
 
         </div>
     </div>
 
     <!-- Scripts -->
-    <script src="{{ asset('js/app.js') }}"></script>
-    
+    <script
+  src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+  integrity="sha256-3edrmyuQ0w65f8gfBsqowzjJe2iM6n0nKciPUp8y+7E="
+  crossorigin="anonymous"></script>
+    @yield('js')
 </body>
 </html>

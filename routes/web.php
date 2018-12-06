@@ -44,6 +44,10 @@ Route::group(['middleware' => 'authenticated'], function() {
 
 });
 
+Route::get('/admin/test', function(){
+    return view('admin_panel.users');
+});
+
 
 
 
