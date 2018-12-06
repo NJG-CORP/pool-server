@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Web;
 
 use App\Models\GameTime;
+use App\Models\News;
 use App\Models\Rating;
 use App\Models\User;
 use App\Models\UserGameTime;
@@ -28,6 +29,19 @@ class HomeController extends Controller
         else{
             return view('site.main.main');
         }
+    }
+
+    public function news()
+    {
+        $news = (new News())->getAll();
+        return view('site.pages.news', compact('news'));
+    }
+
+    public function showNews($id)
+    {
+        $news = (new News())->getNews($id);
+        $rec_news = (new News())->getLastNews($id);
+        return view('site.pages.news-single', compact('news', 'rec_news'));
     }
 
     public function search(Request $request)

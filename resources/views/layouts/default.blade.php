@@ -46,7 +46,7 @@
                 <ul>
                     <li><a href="{{ url('/') }}"></a></li>
                     <li><a href=">">Мероприятия</a></li>
-                    <li><a href="">Новости</a></li>
+                    <li><a href="{{ route('news') }}">Новости</a></li>
                     <li><a href="">Блог</a></li>
                     <li><a href="{{ route('contacts') }}">Контакты</a></li>
                 </ul>
