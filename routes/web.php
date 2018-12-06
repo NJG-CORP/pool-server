@@ -7,6 +7,8 @@ Route::group(['namespace' => 'Web'], function(){
     Route::post('/contacts', 'ContactsController@review')->name('send.review');
     Route::get('/news', 'HomeController@news')->name('news');
     Route::get('/news/{id}', 'HomeController@showNews')->name('news.show');
+    Route::get('/blog', 'HomeController@blog')->name('blog');
+    Route::get('/blog/{id}', 'HomeController@showBlog')->name('blog.show');
 
 
     Route::group(['namespace' => 'Auth'], function(){

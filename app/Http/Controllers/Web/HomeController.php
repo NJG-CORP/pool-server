@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Web;
 
+use App\Models\Blog;
 use App\Models\GameTime;
 use App\Models\News;
 use App\Models\Rating;
@@ -43,6 +44,20 @@ class HomeController extends Controller
         $rec_news = (new News())->getLastNews($id);
         return view('site.pages.news-single', compact('news', 'rec_news'));
     }
+
+    public function blog()
+    {
+        $blogs = (new Blog())->getAll();
+        return view('site.pages.blogs', compact('blogs'));
+    }
+
+    public function showBlog($id)
+    {
+        $blog = (new Blog())->getBlog($id);
+        $rec_blogs = (new Blog())->getLastBlogs($id);
+        return view('site.pages.blogs-single', compact('blog', 'rec_blogs'));
+    }
+
 
     public function search(Request $request)
     {

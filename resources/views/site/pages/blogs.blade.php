@@ -1,27 +1,30 @@
 @extends('layouts.default')
 
-@section('title', 'Новости')
+@section('title', 'Блог')
 
 @section('content')
 
     <main class="main inner_page_main news_inner_page_main">
+
         <section class="the_content_section">
             <div class="inner_section">
                 <div class="breadcrumbs">
-                    <p><a href="/">Главная</a> / <span>Новости</span></p>
+                    <p>
+                        <a href="/">Главная</a> / <span>Блог</span>
+                    </p>
                 </div>
-                <h2>Новости</h2>
+                <h2>Блог</h2>
                 <div class="news_block_wrap clearfix">
-                    @foreach($news as $item)
+                    @foreach($blogs as $item)
                         <div class="news_block_div">
                             <div class="img">
-                                <a href="{{ route('news.show', $item->id) }}">
+                                <a href="{{ route('blog.show', $item->id) }}">
                                     <img src="{{ $item->image }}" alt="News Image">
                                 </a>
                             </div>
                             <div class="text">
                                 <p class="title">
-                                    <a href="{{ route('news.show', $item->id) }}">{{ $item->title }}</a>
+                                    <a href="{{ route('blog.show', $item->id) }}">{{ $item->title }}</a>
                                 </p>
                                 <span class="date">{{ $item->created_at }}</span>
                                 <p>{{ substr($item->description, 0, 200) }}...</p>
@@ -31,6 +34,7 @@
                 </div>
             </div>
         </section>
+
     </main>
 
 @endsection
