@@ -43,7 +43,6 @@ Route::group(['middleware' => 'authenticated'], function() {
     Route::get('/invite/accept/{id}', 'InvitationController@invitationAccept')->name('accept.invite');
 
 });
-
-
+    
 
 
