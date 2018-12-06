@@ -2,17 +2,22 @@
 namespace App\Services;
 
 use App\Exceptions\ControllableException;
+use App\Models\GameTime;
+use App\Models\TermRelation;
 use App\Models\User;
 use App\Models\UserGameTime;
 use App\Models\UserGameTypes;
 use App\Models\UserPayment;
+use App\Models\Weekday;
 use App\Utils\R;
 use App\Utils\Utils;
+use Devfactory\Taxonomy\Models\Term;
 use Devfactory\Taxonomy\Models\Vocabulary;
 use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Password;
+use Illuminate\Support\Facades\Validator;
 
 class UserService
 {
@@ -194,7 +199,6 @@ class UserService
     {
         $user = Auth::user();
         if ($user){
-            $user->avatar = $this->getAvatarPath($user);
             return $user;
         }
         return false;
@@ -202,57 +206,72 @@ class UserService
 
     public function getAvatarPath($user) {
         if ($user){
-            return $user->avatar()->first()->path;
+            if ($user->avatar()->first()) {
+                return $user->avatar()->first()->path;
+            }
+            return '/default-person.jpg';
         }
         return false;
     }
 
-    public function setGameTime($days, $fields, $user) {
-        $game_times = UserGameTime::where('user_id', $user->id)->first();
-        if ($game_times) {
-            foreach ($days as $day) {
-                in_array($day, $fields) ? $game_times->$day = 1 : $game_times->$day = 0;
-            }
-        }else{
-            $game_times = new UserGameTime();
-            $game_times->user_id = $user->id;
-            foreach ($days as $day){
-                in_array($day, $fields) ? $game_times->$day = 1 : $game_times->$day = 0;
+    public function setGameTime($fields, $user) {
+        $game_times = GameTime::where('user_id', $user->id)->get();
+        $weekdays = Weekday::all();
+        $i = 1;
+        if (!empty($game_times)){
+            $this->deleteUserGameTimes($game_times);
+        }
+        foreach ($weekdays as $weekday){
+            if (in_array($weekday->key, $fields)){
+                $game_time[$i] = new GameTime();
+                $game_time[$i]->user_id = $user->id;
+                $game_time[$i]->weekday_id = $weekday->id;
+                $i++;
             }
         }
-        return $game_times;
+        return $game_time;
     }
 
-    public function setGameType($types, $fields, $user) {
-        $game_types = UserGameTypes::where('user_id', $user->id)->first();
-        if ($game_types) {
-            foreach ($types as $type) {
-                in_array($type, $fields) ? $game_types->$type = 1 : $game_types->$type = 0;
-            }
-        }else{
-            $game_types = new UserGameTypes();
-            $game_types->user_id = $user;
-            foreach ($types as $type) {
-                in_array($type, $fields) ? $game_types->$type = 1 : $game_types->$type = 0;
+    public function setGameType($fields, $user) {
+        $type_id = $this->getVocabularyId('GameType');
+        $terms = $this->getTerms($type_id);
+        $game_types = $this->getUserTermRelation($user->id, $type_id);
+        $i = 1;
+        if (!empty($game_types)){
+            $this->deleteUserGameTypes($game_types);
+        }
+        foreach ($terms as $term) {
+            if (in_array($term->key, $fields)) {
+                $user_game_type[$i] = new TermRelation();
+                $user_game_type[$i]->relationable_id = $user->id;
+                $user_game_type[$i]->relationable_type = 'App\Models\User';
+                $user_game_type[$i]->term_id = $term->id;
+                $user_game_type[$i]->vocabulary_id = $type_id;
+                $i++;
             }
         }
-        return $game_types;
+        return $user_game_type;
     }
 
-    public function setGamePayment($payments, $fields, $user) {
-        $payment_type = UserPayment::where('user_id', $user->id)->first();
-        if ($payment_type) {
-            foreach ($payments as $payment) {
-                in_array($payment, $fields) ? $payment_type->$payment = 1 : $payment_type->$payment = 0;
-            }
-        }else{
-            $payment_type = new UserPayment();
-            $payment_type->user_id = $user;
-            foreach ($payments as $payment) {
-                in_array($payment, $fields) ? $payment_type->half = 1 : $payment_type->$payment = 0;
+    public function setGamePayment($fields, $user) {
+        $type_id = $this->getVocabularyId('GamePaymentType');
+        $terms = $this->getTerms($type_id);
+        $payment_types = $this->getUserTermRelation($user->id, $type_id);
+        $i = 1;
+        if (!empty($payment_types)){
+            $this->deleteUserPaymentTypes($payment_types);
+        }
+        foreach ($terms as $term) {
+            if (in_array($term->key, $fields)) {
+                $user_payment_type[$i] = new TermRelation();
+                $user_payment_type[$i]->relationable_id = $user->id;
+                $user_payment_type[$i]->relationable_type = 'App\Models\User';
+                $user_payment_type[$i]->term_id = $term->id;
+                $user_payment_type[$i]->vocabulary_id = $type_id;
+                $i++;
             }
         }
-        return $payment_type;
+        return $user_payment_type;
     }
 
     public function setChangedPassword($old, $new, $user) {
@@ -261,7 +280,7 @@ class UserService
             $new_pass = $this->hashPassword($new);
             return $new_pass;
         }else{
-            return redirect()->back()->with('error', 'Вы ввели неправильный пароль!');
+            return false;
         }
     }
 
@@ -269,6 +288,10 @@ class UserService
         //если пользователь хочет изменить пароль
         if ($fields['oldPassword']){
             $changed_pass = $this->setChangedPassword($fields['oldPassword'], $fields['newPassword'], $user);
+            if (!$changed_pass){
+                return redirect()->back()->with('falsePass', 'Вы ввели неправильный пароль!');
+            }
+
         }
         //передаем данные
         $user->email = $fields['email'];
@@ -293,5 +316,55 @@ class UserService
     public function hashPassword($password) {
         $password = Hash::make($password);
         return $password;
+    }
+
+    public function getVocabularyId($name) {
+        $vocabulary = Vocabulary::where('name', $name)->first()->id;
+        return $vocabulary;
+    }
+
+    public function getUserTermRelation($user_id, $vocabulary_id) {
+        $term_relation = TermRelation::where('relationable_id', $user_id)->where('vocabulary_id', $vocabulary_id)->get();
+        return $term_relation;
+    }
+
+    public function getTerms($vocabulary_id) {
+        $terms = Term::where('vocabulary_id', $vocabulary_id)->get();
+        return $terms;
+    }
+
+    public function deleteUserGameTypes($types) {
+        if ($types) {
+            foreach ($types as $type) {
+                $type->delete();
+            }
+            return true;
+        }else {
+            return false;
+        }
+    }
+
+    public function deleteUserPaymentTypes($payments)
+    {
+        if ($payments) {
+            foreach ($payments as $payment) {
+                $payment->delete();
+            }
+            return true;
+        }else {
+            return false;
+        }
+    }
+
+    public function deleteUserGameTimes($times)
+    {
+        if ($times) {
+            foreach ($times as $time) {
+                $time->delete();
+            }
+            return true;
+        }else {
+            return false;
+        }
     }
 }
