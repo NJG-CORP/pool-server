@@ -25,10 +25,4 @@ class Events extends Model
     public function getMainImage() {
         return $this->images->first() ? $this->images->first()->getUrlAttribute() : Image::getDefaultImage();
     }
-
-    public function getMoreEvents() {
-        return Events::with(['images'])
-            ->whereNotIn('id', [$this->id])
-            ->get() ?? [];
-    }
 }

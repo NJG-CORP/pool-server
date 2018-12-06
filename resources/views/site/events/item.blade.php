@@ -43,7 +43,7 @@
                 <h2>Другие мероприятия</h2>
 
                 <div class="news_block_wrap other_news_block_wrap clearfix">
-                    @foreach($event->getMoreEvents() as $event)
+                    @foreach((new \App\Services\EventsService())->getMoreEvents() as $event)
                         @include('site.events._more', ['event' => $event])
                     @endforeach
                 </div>
