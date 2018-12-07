@@ -3,64 +3,70 @@
 @section('content')
 
 <div class="card-body">
-	<h4 class="card-description">{{ __('User Details') }}</h4>
+	<h4 class="card-description">{{ __('Rating Details') }}</h4>
 <div class="card-body">
-<table class="table table-striped table-bordered"><thead>
+<table class="table table-striped table-bordered">
+  <thead>
 <tr>
-	<th>Name</th>
-	<th>Surname</th>
-	<th>Age</th>
-	<th>Email</th>
-	<th>Phone number</th>
+	<th>Full Name</th>
+
+	<th>Type of review</th>
+	<th>On whom</th>
+	<th>Evaluation</th>
 	
-	<th>Changed</th>
+	<th>Feedback</th>
+  <th>Date of created</th>
 	<th class="action-column">Content</th></tr>
 </thead>
 
 <tbody>
 
-  @foreach($all_users as $u)
+  @foreach($all_rate as $rate)
 
-   <tr id="part{{$u->id}}">
+   <tr id="part{{$rate->id}}">
    	<td>
-       @if(empty($u->name)) 
+       @if(empty($rate->rater['name'])&& empty($rate->rater['surname'])) 
    		 <label style="color: red">not set</label>
             @endif
-   		{{$u->name}}</td>
-   	<td>
-       @if(empty($u->surname)) 
-   		<label style="color: red">not set</label>
-            @endif
-   		{{$u->surname}}</td>
-   	<td>
-     @if(empty($u->age)) 
-   		<label style="color: red">not set</label>
-            @endif
-
-   		{{$u->age}}</td>
-   	<td>
-
-     @if(empty($u->email)) 
-   		<label style="color: red">not set</label>
-            @endif
-   		{{$u->email}}</td>
+   		{{$rate->rater['name']}} {{$rate->rater['surname']}}</td>
    	
-   	<td> @if(empty($u->phone)) 
+   	<td>
+     @if(empty($rate->rateable_type)) 
    		<label style="color: red">not set</label>
             @endif
-            {{$u->phone}}
+    @php
+        
+        $type=ltrim($rate->rateable_type,"'App\Models\'");
+     @endphp
+   		{{$type}}</td>
+   	<td>
+
+     @if(empty($rate->rateable['name'])&& empty($rate->rateable['surname'])) 
+   		<label style="color: red">not set</label>
+            @endif
+   		{{$rate->rateable['name']}} {{$rate->rateable['surname']}}</td>
+   	
+   	<td> @if(empty($rate->score)) 
+   		<label style="color: red">not set</label>
+            @endif
+            {{$rate->score}}
    	</td>
+    <td> @if(empty($rate->comment)) 
+      <label style="color: red">not set</label>
+            @endif
+            {{$rate->comment}}
+    </td>
 <td>
 
-{{ \Carbon\Carbon::parse($u->updated_at)->format('M d Y, H:m')}}
+{{ \Carbon\Carbon::parse($rate->created_at)->format('Y-d-m')}}
 
 
 	</td>
 <td>
 	
 
-	<button type="button" class="btn btn-primary edit" data-toggle="modal" data-target="#myModal" data-id="{{$u->id}}">Edit user</button>
-	<button type="button" class="btn btn-primary delete" data-id="{{$u->id}}">Delete user</button>
+	<button type="button" class="btn btn-primary edit" data-toggle="modal" data-target="#myModal" data-id="{{$rate->id}}">Change event</button>
+	<button type="button" class="btn btn-primary delete" data-id="{{$rate->id}}">Delete review</button>
 </td>
    </tr>
 
@@ -78,7 +84,7 @@
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal">&times;</button>
-        <h4 class="modal-title">Edit details</h4>
+        <h4 class="modal-title">Change event</h4>
       </div>
       <div class="modal-body">
        	
@@ -104,7 +110,7 @@
     
   var id=$(this).data('id');
   
-   $.get("/admin/users/edit/"+id,function(data){
+   $.get("/admin/rating/edit/"+id,function(data){
      
      $('.modal-body').html(data);
      $("#updated").validate({
@@ -113,27 +119,16 @@
          item: {
            required: true,
          },
-         name: {
+         comment: {
            required: true,
          },
-         surname: {
-           required: true,
-         },
-         age: {
-           required: true,
-         },
-         mail:{
-          
-           required : true
-         },
+        
 
        },
        messages:{
            item : 'Something going wrong.',
-           name : 'Name can not be empty',
-           surname : 'Surname can not be empty',
-           age : 'Age can not empty',
-           mail:'You Must Provide Email'
+           comment : 'Feedback can not be empty',
+           
        },
        errorPlacement: function(error, element) {
 
@@ -153,7 +148,7 @@
     if(confirm("Are you sure you want to delete.")){
       var id=$(this).data('id');
       console.log(id);
-    $.post("/admin/users/delete",{
+    $.post("/admin/rating/delete",{
       'id':id,
      '_token':'{{csrf_token()}}'
     },function(){
