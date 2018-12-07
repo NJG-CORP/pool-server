@@ -293,14 +293,24 @@ class UserService
             }
 
         }
+
+        if ($fields['location']){
+            $city = (new CityService())->getCity($fields['location']);
+            if ($city){
+                $city_id = $city->id;
+            } else{
+                $city_id = (new CityService())->saveCity($fields['location']);
+            }
+        }
+
         //передаем данные
         $user->email = $fields['email'];
         $user->age = $fields['age'];
         $user->gender = $fields['sex'];
         $user->phone = $fields['phone'];
-        $user->street = $fields['location'];
         $user->game_time_from = $fields['time_from'];
         $user->game_time_to = $fields['time_to'];
+        isset($city_id) ? $user->city_id = $city_id : '';
         !empty($changed_pass) ? $user->password = $changed_pass : '';
 
         return $user;
