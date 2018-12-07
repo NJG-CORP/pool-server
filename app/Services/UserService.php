@@ -328,9 +328,41 @@ class UserService
         return $term_relation;
     }
 
+
     public function getTerms($vocabulary_id) {
         $terms = Term::where('vocabulary_id', $vocabulary_id)->get();
         return $terms;
+    }
+
+    public function getSearchedTermsId($arr, $voc_id) {
+        $terms = Term::where('vocabulary_id', $voc_id)->whereIn('key', $arr)->get();
+        $data = [];
+        if ($terms){
+            foreach ($terms as $term){
+                $data[] = $term->id;
+            }
+        }
+        return $data;
+    }
+
+    public function getSearchedTermRelations($term_id, $voc_id, $users_id) {
+        $term_relation = TermRelation::whereIn('term_id', $term_id)->whereIn('relationable_id', $users_id)->where('vocabulary_id', $voc_id)->get();
+        return $term_relation;
+    }
+
+    public function getSearchedWeekdayId($arr) {
+        $weekdays = Weekday::whereIn('key', $arr)->get();
+        $data = [];
+        foreach ($weekdays as $weekday) {
+            $data[] = $weekday->id;
+        }
+        return $data;
+    }
+
+    public function getSearchedGameTime($weekday_id, $users_id)
+    {
+        $data = GameTime::whereIn('weekday_id', $weekday_id)->whereIn('user_id', $users_id)->get();
+        return $data;
     }
 
     public function deleteUserGameTypes($types) {

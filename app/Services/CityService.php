@@ -41,4 +41,9 @@ class CityService
         ]);
         return $city;
     }
+
+    public function getCityId($name) {
+        $city = City::where('name', $name)->first();
+        return $city->id;
+    }
 }

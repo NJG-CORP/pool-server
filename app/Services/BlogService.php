@@ -16,8 +16,7 @@ class BlogService
     }
 
     public function getLastBlogs($id) {
-        $blog = Blog::where('id', '!=', $id)->get();
-        $blog = $blog->slice(count($blog) - 2, count($blog));
+        $blog = Blog::where('id', '!=', $id)->orderBy('id', 'desc')->take(2)->get();
         return $blog;
     }
 }

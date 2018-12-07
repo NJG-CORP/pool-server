@@ -30,20 +30,4 @@ class HomeController extends Controller
             return view('site.main.main');
         }
     }
-
-    public function search(Request $request)
-    {
-        $request->validate([
-           'types' => 'required',
-           'sex' => 'required',
-           'payment' => 'required',
-           'days' => 'required'
-        ]);
-        $fields = $request->all();
-        $search = new PlayerService();
-        $results = $search->search($fields);
-
-        return view('site.pages.search', compact('results'));
-    }
-
 }

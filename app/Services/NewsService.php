@@ -16,9 +16,7 @@ class NewsService
     }
 
     public function getLastNews($id) {
-        $news = News::where('id', '!=', $id)->get();
-        $news = $news->slice(count($news) - 2, count($news));
-
+        $news = News::where('id', '!=', $id)->orderBy('id', 'desc')->take(2)->get();;
         return $news;
     }
 }

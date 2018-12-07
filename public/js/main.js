@@ -8141,7 +8141,11 @@ $(document).on("pjax:end", function () {
 
 
 $('#profileform-location').kladr({
-    oneString: true
+    type: $.kladr.type.city
+});
+
+$('#search-location').kladr({
+    type: $.kladr.type.city
 });
 
 $("#range").ionRangeSlider({

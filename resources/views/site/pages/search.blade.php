@@ -32,7 +32,7 @@
                         <div class="the_form_div the_form_div_half">
                             <div class="form-group field-searchform-location">
 
-                                <input type="text" id="searchform-location" class="form-control"
+                                <input type="text" id="search-location" class="form-control"
                                        name="location" placeholder="Город" autocomplete="off">
 
                                 <p class="help-block help-block-error"></p>
