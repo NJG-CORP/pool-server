@@ -1,6 +1,7 @@
 <?php
 namespace App\Services;
 
+use App\Models\City;
 use App\Models\GameTime;
 use App\Models\Location;
 use App\Models\TermRelation;
@@ -221,92 +222,70 @@ class PlayerService
         $users_id = [];
         $searched_users = [];
 
-        //начинаем поиск, Пол, добавляем ид найденных пользователей в массив
-        $users = User::whereIn('gender', $fields['sex'])->get();
-        foreach ($users as $user) {
-            $users_id[] = $user->id;
+        //начинаем поиск, Пол, Город
+        if ($fields['location']) {
+            $city_id = (new CityService())->getCityId($fields['location']);
+            if ($city_id) {
+                $users = User::whereIn('gender', $fields['sex'])->where('city_id', $city_id)->get();
+            }
+        }else{
+            $users = User::whereIn('gender', $fields['sex'])->get();
         }
+
+        // добавляем ид найденных пользователей в массив
+        if (isset($users)){
+            foreach ($users as $user) {
+                $users_id[] = $user->id;
+            }
+        }else{
+            return false;
+        }
+
         //если поиск дал результат, идем дальше, Тип
         if (!empty($users_id)){
-            $search_types = UserGameTypes::whereIn('user_id', $users_id)->get();
-            foreach ($search_types as $search_type) {
-                if (in_array('pool', $fields['types']) && $search_type->pool == 1) {
-                    $user = $search_type->user_id;
-                    $searched_users[] = $user;
+            $vocabulary_id = (new UserService())->getVocabularyId('GameType');
+            $terms = (new UserService())->getSearchedTermsId($fields['types'], $vocabulary_id);
+            $term_relations = (new UserService())->getSearchedTermRelations($terms, $vocabulary_id, $users_id);
+            if ($term_relations) {
+                foreach ($term_relations as $term_relation){
+                    !in_array($term_relation->relationable_id, $searched_users) ? $searched_users[] = $term_relation->relationable_id : '';
                 }
-                elseif (in_array('snooker', $fields['types']) && $search_type->snooker == 1) {
-                    $user = $search_type->user_id;
-                    $searched_users[] = $user;
-                }
-                elseif (in_array('russian', $fields['types']) && $search_type->russian == 1) {
-                    $user = $search_type->user_id;
-                    $searched_users[] = $user;
-                }
-                elseif (in_array('caromball', $fields['types']) && $search_type->caromball == 1) {
-                    $user = $search_type->user_id;
-                    $searched_users[] = $user;
-                }
+            }else{
+                return false;
             }
+        }else{
+            return false;
         }
 
         //если поиск дал результат, идем дальше, Тип Оплаты
         if (!empty($searched_users)){
-            $search_payments = UserPayment::whereIn('user_id', $searched_users)->get();
-            $searched_users = [];
-            foreach ($search_payments as $search_payment) {
-                if (in_array('half', $fields['payment']) && $search_payment->half == 1) {
-                    $user = $search_payment->user_id;
-                    $searched_users[] = $user;
+            $vocabulary_id = (new UserService())->getVocabularyId('GamePaymentType');
+            $terms = (new UserService())->getSearchedTermsId($fields['payment'], $vocabulary_id);
+            $term_relations = (new UserService())->getSearchedTermRelations($terms, $vocabulary_id, $searched_users);
+            if ($term_relations) {
+                $searched_users = [];
+                foreach ($term_relations as $term_relation){
+                    !in_array($term_relation->relationable_id, $searched_users) ? $searched_users[] = $term_relation->relationable_id : '';
                 }
-                elseif (in_array('me', $fields['payment']) && $search_payment->me == 1) {
-                    $user = $search_payment->user_id;
-                    $searched_users[] = $user;
-                }
-                elseif (in_array('you', $fields['payment']) && $search_payment->you == 1) {
-                    $user = $search_payment->user_id;
-                    $searched_users[] = $user;
-                }
-                elseif (in_array('unimportant', $fields['payment']) && $search_payment->unimportant == 1) {
-                    $user = $search_payment->user_id;
-                    $searched_users[] = $user;
-                }
+            }else{
+                return false;
             }
         }
 
         //если поиск дал результат, идем дальше, Дни Недели
         if (!empty($searched_users)){
-            $search_days = UserGameTime::whereIn('user_id', $searched_users)->get();
-            $searched_users = [];
-            foreach ($search_days as $search_day) {
-                if (in_array('monday', $fields['days']) && $search_day->monday == 1) {
-                    $user = $search_day->user_id;
-                    $searched_users[] = $user;
+            $weekdays = (new UserService())->getSearchedWeekdayId($fields['days']);
+            $game_times = (new UserService())->getSearchedGameTime($weekdays, $searched_users);
+            if ($game_times){
+                $searched_users = [];
+                foreach ($game_times as $game_time) {
+                    !in_array($game_time->user_id, $searched_users) ? $searched_users[] = $game_time->user_id : '';
                 }
-                elseif (in_array('tuesday', $fields['days']) && $search_day->tuesday == 1) {
-                    $user = $search_day->user_id;
-                    $searched_users[] = $user;
-                }
-                elseif (in_array('wednesday', $fields['days']) && $search_day->wednesday == 1) {
-                    $user = $search_day->user_id;
-                    $searched_users[] = $user;
-                }
-                elseif (in_array('thursday', $fields['days']) && $search_day->thursday == 1) {
-                    $user = $search_day->user_id;
-                    $searched_users[] = $user;
-                }
-                elseif (in_array('friday', $fields['days']) && $search_day->friday == 1) {
-                    $user = $search_day->user_id;
-                    $searched_users[] = $user;
-                }
-                elseif (in_array('saturday', $fields['days']) && $search_day->saturday == 1) {
-                    $user = $search_day->user_id;
-                    $searched_users[] = $user;
-                }
-                elseif (in_array('sunday', $fields['days']) && $search_day->sunday == 1) {
-                    $user = $search_day->user_id;
-                    $searched_users[] = $user;
-                }
+            }else{
+                return false;
             }
+        }else{
+            return false;
         }
 
         //если поиск дал результат, идем дальше, Рейтинг
@@ -408,5 +387,4 @@ class PlayerService
             'longitude' => $location['longitude']
         ]);
     }
-
 }

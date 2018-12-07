@@ -293,14 +293,24 @@ class UserService
             }
 
         }
+
+        if ($fields['location']){
+            $city = (new CityService())->getCity($fields['location']);
+            if ($city){
+                $city_id = $city->id;
+            } else{
+                $city_id = (new CityService())->saveCity($fields['location']);
+            }
+        }
+
         //передаем данные
         $user->email = $fields['email'];
         $user->age = $fields['age'];
         $user->gender = $fields['sex'];
         $user->phone = $fields['phone'];
-        $user->street = $fields['location'];
         $user->game_time_from = $fields['time_from'];
         $user->game_time_to = $fields['time_to'];
+        isset($city_id) ? $user->city_id = $city_id : '';
         !empty($changed_pass) ? $user->password = $changed_pass : '';
 
         return $user;
@@ -328,9 +338,41 @@ class UserService
         return $term_relation;
     }
 
+
     public function getTerms($vocabulary_id) {
         $terms = Term::where('vocabulary_id', $vocabulary_id)->get();
         return $terms;
+    }
+
+    public function getSearchedTermsId($arr, $voc_id) {
+        $terms = Term::where('vocabulary_id', $voc_id)->whereIn('key', $arr)->get();
+        $data = [];
+        if ($terms){
+            foreach ($terms as $term){
+                $data[] = $term->id;
+            }
+        }
+        return $data;
+    }
+
+    public function getSearchedTermRelations($term_id, $voc_id, $users_id) {
+        $term_relation = TermRelation::whereIn('term_id', $term_id)->whereIn('relationable_id', $users_id)->where('vocabulary_id', $voc_id)->get();
+        return $term_relation;
+    }
+
+    public function getSearchedWeekdayId($arr) {
+        $weekdays = Weekday::whereIn('key', $arr)->get();
+        $data = [];
+        foreach ($weekdays as $weekday) {
+            $data[] = $weekday->id;
+        }
+        return $data;
+    }
+
+    public function getSearchedGameTime($weekday_id, $users_id)
+    {
+        $data = GameTime::whereIn('weekday_id', $weekday_id)->whereIn('user_id', $users_id)->get();
+        return $data;
     }
 
     public function deleteUserGameTypes($types) {

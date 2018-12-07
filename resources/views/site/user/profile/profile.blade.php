@@ -87,7 +87,7 @@
                                             <label class="control-label" for="profileform-location">Город,
                                                 страна</label>
                                             <input type="text" id="profileform-location" class="form-control"
-                                                   name="location" value="{{ !old('street') ? $user->street : old('street') }}"
+                                                   name="location" value="{{ !old('street') ? $user->city()->first()->name : old('street') }}"
                                                    placeholder="Улица, номер, город, страна" autocomplete="off">
                                             <div class="help-block"></div>
                                         </div>

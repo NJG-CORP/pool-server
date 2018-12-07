@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers\Web;
 
+use App\Models\Blog;
 use App\Models\GameTime;
+use App\Models\News;
 use App\Models\Rating;
 use App\Models\User;
 use App\Models\UserGameTime;
@@ -22,27 +24,10 @@ class HomeController extends Controller
     public function index()
     {
 
-        if ((new UserService())->getUser()){
+        if ((new UserService())->getUser()) {
             return view('site.pages.search');
-        }
-        else{
+        } else {
             return view('site.main.main');
         }
     }
-
-    public function search(Request $request)
-    {
-        $request->validate([
-           'types' => 'required',
-           'sex' => 'required',
-           'payment' => 'required',
-           'days' => 'required'
-        ]);
-        $fields = $request->all();
-        $search = new PlayerService();
-        $results = $search->search($fields);
-
-        return view('site.pages.search', compact('results'));
-    }
-
 }

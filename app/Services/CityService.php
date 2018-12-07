@@ -41,4 +41,21 @@ class CityService
         ]);
         return $city;
     }
+
+    public function getCityId($name) {
+        $city = City::where('name', $name)->first();
+        return $city->id;
+    }
+
+    public function getCity($name) {
+        $city = City::where('name', $name)->first();
+        return $city;
+    }
+
+    public function saveCity($name) {
+        $city = new City();
+        $city->name = $name;
+        $city->save();
+        return $city->id;
+    }
 }
