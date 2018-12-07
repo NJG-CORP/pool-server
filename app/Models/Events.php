@@ -31,4 +31,19 @@ class Events extends Model
             ->whereNotIn('id', [$this->id])
             ->get() ?? [];
     }
+
+    /* 
+     @role: 
+     
+     @comments: 
+     */ 
+     
+     public function getMainImageEvent() 
+     { 
+     
+        return $this->hasOne(Image::class,'id','mainImg');
+     
+     }
+
+     
 }

@@ -2,7 +2,9 @@
 namespace App\Services\AdminPanel;
 
 use App\Models\Events;
+use App\Models\Image;
 use App\Services\ImageService;
+
 
 class EventService
 {
@@ -22,6 +24,19 @@ class EventService
 	 }
 
 	 /* 
+	  @role: get specific event details
+	  
+	  @comments: 
+	  */ 
+	  
+	  public function getOne($id) 
+	  { 
+	  	
+	  		return Events::with('images')->findOrFail($id);
+	  
+	  
+	  }
+	 /* 
 	  @role: save Event 
 	  
 	  @comments: 
@@ -30,6 +45,9 @@ class EventService
 	  public function saveEvent($request) 
 	  { 
 	  		
+	  		if($request->event_id>0) // if we have update request
+	  		$event = Events::findOrFail($request->event_id);
+	  		else	// add new 
 	  		$event = new Events;
 
 	  		$event->title = $request->title;
@@ -41,24 +59,47 @@ class EventService
 	  		$event->description = $request->description;
 	  		$event->save();
 
+
+	  		
 	  		if($event)
 	  		{
 	  			 // check if event has any images
 	  			 if($request->mainImg!='')
 	  			 {	
 
-	  			 	(new ImageService)->create($request->file('mainImg'),$event,'abc.jpg');
+
+	  			 	//echo $_FILES['mainImg']['tmp_name']; exit;
+	  			 	$main_image = (new ImageService)->create($request->file('mainImg'),$event,$request->file('mainImg')->getClientOriginalName());
+
+	  			 	// now save main image id to event table
+	  			 	$event->mainImg = $main_image->id;
+	  			 	$event->save();
 
 	  			 }	
 
 	  			 if($request->images!='')
-	  			 {
+	  			 {	
+	  			 	
+	  			 	foreach ($request->images as $key => $image) {
+	  			 		 
+	  			 		 // save additional images	
+	  			 		 (new ImageService)->create($image,$event,$image->getClientOriginalName());
+
+
+	  			 	}
 
 	  			 }
+	  			 
+	  	 		return true;
+	  	 				 
 	  		}	
-	  
-	  
+
+	  		else 
+	  		return redirect()->route('get:all:events');	
+
 	  }
+
+
 
 
 

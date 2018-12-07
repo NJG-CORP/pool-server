@@ -3,43 +3,43 @@
 @section('content')
 
 
-<div class="events">
+<div class="news">
 
-	<h2>List Of Events </h2>
+	<h2>List Of News </h2>
 	<hr>
-	<a href="{{ route('get:event:formAdd')}}">
+	<a href="{{ route('get:news:formAdd')}}">
 		<button class="btn btn-success"> Add New </button>
 	</a>	
 		
 
-	@if(count($events_list_data))
+	@if(count($news_list_data))
 	
 	<div class="clearfix"></div>
 	<div>
-	{{ $events_list_data->links()}}	
+	{{ $news_list_data->links()}}	
 	</div>
 
 	<table class="table">
 			
 		<tr>
 			<th> Title </th>
-			<th> Club </th>
+			
 			<th> Date </th>
 			<th> Control </th>
 	
 		</tr>	
 		
-		@foreach($events_list_data as $event)
+		@foreach($news_list_data as $news)
 			
-		<tr id="ev{{$event->id}}">		
-			<td> {{ $event->title }} </td>
-			<td> {{ $event->club->name}} </td>
-			<td> {{ \Carbon\Carbon::parse($event->date)->format('M d Y H:m')}} </td>
+		<tr id="ev{{$news->id}}">		
+			<td> {{ $news->title }} </td>
+			
+			<td> {{ \Carbon\Carbon::parse($news->date)->format('M d Y H:m')}} </td>
 			<td> 
-				<a href="{{ route('get:event:formEdit',['id'=>$event->id])}}">
+				<a href="{{ route('get:news:formEdit',['id'=>$news->id])}}">
 					<button class="btn btn-primary"> Change Event </button>
 				</a>	
-				<button class="btn btn-danger rmEvent" type="button"  data-id="{{$event->id}}"> Delete Event </button>
+				<button class="btn btn-danger rmEvent" type="button"  data-id="{{$news->id}}"> Delete Event </button>
 			</td>
 	
 		</tr>
@@ -49,7 +49,7 @@
 
 	</table>	
 
-	{{ $events_list_data->links()}}
+	{{ $news_list_data->links()}}
 	
 	@else 
 
@@ -81,7 +81,7 @@
           $.ajax({
 
             type : 'POST',
-            url  : '{{ route("post:remove:event")}}',
+            url  : '{{ route("post:remove:news")}}',
             data :{
               'id' : $(this).data('id'),
               '_token' : '{{csrf_token()}}'

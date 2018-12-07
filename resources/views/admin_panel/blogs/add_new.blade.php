@@ -2,11 +2,11 @@
 
 @section('content')
 
-<h2> Add New Event </h2>
+<h2> Add New Blog </h2>
 <hr>
 
 
-<form action="{{route('post:save:event')}}" method="post" enctype="multipart/form-data" id="frmCreateEvent">
+<form action="{{route('post:save:blog')}}" method="post" enctype="multipart/form-data" id="frmCreateBlog">
 
 {{ csrf_field()}}
 
@@ -30,39 +30,9 @@
 
 
 </div>
-<div class="form-group field-addeventform-clubid required">
-<label class="control-label" for="addeventform-clubid">Club</label>
-<select id="addeventform-clubid" class="form-control" name="club_id">
-	@foreach($clubs as $club)
-		
-		<option value="{{$club->id}}"> {{ $club->name }}</option>
-
-	@endforeach
 
 
-</select>
 
-
-</div>
-<div class="form-group field-addeventform-date required">
-<label class="control-label" for="addeventform-date">date</label>
-<div class="input-group date">
-	<span class="input-group-addon">
-		<i class="far fa-calendar-alt"></i>
-	</span>
-		<input type="text" id="addeventform-date" class="form-control datepicker" name="date"></div>
-
-
-</div>
-<div class="form-group field-addeventform-time required">
-<label class="control-label" for="addeventform-time">Time</label>
-<div class="input-group time"><span class="input-group-addon">
-	<i class="far fa-clock"></i>
-</span>
-<input type="text" id="addeventform-time" class="form-control timepicker" name="time"></div>
-
-
-</div>
 
 <div class="form-group field-addeventform-mainimg">
 <label class="control-label" for="addeventform-mainimg">Main image</label>
@@ -76,6 +46,28 @@
 
 
 </div>
+
+<div class="form-group field-addeventform-url required">
+<label class="control-label" for="addeventform-url">Gallery Title</label>
+<input type="text" id="addeventform-url" class="form-control" name="gallery_title" aria-required="true">
+
+
+</div>
+
+
+<div class="form-group field-addeventform-images">
+<label class="control-label" for="addeventform-images">Gallery Images</font></label>
+
+<input type="file" id="addeventform-images"  multiple="" name="gallery_images[]">
+
+
+</div>
+
+
+
+
+
+
 <div class="form-group field-addeventform-paragraph">
 <label class="control-label" for="addeventform-paragraph">Paragraph</label>
 <textarea name="paragraph" id="" cols="30" rows="10" class="textarea"></textarea>
@@ -116,33 +108,31 @@
 @section('js')
 
 	<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
-  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+  
 	 <script src="/vendor/unisharp/laravel-ckeditor/ckeditor.js"></script>
     <script src="/vendor/unisharp/laravel-ckeditor/adapters/jquery.js"></script>
     <script src="/js/timepicker.js"></script>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/jquery.validation/1.15.1/jquery.validate.min.js"></script>	
 	<script> 
 		$(document).ready(function(){
-			$('.datepicker').datepicker({"dateFormat":"yy-mm-dd","showSecond":false,"showTime":false});
+			
 
 			$('.textarea').ckeditor();
 
 			
-			$('.timepicker').timepicker({"timeFormat":"HH:mm:ss","showSecond":false});
+			
 
-	 $("#frmCreateEvent").validate({
+	 $("#frmCreateBlog").validate({
         
         rules: {
+          
           title: {
             required: true,
           },
+          description: {
+            required: true,
+          },
           
-          date: {
-            required: true,
-          },
-          time: {
-            required: true,
-          },
           url: {
             required: true,
           },
@@ -162,15 +152,9 @@
         },
         errorPlacement: function(error, element) {
         
-               if (element.attr("name") == "date" || element.attr("name") == "time")
-            {
-                error.appendTo( element.parent().parent("div"));
-            }
-            
-            else 
-            	{ 
-            		error.insertAfter(element);
-            	}
+               
+           error.insertAfter(element);
+            	
            
         }
       });
