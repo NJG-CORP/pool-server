@@ -9,7 +9,7 @@ class Club extends Model
 {
     use SoftDeletes;
     protected $dates = ['created_at', 'updated_at', 'deleted_at'];
-
+     protected $guarded = [];
     public function images(){
         return $this->morphMany(Image::class, 'imageable');
     }
@@ -29,4 +29,5 @@ class Club extends Model
     public function getCalculatedRatingAttribute(){
         return (int)$this->rating()->avg('score');
     }
+
 }

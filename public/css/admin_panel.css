@@ -1,0 +1,22 @@
+.error {
+	color:red;
+}
+
+.img 
+{
+	 width:150px;
+	 float:left;
+	 display: inline-block;
+	 border: 1px solid #ccc;
+	 text-align: center;
+    padding: 20px;
+    margin-right: 10px;
+    max-height: 250px;
+    overflow-y: scroll;
+}
+
+.rmImg{ margin-bottom: 10px;}
+
+label{
+	display: block !important
+}
