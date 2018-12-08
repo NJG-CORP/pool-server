@@ -19,7 +19,7 @@ class EventService
 	 public function getEventsData() 
 	 { 
 	 
-	 		return Events::paginate(10);
+	 		return Events::orderBy('id','desc')->paginate(10);
 	 
 	 }
 

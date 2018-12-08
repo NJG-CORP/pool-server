@@ -19,7 +19,7 @@ class NewsService
 	 public function getNewsData() 
 	 { 
 	 
-	 		return News::paginate(10);
+	 		return News::orderBy('id','desc')->paginate(10);
 	 
 	 }
 

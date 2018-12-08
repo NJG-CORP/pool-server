@@ -37,9 +37,9 @@
 			<td> {{ \Carbon\Carbon::parse($news->date)->format('M d Y H:m')}} </td>
 			<td> 
 				<a href="{{ route('get:news:formEdit',['id'=>$news->id])}}">
-					<button class="btn btn-primary"> Change Event </button>
+					<button class="btn btn-primary"> Change News </button>
 				</a>	
-				<button class="btn btn-danger rmEvent" type="button"  data-id="{{$news->id}}"> Delete Event </button>
+				<button class="btn btn-danger rmEvent" type="button"  data-id="{{$news->id}}"> Delete News </button>
 			</td>
 	
 		</tr>

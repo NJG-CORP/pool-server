@@ -19,7 +19,7 @@ class BlogService
 	 public function getBlogsData() 
 	 { 
 	 
-	 		return Blogs::paginate(10);
+	 		return Blogs::orderBy('id','desc')->paginate(10);
 	 
 	 }
 

@@ -78,7 +78,7 @@
         <button type="submit" class="btn btn-success" name="login-button">
         Create
     </button> 
-    <a href="{{ route('get:all:events')}}">
+    <a href="{{ route('get:all:news')}}">
       <button type="button" class="btn btn-danger">
         Cancel
     </button>    
