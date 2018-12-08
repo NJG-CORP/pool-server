@@ -12,7 +12,7 @@ class UserService
      */
     
     public function getAllUserData(){
-       $data=User::all();
+       $data=User::paginate(10);
         return $data;
        
     }
@@ -26,6 +26,9 @@ class UserService
     
     {
         $data=User::where('id',$id)->first();
+        if(empty($data)){
+            return null;
+        }
          return $data; 
     }
     /**

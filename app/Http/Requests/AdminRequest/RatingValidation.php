@@ -28,4 +28,12 @@ class RatingValidation extends FormRequest
             'comment'=>'required'
         ];
     }
+    public function messages()
+    {
+      return ['comment.required' => 'Comment can not empty.'
+
+             
+           
+            ];
+    }
 }

@@ -3,8 +3,11 @@
 @section('content')
 
 <div class="card-body">
-	<h4 class="card-description">{{ __('Rating Details') }}</h4>
+	<h2 class="card-description">{{ __('Rating Details') }}</h2>
+  <hr>
 <div class="card-body">
+  @if(count($all_rate))
+  {{ $all_rate->links()}}
 <table class="table table-striped table-bordered">
   <thead>
 <tr>
@@ -74,6 +77,9 @@
   @endforeach	
 </tbody>
 </table>
+@else
+<h4>Nothing To Show</h4>
+@endif
 </div></div>
 
 

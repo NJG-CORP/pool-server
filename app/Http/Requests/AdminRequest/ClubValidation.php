@@ -34,4 +34,15 @@ class ClubValidation extends FormRequest
               'kitchen'=>'required',
         ];
     }
+    public function messages()
+    {
+      return ['title.required' => 'Title can not empty.',
+
+              'pool.required'=>'Pool can not empty.',
+              'russian.required'=>'Russian can not empty.',
+              'snooker.required'=>'Snooker can not empty.',
+              'cannon.required'=>'Cannon can not empty.',
+              'kitchen.required'=>'Kitchen can not empty.'
+            ];
+    }
 }

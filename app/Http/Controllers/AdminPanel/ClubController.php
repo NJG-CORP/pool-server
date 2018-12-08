@@ -38,4 +38,39 @@ class ClubController extends Controller
         
          return view('admin_panel.clubs.show')->with(compact('all_club'));
     }
+    public function edit($id)
+    {
+        $data=$this->clubs->editClubData($id);
+        $kitchens=$this->clubs->getallKitchensData();
+        $days=$this->clubs->getWeekDay();
+        //$worktime=$this->clubs->getWorktime($id);
+          if(empty($data)){
+
+                return $this->responder->errorResponse(R::USER_LOGIN_FAILURE, null, 401);
+        }
+        return view('admin_panel.clubs.edit',compact('data','kitchens','days','worktime'));
+    }
+    public function update(ClubValidation $request)
+    {
+        $data=$this->clubs->updateDetails($request);
+          if(empty($data)){
+
+                return $this->responder->errorResponse(R::USER_LOGIN_FAILURE, null, 401);
+        }
+        return redirect()->route('get:club:data');
+    }
+    public function delete(Request $request)
+    {
+
+       $data=$this->clubs->getDeleteDetails($request);
+        if($delete){
+
+           return redirect()->route('get:club:data'); 
+        }
+        else{
+       return $this->responder->errorResponse(R::USER_LOGIN_FAILURE, null, 401);
+      }
+       
+    }
+
 }

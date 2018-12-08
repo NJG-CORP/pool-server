@@ -33,4 +33,16 @@ class UserValidation extends FormRequest
                'mail'=>'required'
         ];
     }
+   public function messages()
+    {
+      return [
+      'item.required' => 'Someting going wrong.',
+
+              'name.required'=>'name can not empty.',
+              'surname.required'=>'surname can not empty.',
+              'age.required'=>'age can not empty.',
+              'mail.required'=>'mail can not empty.'
+             
+            ];
+    }
 }

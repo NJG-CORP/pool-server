@@ -86,10 +86,12 @@
   </div>
   
  
-  <button type="Submit" class="btn btn-success" class="update">Change</button>
-
-
+  <button type="Submit" class="btn btn-success" class="update">Save</button>
+<a href="{{route('get:club:data')}}">
+<button type="button" class="btn btn-danger">Cancel</button>
+</a>
      </form>
+
 </div>
 @endsection
 @section('js')

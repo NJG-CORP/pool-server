@@ -19,15 +19,102 @@
                 <div class="collapse navbar-collapse" id="app-navbar-collapse">
                     <!-- Left Side Of Navbar -->
                     <ul class="nav navbar-nav">
-                        &nbsp;
+
+                        <li >
+
+                        <a href="#"  >Users </a>
+
+                        
+
+                       </li>     
+
+                        <li class="dropdown">
+
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" >Events <span class="caret"></span>  </a>
+
+                        <ul class="dropdown-menu">
+                            <li>
+                                <a href="{{ route('get:all:events')}}">List All</a>
+                                <a href="{{ route('get:event:formAdd')}}">Add New</a>
+
+                            </li>
+
+
+                        </ul>
+
+
+                       </li>     
+
+            
+                        <li class="dropdown">
+
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" >Clubs <span class="caret"></span>  </a>
+
+                        <ul class="dropdown-menu">
+                            <li>
+                                <a href="#">List All</a>
+                                <a href="#">Add New</a>
+                            </li>
+
+
+                        </ul>
+
+
+                       </li>  
+
+                       <li class="dropdown">
+
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" >News <span class="caret"></span>  </a>
+
+                        <ul class="dropdown-menu">
+                            <li>
+                                <a href="{{ route('get:all:news')}}">List All</a>
+                                <a href="{{ route('get:news:formAdd')}}">Add New</a>
+                            </li>
+
+
+                        </ul>
+
+
+                       </li>     
+    
+
+                        <li class="dropdown">
+
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" >Blog <span class="caret"></span>  </a>
+
+                        <ul class="dropdown-menu">
+                            <li>
+                                <a href="{{ route('get:all:blogs')}}">List All</a>
+                                <a href="{{ route('get:blog:formAdd')}}">Add New</a>
+                            </li>
+
+
+                        </ul>
+
+
+                       </li>  
+    
+                        <li >
+
+                        <a href="#"  >Reviews  </a>
+
+                        
+
+                       </li>     
+
+
+
+
+
                     </ul>
 
                     <!-- Right Side Of Navbar -->
                     <ul class="nav navbar-nav navbar-right">
                         <!-- Authentication Links -->
                         @guest
-                            <li><a href="#">Login</a></li>
-                            <li><a href="#">Register</a></li>
+                            {{-- <li><a href="#">Login</a></li>
+                            <li><a href="#">Register</a></li> --}}
                         @else
                             <li class="dropdown">
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true">

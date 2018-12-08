@@ -3,9 +3,14 @@
 @section('content')
 
 <div class="card-body">
-	<h4 class="card-description">{{ __('Clubs Details') }}</h4>
+	<h2 class="card-description">{{ __('Clubs Details') }}</h2>
+  <hr>
 <div class="card-body">
+
   <a href="{{route('get:club:create')}}"><button type="button" class="btn btn-primary" >Add</button></a>
+  @if(count($all_club))
+  {{ $all_club->links()}}
+  
 <table class="table table-striped table-bordered">
   <thead>
 <tr>
@@ -80,6 +85,9 @@
   @endforeach	
 </tbody>
 </table>
+@else
+<h4>Nothing To Show</h4>
+@endif
 </div></div>
 
 
