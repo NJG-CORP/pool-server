@@ -34,6 +34,7 @@
   src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
   integrity="sha256-3edrmyuQ0w65f8gfBsqowzjJe2iM6n0nKciPUp8y+7E="
   crossorigin="anonymous"></script>
+  <script src="{{ asset('js/app.js')}}"></script>
     @yield('js')
 </body>
 </html>

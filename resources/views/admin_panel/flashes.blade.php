@@ -3,7 +3,7 @@
 	<ul>
 		@foreach($errors->all() as $err)
 	
-		<li> {{ $err }} </li>
+		<li class="alert alert-danger"> {{ $err }} </li>
 		
 		@endforeach
 	</ul>
@@ -12,6 +12,7 @@
 
 @if(\Session::has('success'))
 	
-	{{ \Session::get('success') }}
+	
+	<p class="alert alert-success"> {{ \Session::get('success') }} </p>
 
 @endif
