@@ -74,9 +74,9 @@
 <td>
 	
 {{--
-	<button type="button" class="btn btn-primary edit" data-toggle="modal" data-target="#myModal" data-id="{{$club->id}}">Change event</button>--}}
-  <a href="{{route('get:club:edit',['id'=>$club->id])}}"><button type="button" class="btn btn-primary" >Change event</button></a>
-	<button type="button" class="btn btn-primary delete" data-id="{{$club->id}}">Delete review</button>
+	<button type="button" class="btn btn-primary edit" data-toggle="modal" data-target="#myModal" data-id="{{$club->id}}">Change Club</button>--}}
+  <a href="{{route('get:club:edit',['id'=>$club->id])}}"><button type="button" class="btn btn-primary" >Change Club</button></a>
+	<button type="button" class="btn btn-primary delete" data-id="{{$club->id}}">Delete Club</button>
 
 </td>
    </tr>

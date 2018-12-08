@@ -80,13 +80,13 @@
 </select>
   <div class="form-group">
     <label for="location">Location</label>
-    <input type="number" class="form-control" id="location" name="location" placeholder="Enter Location" value="{{$data->location_id}}">
+    <input type="number" class="form-control" id="location" name="location" placeholder="Enter Location" value="{{$data->location_id}}" required>
     
   </div>
   
   <div class="form-group">
     <label for="mob">Phone No.</label>
-    <input type="number" class="form-control" id="mob" name="mob" placeholder="Enter phone number" value="{{$data->phone}}">
+    <input type="number" class="form-control" id="mob" name="mob" placeholder="Enter phone number" value="{{$data->phone}}" required>
     
   </div>
   
@@ -120,6 +120,15 @@
           cannon: {
            required: true,
          },
+         des: {
+           required: true,
+         },
+           mob: {
+           required: true,
+         },
+           location: {
+           required: true,
+         },
         
 
        },
@@ -129,6 +138,9 @@
            russian : 'You must complete the "Game".',
            snooker : 'You must complete the "Game".',
            cannon : 'You must complete the "Game".',
+           des : 'Description can not empty.',
+             mob : 'Phone number can not empty.',
+             location : 'Location can not empty.',
        },
        errorPlacement: function(error, element) {
 

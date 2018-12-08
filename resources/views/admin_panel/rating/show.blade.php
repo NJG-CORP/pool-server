@@ -68,7 +68,7 @@
 <td>
 	
 
-	<button type="button" class="btn btn-primary edit" data-toggle="modal" data-target="#myModal" data-id="{{$rate->id}}">Change event</button>
+	<button type="button" class="btn btn-primary edit" data-toggle="modal" data-target="#myModal" data-id="{{$rate->id}}">Change review</button>
 	<button type="button" class="btn btn-primary delete" data-id="{{$rate->id}}">Delete review</button>
 </td>
    </tr>

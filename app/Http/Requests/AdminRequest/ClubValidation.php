@@ -23,6 +23,7 @@ class ClubValidation extends FormRequest
      *
      * @return array
      */
+     
     public function rules()
     {
         return [
@@ -32,6 +33,9 @@ class ClubValidation extends FormRequest
               'snooker'=>'required',
               'cannon'=>'required',
               'kitchen'=>'required',
+              'des'=>'required',
+              'mob'=>'required',
+              'location'=>'required'
         ];
     }
     public function messages()
@@ -42,7 +46,11 @@ class ClubValidation extends FormRequest
               'russian.required'=>'Russian can not empty.',
               'snooker.required'=>'Snooker can not empty.',
               'cannon.required'=>'Cannon can not empty.',
-              'kitchen.required'=>'Kitchen can not empty.'
+              'kitchen.required'=>'Kitchen can not empty.',
+                'des.required'=>'Description can not empty.',
+                 'mob.required'=>'Phone number can not empty.',
+                  'location.required'=>'Location can not empty.'
+
             ];
     }
 }

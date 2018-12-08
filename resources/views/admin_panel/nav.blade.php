@@ -22,7 +22,7 @@
 
                         <li >
 
-                        <a href="#"  >Users </a>
+                        <a href="{{ route('get:users:data')}}"  >Users </a>
 
                         
 
@@ -52,8 +52,8 @@
 
                         <ul class="dropdown-menu">
                             <li>
-                                <a href="#">List All</a>
-                                <a href="#">Add New</a>
+                                <a href="{{ route('get:club:data')}}">List All</a>
+                                <a href="{{ route('get:club:create')}}">Add New</a>
                             </li>
 
 
@@ -97,7 +97,7 @@
     
                         <li >
 
-                        <a href="#"  >Reviews  </a>
+                        <a href="{{ route('get:rating:data')}}"  >Reviews  </a>
 
                         
 
