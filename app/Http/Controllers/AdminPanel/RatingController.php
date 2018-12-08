@@ -55,12 +55,9 @@ class RatingController extends Controller
     {
        $delete=$this->rate->deleteUserDetails($request);
 
-       if($delete){
+      
 
            return redirect()->route('get:rating:data');
-        }
-        else{
-       return $this->responder->errorResponse(R::USER_LOGIN_FAILURE, null, 401);
-      }
+       
      }
 }

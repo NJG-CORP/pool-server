@@ -71,7 +71,7 @@ class UserService
 
         $data->delete();
         
-         return $data;
+         
         
     }
     

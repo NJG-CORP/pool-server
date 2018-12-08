@@ -59,13 +59,10 @@ class UserController extends Controller
     {
        $delete=$this->users->deleteUserDetails($request);
 
-       if($delete){
+       
 
            return redirect()->route('get:users:data');
-        }
-        else{
-       return $this->responder->errorResponse(R::USER_LOGIN_FAILURE, null, 401);
-      }
+       
      }
  
 }

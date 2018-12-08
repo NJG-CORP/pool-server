@@ -63,13 +63,10 @@ class ClubController extends Controller
     {
 
        $data=$this->clubs->getDeleteDetails($request);
-        if($delete){
+       
 
            return redirect()->route('get:club:data'); 
-        }
-        else{
-       return $this->responder->errorResponse(R::USER_LOGIN_FAILURE, null, 401);
-      }
+       
        
     }
 

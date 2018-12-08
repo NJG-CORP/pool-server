@@ -61,7 +61,7 @@ class RatingService
     
         $data->delete();
         
-         return $data;
+       
         
     }
     

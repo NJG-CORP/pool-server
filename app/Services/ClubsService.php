@@ -163,6 +163,6 @@ class ClubsService
 
         $data->delete();
         
-         return $data;
+        
      }
 }
