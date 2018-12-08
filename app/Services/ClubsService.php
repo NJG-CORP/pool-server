@@ -30,7 +30,7 @@ class ClubsService
     }
     public function getAllClubsData()
     {
-        $data=Club::paginate(10);
+        $data=Club::orderBy('id','DESC')->paginate(10);
         return $data;
     }
     public function getWeekDay()
@@ -163,6 +163,6 @@ class ClubsService
 
         $data->delete();
         
-        
+        return null;
      }
 }

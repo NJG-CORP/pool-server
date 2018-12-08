@@ -12,7 +12,7 @@ class UserService
      */
     
     public function getAllUserData(){
-       $data=User::paginate(10);
+       $data=User::orderBy('id','DESC')->paginate(10);
         return $data;
        
     }

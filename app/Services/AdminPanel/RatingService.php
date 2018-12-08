@@ -12,7 +12,7 @@ class RatingService
      */
     
     public function getAllRatingData(){
-       $data=Rating::with(['rater','rateable'])->paginate(10);
+       $data=Rating::with(['rater','rateable'])->orderBy('id','DESC')->paginate(10);
         return $data;
        
     }
