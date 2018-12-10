@@ -182,7 +182,8 @@ return [
         Devfactory\Taxonomy\TaxonomyServiceProvider::class,
 
         Intervention\Image\ImageServiceProvider::class,
-        Berkayk\OneSignal\OneSignalServiceProvider::class
+        Berkayk\OneSignal\OneSignalServiceProvider::class,
+        Unisharp\Ckeditor\ServiceProvider::class,
     ],
 
     /*

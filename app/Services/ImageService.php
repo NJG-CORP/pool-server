@@ -26,7 +26,7 @@ class ImageService
             file_get_contents($b64)
         )->save($imagePath);
         ImageOptimizer::optimize($imagePath);
-
+        
         if ( $model ){
             $image = ImageModel::create([
                 "imageable_id" => $model->id,

@@ -20,7 +20,7 @@ class CityController extends Controller
     public function __construct(Request $request, CityService $cities)
     {
         parent::__construct($request);
-        $this->cities = $cities;
+        $this->cities = $cities;   
     }
 
     /**
