@@ -17,4 +17,7 @@ class Rating extends Model
     public function rateable(){
         return $this->morphTo();
     }
+    public function ratingBy(){
+    	return $this->hasOne('App\Models\User','id','rater_id');
+    }
 }

@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Services\ClubsService;
 use Illuminate\Http\Request;
-
+use App\Http\Requests\AdminRequest\ClubValidation;
 class ClubController extends Controller
 {
     /**
@@ -36,4 +36,5 @@ class ClubController extends Controller
             'club' => $club
         ]);
     }
+    
 }

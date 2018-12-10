@@ -28,7 +28,7 @@ class FavouriteController extends Controller
         ]);
     }
 
-    /**
+    /**Hello, this is a snippet.
      * @param Request $request
      * @param User $id
      * @return \Illuminate\Http\JsonResponse
