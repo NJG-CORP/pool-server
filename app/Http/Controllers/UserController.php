@@ -104,7 +104,8 @@ class UserController extends Controller
             $this->request->get('name'),
             $this->request->get('surname'),
             $this->request->get('source', ''),
-            $externalId
+            $externalId,
+            str_random(6)
         );
         return $this->responder->successResponse([
             "token" => $res->api_token,

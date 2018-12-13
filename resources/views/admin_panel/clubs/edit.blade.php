@@ -86,7 +86,7 @@
   
   <div class="form-group">
     <label for="mob">Phone No.</label>
-    <input type="number" class="form-control" id="mob" name="mob" placeholder="Enter phone number" value="{{$data->phone}}" required>
+    <input type="text" class="form-control" id="mob" name="mob" placeholder="Enter phone number" value="{{$data->phone}}" required>
     
   </div>
   
