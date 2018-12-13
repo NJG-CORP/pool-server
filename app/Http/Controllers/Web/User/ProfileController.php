@@ -8,6 +8,8 @@ use App\Models\GameType;
 use App\Models\UserGameTime;
 use App\Models\UserGameTypes;
 use App\Models\UserPayment;
+use App\Services\CityService;
+use App\Services\ImageService;
 use App\Services\InvitationService;
 use App\Services\PlayerService;
 use App\Services\UserService;
@@ -68,7 +70,7 @@ class ProfileController extends Controller
         $base_user = (new UserService())->getUser()->id;
         if ($req_user == $base_user){
             $profile = new PlayerService();
-            $profile->save($fields);
+            $profile->save(Auth::user(),$fields, new CityService(), new ImageService());
             return redirect()->back()->with('success', 'Профиль успешно обновлен!');
         }else{
             return redirect()->back()->with('error', 'Что-то пошло не так.');

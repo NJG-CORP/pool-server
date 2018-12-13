@@ -20,99 +20,6 @@ use Illuminate\Support\Facades\Input;
 
 class PlayerService
 {
-    /**
-     * @param $offset
-     * @param Collection $query
-     * @param User $currentUser
-     * @return \Illuminate\Database\Eloquent\Collection|static[]
-     */
-//    public function search($offset, $query, User $currentUser){
-//        $dbQuery = User::with([
-//            'avatar', 'gameTime', 'city', 'location.city', 'receivedRatings'
-//        ])
-//            ->select(['users.*'])
-//            ->groupBy(['users.id'])
-////            ->join('rating', 'users.id', '=', 'rating.rateable_id')
-////            ->addSelect(\DB::raw('AVG(`rating`.`score`) as calculated_rating'))
-////            ->orderBy('calculated_rating', 'DESC')
-//            ->where('users.id', '<>', $currentUser->id );
-//
-//        $gender = $query->get('gender');
-//        if ( $gender !== null ){
-//            $dbQuery->where('gender', $gender);
-//        }
-//
-//        if ( $cityId = $query->get('city_id') ){
-//            $dbQuery->where('city_id', $cityId);
-//        }
-//
-//        if ( $days = $query->get('days') ){
-//            $dbQuery->join('game_time', 'users.id', '=', 'game_time.user_id');
-//            $dbQuery->whereIn('game_time.weekday_id', $days);
-//        }
-//
-//        if ( $time = $query->get('time') ){
-//            $dayStart = '00:00:00';
-//            $dayEnd = '23:59:00';
-//            $from = empty($time['from'])?
-//                $dayStart:
-//                date('H:i:s', strtotime($time['from']));
-//            $to = empty($time['to'])?
-//                $dayEnd:
-//                date('H:i:s', strtotime($time['to']));
-//            $dbQuery
-//                ->where('game_time_from', '>=', $from)
-//                ->where('game_time_to', '<=', $to);
-//        }
-//
-//        if ( $rating = $query->get('rating') ){
-//            $dbQuery
-//                ->where('rating.rateable_type', User::class)
-//                ->havingRaw(\DB::raw('`calculated_rating` >= ' . $rating));
-//        }
-//
-//        if ( $gameTypes = $query->get('game_type') ){
-//            $dbQuery->getAllByTermId($gameTypes);
-//        }
-//
-//        if ( $gamePaymentTypes = $query->get('game_payment_type') ){
-//            $v = \Taxonomy::getVocabularyByName('GamePaymentType');
-//            /**
-//             * @var Collection $terms
-//             */
-//            $terms = $v->terms;
-//            $formattedTerms = [];
-//            $queryTerms = [];
-//            foreach ($terms as $term){
-//                $formattedTerms[$term->name] = $term->id;
-//            }
-//            foreach ($gamePaymentTypes as $gamePaymentType){
-//                if ( $gamePaymentType == $formattedTerms['За счет партнера'] )
-//                    $gamePaymentType = $formattedTerms['Беру на себя'];
-//                else if ( $gamePaymentType == $formattedTerms['Беру на себя'] )
-//                    $gamePaymentType = $formattedTerms['За счет партнера'];
-//                $queryTerms[] = $gamePaymentType;
-//            }
-//            $dbQuery->getAllByTermId($queryTerms);
-//        }
-//        $total = $dbQuery->get()->count();
-//
-//        return [
-//            "total" => $total,
-//            "players" => $dbQuery
-//                ->offset($offset)
-//                ->limit(10)
-//                ->get()
-//                ->map(function (User $user){
-//                    $user->setAppends(['calculated_rating']);
-//                    return $user;
-//                })
-//                ->sort(function($a, $b){
-//                    return $b->calculated_rating - $a->calculated_rating;
-//                })->values()
-//        ];
-//    }
-
     public function show($id){
         $user = User::with(
             'receivedRatings.rater.avatar', 'sentRatings',
@@ -139,186 +46,140 @@ class PlayerService
      * @param ImageService $imageService
      * @return User|bool
      */
-//    public function save(User $user, $fields, CityService $cityService, ImageService $imageService){
-//        $fields = collect($fields);
-//        $city = $fields->pull('city');
-//        $avatar = $fields->pull('avatar');
-//        $gameType = $fields->pull('game_type');
-//        $gamePaymentType = $fields->pull('game_payment_type');
-//        $skillLevel = $fields->pull('skill_level');
-//        $gameDays = $fields->pull('game_days');
-//
-//        foreach ($fields as $key=>$value){
-//            $user->{$key} = $value;
-//        }
-//        if ( $city && $city['id'] ){
-//            $userCity = $cityService->ensureCity($city['id'], $city['name']);
-//            $user->city_id = $userCity->id;
-//        }
-//
-//        if ( $avatar ){
-//            \DB::delete("
-//              DELETE FROM images WHERE imageable_type = 'App\\\\Models\\\\User'
-//              AND imageable_id = " . $user->id);
-//            $imagePath = "avatars/" . str_random(8) . '.jpg';
-//            $imageService->create(
-//                $avatar,
-//                $user,
-//                $imagePath
-//            );
-//        }
-//
-//        $user->removeAllTerms();
-//        if ( $gameType ) $user->addTerm($gameType);
-//        if ( $gamePaymentType ) $user->addTerm($gamePaymentType);
-//        if ( $skillLevel ) $user->addTerm($skillLevel);
-//
-//        if ( $gameDays ){
-//            \DB::delete('DELETE FROM game_time WHERE user_id=' . $user->id);
-//            foreach ( $gameDays as $day ){
-//                \DB::insert(
-//                    "INSERT INTO game_time SET user_id=" . $user->id . ", weekday_id=$day"
-//                );
-//            }
-//        }
-//
-//        if ( $user->save() ){
-//            return $user;
-//        }
-//        return false;
-//    }
+    public function save(User $user, $fields, CityService $cityService, ImageService $imageService){
+        $fields = collect($fields);
+        $city = $fields->pull('city');
+        $avatar = $fields->pull('avatar');
+        $gameType = $fields->pull('game_type');
+        $gamePaymentType = $fields->pull('game_payment_type');
+        $skillLevel = $fields->pull('skill_level');
+        $gameDays = $fields->pull('game_days');
 
-    public function save($fields)
-    {
-        $user = (new UserService())->getUser();
-
-        //обновляем(добавляем) типы игры пользователья
-        $game_types = (new UserService())->setGameType($fields['types'], $user);
-        foreach ($game_types as $game_type){
-            $game_type->save();
+        foreach ($fields as $key=>$value){
+            $user->{$key} = $value;
+        }
+        if ( $city && $city['id'] ){
+            $userCity = $cityService->ensureCity($city['id'], $city['name']);
+            $user->city_id = $userCity->id;
         }
 
-        //обновляем(добавляем) метод оплаты пользователья
-        $game_payments = (new UserService())->setGamePayment($fields['payment'], $user);
-        foreach ($game_payments as $game_payment){
-            $game_payment->save();
+        if ( $avatar ){
+            \DB::delete("
+              DELETE FROM images WHERE imageable_type = 'App\\\\Models\\\\User'
+              AND imageable_id = " . $user->id);
+            $imagePath = "avatars/" . str_random(8) . '.jpg';
+            $imageService->create(
+                $avatar,
+                $user,
+                $imagePath
+            );
         }
 
-        //обновляем(добавляем) дни игры пользователья
-        $game_times = (new UserService())->setGameTime($fields['days'], $user);
-        foreach ($game_times as $game_time) {
-            $game_time->save();
+        $user->removeAllTerms();
+        if ( $gameType ) $user->addTerm($gameType);
+        if ( $gamePaymentType ) $user->addTerm($gamePaymentType);
+        if ( $skillLevel ) $user->addTerm($skillLevel);
+
+        if ( $gameDays ){
+            \DB::delete('DELETE FROM game_time WHERE user_id=' . $user->id);
+            foreach ( $gameDays as $day ){
+                \DB::insert(
+                    "INSERT INTO game_time SET user_id=" . $user->id . ", weekday_id=$day"
+                );
+            }
         }
 
-        //сохраняем данные
-        $data = (new UserService())->setUserData($fields, $user);
-        if($data->save()){
+        if ( $user->save() ){
             return $user;
         }
         return false;
     }
+    
+    public function search($offset, $query, User $currentUser){
+        $dbQuery = User::with([
+            'avatar', 'gameTime', 'city', 'location.city', 'receivedRatings'
+        ])
+            ->select(['users.*'])
+            ->groupBy(['users.id'])
+//            ->join('rating', 'users.id', '=', 'rating.rateable_id')
+//            ->addSelect(\DB::raw('AVG(`rating`.`score`) as calculated_rating'))
+//            ->orderBy('calculated_rating', 'DESC')
+            ->where('users.id', '<>', $currentUser->id );
 
-    public function search($fields){
-        $users_id = [];
-        $searched_users = [];
+        $gender = $query->get('gender');
+        if ( $gender !== null ){
+            $dbQuery->where('gender', $gender);
+        }
 
-        //начинаем поиск, Пол, Город
-        if ($fields['location']) {
-            $city_id = (new CityService())->getCityId($fields['location']);
-            if ($city_id) {
-                $users = User::whereIn('gender', $fields['sex'])->where('city_id', $city_id)->get();
+        if ( $cityId = $query->get('city_id') ){
+            $dbQuery->where('city_id', $cityId);
+        }
+
+        if ( $days = $query->get('days') ){
+            $dbQuery->join('game_time', 'users.id', '=', 'game_time.user_id');
+            $dbQuery->whereIn('game_time.weekday_id', $days);
+        }
+
+        if ( $time = $query->get('time') ){
+            $dayStart = '00:00:00';
+            $dayEnd = '23:59:00';
+            $from = empty($time['from'])?
+                $dayStart:
+                date('H:i:s', strtotime($time['from']));
+            $to = empty($time['to'])?
+                $dayEnd:
+                date('H:i:s', strtotime($time['to']));
+            $dbQuery
+                ->where('game_time_from', '>=', $from)
+                ->where('game_time_to', '<=', $to);
+        }
+
+        if ( $rating = $query->get('rating') ){
+            $dbQuery
+                ->where('rating.rateable_type', User::class)
+                ->havingRaw(\DB::raw('`calculated_rating` >= ' . $rating));
+        }
+
+        if ( $gameTypes = $query->get('game_type') ){
+            $dbQuery->getAllByTermId($gameTypes);
+        }
+
+        if ( $gamePaymentTypes = $query->get('game_payment_type') ){
+            $v = \Taxonomy::getVocabularyByName('GamePaymentType');
+            /**
+             * @var Collection $terms
+             */
+            $terms = $v->terms;
+            $formattedTerms = [];
+            $queryTerms = [];
+            foreach ($terms as $term){
+                $formattedTerms[$term->name] = $term->id;
             }
-        }else{
-            $users = User::whereIn('gender', $fields['sex'])->get();
-        }
-
-        // добавляем ид найденных пользователей в массив
-        if (isset($users)){
-            foreach ($users as $user) {
-                $users_id[] = $user->id;
+            foreach ($gamePaymentTypes as $gamePaymentType){
+                if ( $gamePaymentType == $formattedTerms['За счет партнера'] )
+                    $gamePaymentType = $formattedTerms['Беру на себя'];
+                else if ( $gamePaymentType == $formattedTerms['Беру на себя'] )
+                    $gamePaymentType = $formattedTerms['За счет партнера'];
+                $queryTerms[] = $gamePaymentType;
             }
-        }else{
-            return false;
+            $dbQuery->getAllByTermId($queryTerms);
         }
+        $total = $dbQuery->get()->count();
 
-        //если поиск дал результат, идем дальше, Тип
-        if (!empty($users_id)){
-            $vocabulary_id = (new UserService())->getVocabularyId('GameType');
-            $terms = (new UserService())->getSearchedTermsId($fields['types'], $vocabulary_id);
-            $term_relations = (new UserService())->getSearchedTermRelations($terms, $vocabulary_id, $users_id);
-            if ($term_relations) {
-                foreach ($term_relations as $term_relation){
-                    !in_array($term_relation->relationable_id, $searched_users) ? $searched_users[] = $term_relation->relationable_id : '';
-                }
-            }else{
-                return false;
-            }
-        }else{
-            return false;
-        }
-
-        //если поиск дал результат, идем дальше, Тип Оплаты
-        if (!empty($searched_users)){
-            $vocabulary_id = (new UserService())->getVocabularyId('GamePaymentType');
-            $terms = (new UserService())->getSearchedTermsId($fields['payment'], $vocabulary_id);
-            $term_relations = (new UserService())->getSearchedTermRelations($terms, $vocabulary_id, $searched_users);
-            if ($term_relations) {
-                $searched_users = [];
-                foreach ($term_relations as $term_relation){
-                    !in_array($term_relation->relationable_id, $searched_users) ? $searched_users[] = $term_relation->relationable_id : '';
-                }
-            }else{
-                return false;
-            }
-        }
-
-        //если поиск дал результат, идем дальше, Дни Недели
-        if (!empty($searched_users)){
-            $weekdays = (new UserService())->getSearchedWeekdayId($fields['days']);
-            $game_times = (new UserService())->getSearchedGameTime($weekdays, $searched_users);
-            if ($game_times){
-                $searched_users = [];
-                foreach ($game_times as $game_time) {
-                    !in_array($game_time->user_id, $searched_users) ? $searched_users[] = $game_time->user_id : '';
-                }
-            }else{
-                return false;
-            }
-        }else{
-            return false;
-        }
-
-        //если поиск дал результат, идем дальше, Рейтинг
-        if (!empty($searched_users) && $fields['rating']){
-            preg_match_all('!\d+!', $fields['rating'], $matches);
-            $searched_ratings = User::whereIn('id', $searched_users)->get();
-            $searched_users = [];
-            foreach ($searched_ratings as $searched_rating) {
-                $rating = round($searched_rating->getCalculatedRatingAttribute());
-                $matches[0][0] == $rating ? $searched_users[] = $searched_rating->id : '';
-            }
-        }
-
-        //если поиск дал результат, идем дальше, Времья
-        if (!empty($searched_users) && $fields['time']) {
-            $time = explode(';', $fields['time']);
-            $searched_times = User::whereIn('id', $searched_users)->get();
-            $searched_users = [];
-            foreach ($searched_times as $searched_time) {
-                $from = explode(':', $searched_time->game_time_from);
-                $from = $from[0];
-                $to = explode(':', $searched_time->game_time_to);
-                $to = $to[0];
-                !($time[1] <= $from || $time[0] >= $to) ? $searched_users[] = $searched_time->id : '';
-            }
-        }
-
-            //если поиск дал результат, выведем список
-        if (!empty($searched_users)){
-            $results = User::whereIn('id', $searched_users)->get();
-            return $results;
-        }
-        return false;
+        return [
+            "total" => $total,
+            "players" => $dbQuery
+                ->offset($offset)
+                ->limit(10)
+                ->get()
+                ->map(function (User $user){
+                    $user->setAppends(['calculated_rating']);
+                    return $user;
+                })
+                ->sort(function($a, $b){
+                    return $b->calculated_rating - $a->calculated_rating;
+                })->values()
+        ];
     }
 
     public function getUserGameTime($user_id){
