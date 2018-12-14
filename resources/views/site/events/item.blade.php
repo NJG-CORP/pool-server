@@ -37,13 +37,13 @@
                             </p>
                         </div>
                     </div>
-                    {{$event->paragraph}}
+                    {!! $event->paragraph !!}
                 </div>
 
                 <h2>Другие мероприятия</h2>
 
                 <div class="news_block_wrap other_news_block_wrap clearfix">
-                    @foreach((new \App\Services\EventsService())->getMoreEvents() as $event)
+                    @foreach((new \App\Services\EventsService())->getMoreEvents($event->id) as $event)
                         @include('site.events._more', ['event' => $event])
                     @endforeach
                 </div>

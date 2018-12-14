@@ -18,10 +18,10 @@ class EventsService
             ->first();
     }
 
-    public function getMoreEvents() {
+    public function getMoreEvents($id) {
         return Events::with(['images'])
             ->limit(2)
-            ->whereNotIn('id', [$this->id])
+            ->whereNotIn('id', [$id])
             ->get() ?? [];
     }
 

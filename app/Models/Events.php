@@ -27,7 +27,7 @@ class Events extends Model
 
     public function getMainImage()
     {
-        return $this->images->first() ? $this->images->first()->getUrlAttribute() : Image::getDefaultImage();
+        return $this->getMainImageEvent()->first() ? $this->getMainImageEvent()->first()->getUrlAttribute() : Image::getDefaultImage()['url'];
     }
 
     public function getMainImageEvent()

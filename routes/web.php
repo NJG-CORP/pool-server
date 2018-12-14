@@ -37,7 +37,7 @@ Route::group(['namespace' => 'Web'], function(){
         });
     });
     Route::group(['namespace' => 'Events'], function () {
-        Route::get('/events', 'MainController@list');
+        Route::get('/events', 'MainController@list')->name('events');
         Route::get('/events/{id}', 'MainController@view');
     });
 });

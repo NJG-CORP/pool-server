@@ -45,7 +45,7 @@
             <nav class="header_menu">
                 <ul>
                     <li><a href="">Клубы</a></li>
-                    <li><a href="">Мероприятия</a></li>
+                    <li><a href="{{ route('events') }}">Мероприятия</a></li>
                     <li><a href="{{ route('news') }}">Новости</a></li>
                     <li><a href="{{ route('blog') }}">Блог</a></li>
                     <li><a href="{{ route('contacts') }}">Контакты</a></li>
