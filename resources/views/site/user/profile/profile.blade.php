@@ -32,7 +32,7 @@
 
                             <div class="profile_page_avatar">
                                 <div class="img">
-                                    <img src="{{ asset('img/' . $user->avatar) }}" alt="">
+                                    <img src="{{ asset('img/' . $user->getAvatar()) }}" alt="">
                                 </div>
 
                                 <div class="text">
@@ -87,7 +87,7 @@
                                             <label class="control-label" for="profileform-location">Город,
                                                 страна</label>
                                             <input type="text" id="profileform-location" class="form-control"
-                                                   name="location" value="{{ !old('street') ? $user->city()->first()->name : old('street') }}"
+                                                   name="city" value="{{ !old('street') && $user->city()->first() ? $user->city()->first()->name : old('street') }}"
                                                    placeholder="Улица, номер, город, страна" autocomplete="off">
                                             <div class="help-block"></div>
                                         </div>
@@ -99,29 +99,29 @@
                                         <div class="form-group field-profileform-locationhouse">
                                             <label class="control-label" for="profileform-locationhouse">Дом</label>
                                             <input type="text" id="profileform-locationhouse" class="form-control"
-                                                   name="houselocation" placeholder="Квартира" value="{{ !old('location') ? $user->location : old('location') }}">
+                                                   name="street" placeholder="Квартира" value="{{ !old('street') ? $user->street : old('street') }}">
                                             <div class="help-block"></div>
                                         </div>
                                     </div>
                                     <div class="the_form_div">
                                         <div class="form-group field-profileform-sex required">
                                             <label class="control-label">Пол</label>
-                                            <input type="hidden" name="sex" value="">
+                                            <input type="hidden" name="gender" value="">
                                             <div id="profileform-sex" aria-required="true"><label>
-                                                    <div class="ez-radio"><input type="radio" name="sex"
+                                                    <div class="ez-radio"><input type="radio" name="gender"
                                                                                  value="0"
                                                                                  class="ez-hide" {{ $user->gender == 0 ? 'checked' : '' }}>
                                                     </div>
                                                     Мужчина</label>
                                                 <label>
-                                                    <div class="ez-radio"><input type="radio" name="sex"
+                                                    <div class="ez-radio"><input type="radio" name="gender"
                                                                                  value="1"
                                                                                  class="ez-hide" {{ $user->gender == 1 ? 'checked' : '' }}>
                                                     </div>
                                                     Женщина</label></div>
                                             <div class="help-block">
-                                                @if($errors->has('sex'))
-                                                    {{ $errors->first('sex') }}
+                                                @if($errors->has('gender'))
+                                                    {{ $errors->first('gender') }}
                                                 @endif
                                             </div>
                                         </div>
@@ -183,11 +183,11 @@
                                         <div class="form-group field-profileform-time">
                                             <label class="control-label" for="profileform-time">Время игры (от)</label>
                                             <input type="time" id="profileform-time" class="form-control"
-                                                   name="time_from" placeholder="От"
+                                                   name="game_time_from" placeholder="От"
                                                    value="{{ $user->game_time_from }}">
                                             <label class="control-label" for="profileform-time">Время игры (до)</label>
                                             <input type="time" id="profileform-time" class="form-control"
-                                                   name="time_to" placeholder="До" value="{{ $user->game_time_to }}">
+                                                   name="game_time_to" placeholder="До" value="{{ $user->game_time_to }}">
 
                                             <div class="help-block"></div>
                                         </div>

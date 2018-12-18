@@ -38,13 +38,13 @@
     <div class="inner_section inner_header clearfix">
 
         <div class="logo">
-            <img src="/img/interface/logo.png" alt="">
+            <a href="{{ route('home') }}"><img src="/img/interface/logo.png" alt=""></a>
         </div>
 
         <div class="header_menu_wrap">
             <nav class="header_menu">
                 <ul>
-                    <li><a href="">Клубы</a></li>
+                    <li><a href="{{ route('clubs') }}">Клубы</a></li>
                     <li><a href="{{ route('events') }}">Мероприятия</a></li>
                     <li><a href="{{ route('news') }}">Новости</a></li>
                     <li><a href="{{ route('blog') }}">Блог</a></li>
@@ -58,7 +58,7 @@
                     <ul>
                         <li>
                             <a href="">
-                                <img src="{{ asset('img/' . $user->avatar) }}" alt="">
+                                <img src="{{ asset('img/' . $user->getAvatar()) }}" alt="">
                                 <span>{{ $user->name }}</span>
                             </a>
 

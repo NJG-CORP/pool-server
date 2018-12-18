@@ -15,7 +15,7 @@ class ClubsService
     public function getList()
     {
         return Club::with(['rating', 'location', 'images'])
-            ->get()
+            ->paginate(10)
             ->map(function ($e) {
                 return $e->setAppends(['calculated_rating']);
             });
@@ -45,6 +45,7 @@ class ClubsService
         $data = Kitchens::all();
         return $data;
     }
+
 
     public function storingClubData(Request $request)
     {

@@ -1,7 +1,7 @@
 <?php
 
 Route::group(['namespace' => 'Web'], function(){
-    Route::get('/', 'HomeController@index');
+    Route::get('/', 'HomeController@index')->name('home');
     Route::post('/search', 'SearchController@search')->name('search');
     Route::get('/contacts', 'ContactsController@index')->name('contacts');
     Route::post('/contacts', 'ContactsController@review')->name('send.review');
@@ -9,7 +9,8 @@ Route::group(['namespace' => 'Web'], function(){
     Route::get('/news/{id}', 'NewsController@showNews')->name('news.show');
     Route::get('/blog', 'BlogController@blog')->name('blog');
     Route::get('/blog/{id}', 'BlogController@showBlog')->name('blog.show');
-
+    Route::get('/clubs', 'ClubController@club')->name('clubs');
+    Route::get('/club/{id}', 'ClubController@showClub')->name('club.show');
 
     Route::group(['namespace' => 'Auth'], function(){
         Route::get('/login/vk/callback', 'LoginController@handleCallback');

@@ -1,6 +1,6 @@
 @extends('layouts.default')
 
-@section('title', '')
+@section('title', 'Главная | Поиск Игроков')
 
 @section('content')
 
@@ -15,15 +15,6 @@
                 </div>
 
                 <h1>Игроки</h1>
-                @if ($errors->any())
-                    <div class="alert alert-danger">
-                        <ul>
-                            @foreach ($errors->all() as $error)
-                                <li>{{ $error }}</li>
-                            @endforeach
-                        </ul>
-                    </div>
-                @endif
                 <div class="the_form the_players_search_form clearfix">
                     <form id="frm44" class="frm4 clearfix" action="{{ route('search') }}" method="post" data-pjax=""
                           enctype="multipart/form-data">
@@ -33,7 +24,8 @@
                             <div class="form-group field-searchform-location">
 
                                 <input type="text" id="search-location" class="form-control"
-                                       name="location" placeholder="Город" autocomplete="off">
+                                       name="city" placeholder="Город" autocomplete="off"
+                                       value="{{ old('city') ? old('city') : '' }}">
 
                                 <p class="help-block help-block-error"></p>
                             </div>
@@ -51,48 +43,67 @@
                                 <div id="searchform-days" multiple="multiple" placeholder="Дни игры">
                                     <div class="checkbox"><label>
                                             <div class="ez-checkbox"><input type="checkbox" name="days[]"
-                                                                            value="monday" class="ez-hide"></div>
+                                                                            value="monday"
+                                                                            class="ez-hide" {{ old('days') && in_array('monday', old('days')) ? 'checked' : '' }}>
+                                            </div>
                                             Понедельник</label></div>
                                     <div class="checkbox"><label>
                                             <div class="ez-checkbox"><input type="checkbox" name="days[]"
-                                                                            value="tuesday" class="ez-hide"></div>
+                                                                            value="tuesday"
+                                                                            class="ez-hide" {{ old('days') && in_array('tuesday', old('days')) ? 'checked' : '' }}>
+                                            </div>
                                             Вторник</label></div>
                                     <div class="checkbox"><label>
                                             <div class="ez-checkbox"><input type="checkbox" name="days[]"
-                                                                            value="wednesday" class="ez-hide"></div>
+                                                                            value="wednesday"
+                                                                            class="ez-hide" {{ old('days') && in_array('wednesday', old('days')) ? 'checked' : '' }}>
+                                            </div>
                                             Среда</label></div>
                                     <div class="checkbox"><label>
                                             <div class="ez-checkbox"><input type="checkbox" name="days[]"
-                                                                            value="thursday" class="ez-hide"></div>
+                                                                            value="thursday"
+                                                                            class="ez-hide" {{ old('days') && in_array('thursday', old('days')) ? 'checked' : '' }}>
+                                            </div>
                                             Четверг</label></div>
                                     <div class="checkbox"><label>
                                             <div class="ez-checkbox"><input type="checkbox" name="days[]"
-                                                                            value="friday" class="ez-hide"></div>
+                                                                            value="thursday"
+                                                                            class="ez-hide" {{ old('days') && in_array('thursday', old('days')) ? 'checked' : '' }}>
+                                            </div>
                                             Пятница</label></div>
                                     <div class="checkbox"><label>
                                             <div class="ez-checkbox"><input type="checkbox" name="days[]"
-                                                                            value="saturday" class="ez-hide"></div>
+                                                                            value="saturday"
+                                                                            class="ez-hide" {{ old('days') && in_array('saturday', old('days')) ? 'checked' : '' }}>
+                                            </div>
                                             Суббота</label></div>
                                     <div class="checkbox"><label>
                                             <div class="ez-checkbox"><input type="checkbox" name="days[]"
-                                                                            value="sunday" class="ez-hide"></div>
+                                                                            value="sunday"
+                                                                            class="ez-hide" {{ old('days') && in_array('sunday', old('days')) ? 'checked' : '' }}>
+                                            </div>
                                             Воскресенье</label></div>
                                 </div>
 
-                                <p class="help-block help-block-error"></p>
+                                <p class="help-block help-block-error">
+                                    @if($errors->has('days'))
+                                        {{ $errors->first('days') }}
+                                    @endif
+                                </p>
                             </div>
                         </div>
 
                         <div class="the_form_div the_form_div_half">
 
-                            <div><input type="text" id="range" name="time" value=""></div>
+                            <div><input type="text" id="range" name="time" value="{{ old('time') ? old('time') : '' }}">
+                            </div>
                             <div class="form-group field-searchform-time-from required" id="">
-
+                                <input type="hidden" id="searchform-time-from" name="from">
                                 <p class="help-block help-block-error"></p>
                             </div>
                             <div class="form-group field-searchform-time-to required" id="">
 
-
+                                <input type="hidden" id="searchform-time-to" name="to">
                                 <p class="help-block help-block-error"></p>
                             </div>
                         </div>
@@ -103,23 +114,35 @@
                                 <div id="searchform-types" multiple="multiple" placeholder="Оплата">
                                     <div class="checkbox"><label>
                                             <div class="ez-checkbox"><input type="checkbox" name="types[]"
-                                                                            value="pool" class="ez-hide"></div>
+                                                                            value="pool"
+                                                                            class="ez-hide" {{ old('types') && in_array('pool', old('types')) ? 'checked' : '' }}>
+                                            </div>
                                             Пул</label></div>
                                     <div class="checkbox"><label>
                                             <div class="ez-checkbox"><input type="checkbox" name="types[]"
-                                                                            value="snooker" class="ez-hide"></div>
+                                                                            value="snooker"
+                                                                            class="ez-hide" {{ old('types') && in_array('snooker', old('types')) ? 'checked' : '' }}>
+                                            </div>
                                             Снукер</label></div>
                                     <div class="checkbox"><label>
                                             <div class="ez-checkbox"><input type="checkbox" name="types[]"
-                                                                            value="russian" class="ez-hide"></div>
+                                                                            value="russian"
+                                                                            class="ez-hide" {{ old('types') && in_array('russian', old('types')) ? 'checked' : '' }}>
+                                            </div>
                                             Русский бильярд</label></div>
                                     <div class="checkbox"><label>
                                             <div class="ez-checkbox"><input type="checkbox" name="types[]"
-                                                                            value="caromball" class="ez-hide"></div>
+                                                                            value="caromball"
+                                                                            class="ez-hide" {{ old('types') && in_array('caromball', old('types')) ? 'checked' : '' }}>
+                                            </div>
                                             Карамболь</label></div>
                                 </div>
 
-                                <p class="help-block help-block-error"></p>
+                                <p class="help-block help-block-error">
+                                    @if($errors->has('types'))
+                                        {{ $errors->first('types') }}
+                                    @endif
+                                </p>
                             </div>
                         </div>
 
@@ -130,23 +153,35 @@
                                 <div id="searchform-payment" multiple="multiple" placeholder="Оплата">
                                     <div class="checkbox"><label>
                                             <div class="ez-checkbox"><input type="checkbox" name="payment[]"
-                                                                            value="half" class="ez-hide"></div>
+                                                                            value="half"
+                                                                            class="ez-hide" {{ old('payment') && in_array('half', old('payment')) ? 'checked' : '' }}>
+                                            </div>
                                             Пополам</label></div>
                                     <div class="checkbox"><label>
                                             <div class="ez-checkbox"><input type="checkbox" name="payment[]"
-                                                                            value="me" class="ez-hide"></div>
+                                                                            value="me"
+                                                                            class="ez-hide" {{ old('payment') && in_array('me', old('payment')) ? 'checked' : '' }}>
+                                            </div>
                                             Беру на себя</label></div>
                                     <div class="checkbox"><label>
                                             <div class="ez-checkbox"><input type="checkbox" name="payment[]"
-                                                                            value="you" class="ez-hide"></div>
+                                                                            value="you"
+                                                                            class="ez-hide" {{ old('payment') && in_array('you', old('payment')) ? 'checked' : '' }}>
+                                            </div>
                                             За счет партнера</label></div>
                                     <div class="checkbox"><label>
                                             <div class="ez-checkbox"><input type="checkbox" name="payment[]"
-                                                                            value="unimportant" class="ez-hide"></div>
+                                                                            value="unimportant"
+                                                                            class="ez-hide" {{ old('payment') && in_array('unimportant', old('payment')) ? 'checked' : '' }}>
+                                            </div>
                                             Не имеет значения</label></div>
                                 </div>
 
-                                <p class="help-block help-block-error"></p>
+                                <p class="help-block help-block-error">
+                                    @if($errors->has('payment'))
+                                        {{ $errors->first('payment') }}
+                                    @endif
+                                </p>
                             </div>
                         </div>
 
@@ -159,7 +194,8 @@
                                 <div class="stars stars_big dynamic_stars">
                                     <div><span></span></div>
                                 </div>
-                                <input type="hidden" name="rating" class="ratings">
+                                <input type="hidden" name="rating" class="ratings"
+                                       value="{{ old('rating') ? old('rating') : '' }}">
                             </div>
                         </div>
 
@@ -168,16 +204,24 @@
                                 <label class="control-label">Пол</label>
                                 <div id="searchform-sex" aria-required="true">
                                     <div class="checkbox"><label>
-                                            <div class="ez-checkbox"><input type="checkbox" name="sex[]"
-                                                                            value="0" class="ez-hide"></div>
+                                            <div class="ez-checkbox"><input type="checkbox" name="gender[]"
+                                                                            value="0"
+                                                                            class="ez-hide" {{ old('gender') && in_array('0', old('gender')) ? 'checked' : '' }}>
+                                            </div>
                                             Мужчина</label></div>
                                     <div class="checkbox"><label>
-                                            <div class="ez-checkbox"><input type="checkbox" name="sex[]"
-                                                                            value="1" class="ez-hide"></div>
+                                            <div class="ez-checkbox"><input type="checkbox" name="gender[]"
+                                                                            value="1"
+                                                                            class="ez-hide" {{ old('gender') && in_array('1', old('gender')) ? 'checked' : '' }}>
+                                            </div>
                                             Женщина</label></div>
                                 </div>
 
-                                <p class="help-block help-block-error"></p>
+                                <p class="help-block help-block-error">
+                                    @if($errors->has('gender'))
+                                        {{ $errors->first('gender') }}
+                                    @endif
+                                </p>
                             </div>
                         </div>
 
@@ -240,22 +284,21 @@
                                     <div class="players_table_row">
                                         <div class="img" style="cursor: pointer"
                                              onclick="window.open('/user/2-%D0%94%D0%B5%D0%BD%D0%B8%D1%81+%D0%A1%D0%B8%D0%B4%D0%BE%D1%80%D0%BE%D0%B2.html')">
-                                            <img src="/img/news7.png" alt="">
+                                            <img src="{{ asset('/img' . $result->getAvatar()) }}" alt="">
                                         </div>
                                         <div class="specs">
                                             <div class="text" style="cursor: pointer"
                                                  onclick="window.open('/user/2-%D0%94%D0%B5%D0%BD%D0%B8%D1%81+%D0%A1%D0%B8%D0%B4%D0%BE%D1%80%D0%BE%D0%B2.html')">
-                                                <p class="name">{{ $result->name }}, {{ $result->age }} год</p>
-
-                                                <p>Sankt Petersburg</p>
+                                                <p class="name">{{ $result->name ?? '' }}, {{ $result->age ?? '' }} год</p>
+                                                <p>Город: {{ $result->city->name ?? '' }}</p>
                                             </div>
 
                                             <div class="stars">
-                                                <span class="star4"></span>
+                                                <span class="star{{ $result->calculated_rating ?? '0' }}"></span>
                                             </div>
 
                                             <div class="descr">
-                                                <p>Вид игры: Снукер</p>
+                                                <p>Вид игры: @foreach($result->getGameType as $type) {{ $type->term->name . ' ' }}  @endforeach</p>
                                             </div>
 
                                             <div class="status">
@@ -276,7 +319,8 @@
                 </div>
             </div>
         </section>
-        <div id="InvitationModal" class="modal fade " role="dialog" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div id="InvitationModal" class="modal fade " role="dialog" tabindex="-1" aria-labelledby="exampleModalLabel"
+             aria-hidden="true">
             <div class="modal-dialog ">
                 <div class="modal-content">
                     <div id="myModalLabel" class="modal-header">
@@ -284,12 +328,15 @@
                         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
                     </div>
                     <div class="modal-body">
-                        <div id="InvitationForm" data-pjax-container="" data-pjax-timeout="1000"><form id="w0" action="{{ route('send.invite') }}" method="post" data-pjax="" enctype="multipart/form-data">
+                        <div id="InvitationForm" data-pjax-container="" data-pjax-timeout="1000">
+                            <form id="w0" action="{{ route('send.invite') }}" method="post" data-pjax=""
+                                  enctype="multipart/form-data">
                                 <input type="hidden" name="club_id" value="1">
-                                <input type="hidden" name="invited_id" value="1">
+                                <input type="hidden" name="invited_id" value="" id="invitationform-invitedid">
                                 <div class="form-group field-invitationform-clubid required">
                                     <label class="control-label" for="invitationform-clubid">Клуб</label>
-                                    <input type="text" id="invitationform-clubid" class="form-control" name="InvitationForm[clubId]" list="clubs-list" aria-required="true">
+                                    <input type="text" id="invitationform-clubid" class="form-control"
+                                           name="InvitationForm[clubId]" list="clubs-list" aria-required="true">
                                     <div class="help-block"></div>
                                 </div>
                                 <datalist id="clubs-list"></datalist>
@@ -297,12 +344,16 @@
                                 <div class="time-picker">
                                     <div class="half-time-picker field-invitationform-meetingat required">
                                         <label class="control-label" for="invitationform-meetingat"></label>
-                                        <div class="input-group datetime"><span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span><input type="text" id="invitationform-meetingat" class="form-control hasDatepicker" name="meeting_at"></div>
+                                        <div class="input-group datetime"><span class="input-group-addon"><i
+                                                        class="glyphicon glyphicon-calendar"></i></span><input
+                                                    type="text" id="invitationform-meetingat"
+                                                    class="form-control hasDatepicker" name="meeting_at"></div>
                                         <div class="help-block"></div>
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <button type="submit" class="btn btn-success" name="login-button">Пригласить</button>
+                                    <button type="submit" class="btn btn-success" name="login-button">Пригласить
+                                    </button>
                                 </div>
                                 {{ csrf_field() }}
                             </form>

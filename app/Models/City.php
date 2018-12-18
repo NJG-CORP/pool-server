@@ -8,6 +8,7 @@ class City extends Model
 {
     public $timestamps = false;
     protected $guarded = [];
+    protected $fillable = ['name'];
 
     public function users(){
         return $this->hasMany(User::class);

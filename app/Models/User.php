@@ -13,6 +13,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 class User extends Authenticatable
 {
     use Notifiable, SoftDeletes, TaxonomyTrait;
+
     /**
      * The attributes that should be hidden for arrays.
      *
@@ -34,69 +35,89 @@ class User extends Authenticatable
     const
         STATUS_PRO = 1;
 
-    public function avatar(){
+    public function avatar()
+    {
         return $this->morphOne(Image::class, 'imageable');
     }
 
-    public function city(){
+    public function city()
+    {
         return $this->belongsTo(City::class);
     }
 
-    public function location(){
+    public function location()
+    {
         return $this->belongsTo(Location::class);
     }
 
-    public function sentRatings(){
+    public function sentRatings()
+    {
         return $this->hasMany(Rating::class, 'rater_id', 'id');
     }
 
-    public function receivedRatings(){
+    public function receivedRatings()
+    {
         return $this->morphMany(Rating::class, 'rateable');
     }
 
-    public function sentFavourites(){
+    public function sentFavourites()
+    {
         return $this->belongsToMany(User::class, 'favourites', 'from_id', 'to_id');
     }
 
-    public function receivedFavourites(){
+    public function receivedFavourites()
+    {
         return $this->belongsToMany(User::class, 'favourites', 'to_id', 'from_id');
     }
 
-    public function getGameType(){
+    public function termRelations()
+    {
+        return $this->hasMany(TermRelation::class, 'relationable_id', 'id');
+    }
+
+
+    public function getGameType()
+    {
         $vocabulary = \Taxonomy::getVocabularyByName('GameType');
         return $this->related()
             ->where('vocabulary_id', $vocabulary->id)->with(['term']);
     }
 
-    public function getSkillLevel(){
+    public function getSkillLevel()
+    {
         $vocabulary = \Taxonomy::getVocabularyByName('SkillLevel');
         return $this->related()
             ->where('vocabulary_id', $vocabulary->id)->with(['term']);
     }
 
-    public function getGamePaymentType(){
+    public function getGamePaymentType()
+    {
         $vocabulary = \Taxonomy::getVocabularyByName('GamePaymentType');
         return $this->related()
             ->where('vocabulary_id', $vocabulary->id)->with(['term']);
     }
 
-    public function getCalculatedRatingAttribute(){
-        return collect($this->receivedRatings)->avg(function($e){
-            return $e->score;
+    public function getCalculatedRatingAttribute()
+    {
+        $avg_rating = collect($this->receivedRatings)->avg(function ($e) {
+            return round(intval($e->score));
         });
+        return (int)round($avg_rating);
     }
 
-    public function gameTime(){
+    public function gameTime()
+    {
         return $this
             ->belongsToMany(
                 Weekday::class,
                 'game_time',
                 'user_id',
                 'weekday_id'
-        );
+            );
     }
-    
-    public function devices(){
+
+    public function devices()
+    {
         return $this->hasMany(Device::class);
     }
 
@@ -110,5 +131,12 @@ class User extends Authenticatable
         return $this->status === self::STATUS_PRO;
     }
 
-
+    public function getAvatar()
+    {
+        if(!$this->avatar){
+            return '/default-person.jpg';
+        }else{
+            return $this->avatar->path;
+        }
+    }
 }
