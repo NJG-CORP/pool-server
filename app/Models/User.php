@@ -10,6 +10,11 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
+/**
+ * Class User
+ * @package App\Models
+ * @property Image $avatar
+ */
 class User extends Authenticatable
 {
     use Notifiable, SoftDeletes, TaxonomyTrait;
@@ -35,7 +40,7 @@ class User extends Authenticatable
         STATUS_PRO = 1;
 
     public function avatar(){
-        return $this->morphOne(Image::class, 'imageable');
+        return $this->morphOne(Image::class, 'imageable') ?? Image::getDefaultImage();
     }
 
     public function city(){
@@ -62,19 +67,19 @@ class User extends Authenticatable
         return $this->belongsToMany(User::class, 'favourites', 'to_id', 'from_id');
     }
 
-    public function getGameType(){
+    public function gameType(){
         $vocabulary = \Taxonomy::getVocabularyByName('GameType');
         return $this->related()
             ->where('vocabulary_id', $vocabulary->id)->with(['term']);
     }
 
-    public function getSkillLevel(){
+    public function skillLevel(){
         $vocabulary = \Taxonomy::getVocabularyByName('SkillLevel');
         return $this->related()
             ->where('vocabulary_id', $vocabulary->id)->with(['term']);
     }
 
-    public function getGamePaymentType(){
+    public function gamePaymentType(){
         $vocabulary = \Taxonomy::getVocabularyByName('GamePaymentType');
         return $this->related()
             ->where('vocabulary_id', $vocabulary->id)->with(['term']);
@@ -110,5 +115,14 @@ class User extends Authenticatable
         return $this->status === self::STATUS_PRO;
     }
 
+    public function getAvatarUrl(): string
+    {
+        if(!$this->avatar)
+        {
+            $this->avatar = new \stdClass();
+            $this->avatar->url = Image::getDefaultImage()['url'];
+        }
+        return $this->avatar->url;
+    }
 
 }

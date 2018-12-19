@@ -26,8 +26,8 @@ class PlayerService
             'receivedFavourites', 'gameType', 'gamePaymentType', 'skillLevel',
             'location', 'avatar', 'city', 'gameTime'
         )->find($id);
-        if ( !empty($user->avatar->url) ){
-            $path = public_path($user->avatar->url);
+        if ( !empty($user->getAvatarUrl()) ){
+            $path = public_path($user->getAvatarUrl());
             if ( file_exists($path) ){
                 $type = pathinfo($path, PATHINFO_EXTENSION);
                 $data = file_get_contents($path);
