@@ -8,6 +8,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Events extends Model
 {
     use SoftDeletes;
+    const HEADER_SUFFIX = 'СУФФИКС ';
+
     protected $dates = ['created_at', 'updated_at', 'deleted_at'];
 
     public function images()
@@ -35,5 +37,9 @@ class Events extends Model
         return $this->hasOne(Image::class, 'id', 'mainImg');
     }
 
+    public function getHeader()
+    {
+        return !empty($this->name) ? $this->name : $this::HEADER_SUFFIX . $this->title;
+    }
 
 }

@@ -12,15 +12,16 @@
                 </div>
 
                 <div class="font50_wrap">
-                    <h1>{{$event->title}}</h1>
+                    <h1>{{$event->getHeader()}}</h1>
                 </div>
 
                 <div class="inner_news_page_wrap clearfix">
                     <div class="inner_news_block clearfix">
                         <div class="img">
                             <div class="big_img">
-                                <a class="fancy" href="{{$event->getMainImage()}}"><img src="{{$event->getMainImage()}}"
-                                                                                        alt=""></a>
+                                <a class="fancy" href="{{$event->getMainImageEvent->url}}">
+                                    <img src="{{$event->getMainImageEvent->url}}" alt="">
+                                </a>
                             </div>
 
                             <div class="mini_img">

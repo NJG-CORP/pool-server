@@ -15,6 +15,7 @@ class EventsService
 
     public function getEvent($id) {
         return Events::with(['images'])
+            ->where(['id' => $id])
             ->first();
     }
 

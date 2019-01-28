@@ -14,8 +14,11 @@
             <label class="control-label" for="addeventform-title">Title</label>
             <input type="text" id="addeventform-title" class="form-control" name="title" aria-required="true"
                    value="{{ $event->title }}">
+        </div>
 
-
+        <div class="form-group field-addeventform-name required">
+            <label class="control-label" for="addeventform-name">Название</label>
+            <input type="text" id="addeventform-name" class="form-control" name="name" value="{{ $event->name }}">
         </div>
 
         <div class="form-group field-addeventform-url required">
@@ -111,7 +114,8 @@
         </div>
         <div class="form-group field-addeventform-paragraph">
             <label class="control-label" for="addeventform-paragraph">Paragraph</label>
-            <textarea name="paragraph" id="" cols="30" rows="10" class="textarea validate">{{ $event->paragraph }}</textarea>
+            <textarea name="paragraph" id="" cols="30" rows="10"
+                      class="textarea validate">{{ $event->paragraph }}</textarea>
 
 
         </div>
@@ -201,7 +205,7 @@
 
                 }
             });
-        })
+        });
 
         $('.rmImg').click(function () {
 

@@ -13,8 +13,11 @@
         <div class="form-group field-addeventform-title required">
             <label class="control-label" for="addeventform-title">Title</label>
             <input type="text" id="addeventform-title" class="form-control" name="title" aria-required="true">
+        </div>
 
-
+        <div class="form-group field-addeventform-name required">
+            <label class="control-label" for="addeventform-name">Название</label>
+            <input type="text" id="addeventform-name" class="form-control" name="name" aria-required="true">
         </div>
 
         <div class="form-group field-addeventform-url required">
