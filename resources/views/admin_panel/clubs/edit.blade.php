@@ -6,135 +6,150 @@
         <form action="{{route('post:club:update')}}" method="POST" id="updated" class="forms-sample"
               enctype="multipart/form-data">
             {{csrf_field()}}
-            <input type="hidden" name="item" value="{{$data->id}}">
-            <div class="form-group">
-                <label for="title">Заголовок</label>
-                <input type="text" class="form-control" id="title" name="title" placeholder="Enter Title"
-                       value="{{$data->title}}" required>
-            </div>
-            <div class="form-group">
-                <label for="title">Название</label>
-                <input type="text" class="form-control" id="name" name="name" placeholder="Название"
-                       value="{{$data->name}}">
-            </div>
-            <div class="form-group">
-                <label for="des">Description</label>
-                <textarea name="des" id="des" class="form-control" rows="6">{{$data->description}}</textarea>
+            <div id="tabs">
+                <ul>
+                    <li><a href="#tabs-1">Основное</a></li>
+                    <li><a href="#tabs-2">Кухни, столы, время</a></li>
+                    <li><a href="#tabs-3">SEO</a></li>
+                </ul>
+                <div id="tabs-1">
+                    <input type="hidden" name="item" value="{{$data->id}}">
+                    <div class="form-group">
+                        <label for="title">Заголовок</label>
+                        <input type="text" class="form-control" id="title" name="title" placeholder="Enter Title"
+                               value="{{$data->title}}" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="des">Description</label>
+                        <textarea name="des" id="des" class="form-control" rows="6">{{$data->description}}</textarea>
 
-            </div>
+                    </div>
 
-            <div class="form-group">
-                <label for="img">Picture</label>
-                @if(isset($data->images[0]))
-                    <img src="/assets/images/{{$data->images[0]->path}}" height="100" width="100">
-                @endif
-                <input type="file" class="form-control" id="img" name="img" placeholder="Enter">
+                    <div class="form-group">
+                        <label for="img">Picture</label>
+                        @if(isset($data->images[0]))
+                            <img src="/assets/images/{{$data->images[0]->path}}" height="100" width="100">
+                        @endif
+                        <input type="file" class="form-control" id="img" name="img" placeholder="Enter">
 
-            </div>
-            <div class="form-group field-addeventform-url required">
-                <label class="control-label" for="addeventform-url">Gallery Title</label>
-                <input type="text" id="addeventform-url" class="form-control" name="gallery_title" aria-required="true"
-                       value="{{$data->gallery_title}}">
-
-
-            </div>
+                    </div>
+                    <div class="form-group field-addeventform-url required">
+                        <label class="control-label" for="addeventform-url">Gallery Title</label>
+                        <input type="text" id="addeventform-url" class="form-control" name="gallery_title"
+                               aria-required="true"
+                               value="{{$data->gallery_title}}">
 
 
-            <div class="form-group field-addeventform-images">
-                <label class="control-label" for="addeventform-images">Gallery Images</label>
+                    </div>
 
-                <input type="file" id="addeventform-images" multiple="" name="gallery_images[]">
 
-                @if(count($gallery_images))
+                    <div class="form-group field-addeventform-images">
+                        <label class="control-label" for="addeventform-images">Gallery Images</label>
 
-                    @foreach($gallery_images as $more_img)
-                        <div class="img" id="img{{$more_img->id}}">
-                            <button type="button" class="rmImg btn btn-danger btn-small" data-id="{{$more_img->id}}">
-                                Remove
-                            </button>
-                            <img src="/assets/images/{{$more_img->path}}" style="width:100px">
+                        <input type="file" id="addeventform-images" multiple="" name="gallery_images[]">
 
-                        </div>
-                    @endforeach
+                        @if(count($gallery_images))
 
-                @endif
-            </div>
+                            @foreach($gallery_images as $more_img)
+                                <div class="img" id="img{{$more_img->id}}">
+                                    <button type="button" class="rmImg btn btn-danger btn-small"
+                                            data-id="{{$more_img->id}}">
+                                        Remove
+                                    </button>
+                                    <img src="/assets/images/{{$more_img->path}}" style="width:100px">
 
-            <div class="clearfix"></div>
+                                </div>
+                            @endforeach
 
-            <label>Working hours</label>
-            @foreach($days as $day)
+                        @endif
+                    </div>
+                    <div class="form-group">
+                        <label for="location">Location</label>
+                        <input type="number" class="form-control" id="location" name="location"
+                               placeholder="Enter Location"
+                               value="{{$data->location_id}}" required>
 
-                <div class="form-group">
-                    <label>{{$day->name}}</label>
-                    <div class="input-group time">
-          <span class="input-group-addon">
-    <i class="far fa-clock"></i>
-</span>
-                        <input type="text" name="worktime[{{$day->id}}][from]" class="worktime form-control"
-                               @if(isset($data->getWorkTime->keyBy('weekday_id')[$day->id])) value="{{$data->getWorkTime->keyBy('weekday_id')[$day->id]->from}}" @endif>
+                    </div>
 
-                        <span class="input-group-addon">
-    <i class="far fa-clock"></i>
-</span>
-                        <input type="text" name="worktime[{{$day->id}}][to]" class="worktime form-control"
-                               @if(isset($data->getWorkTime->keyBy('weekday_id')[$day->id])) value="{{$data->getWorkTime->keyBy('weekday_id')[$day->id]->to}}" @endif>
+                    <div class="form-group">
+                        <label for="mob">Phone No.</label>
+                        <input type="text" class="form-control" id="mob" name="mob" placeholder="Enter phone number"
+                               value="{{$data->phone}}" required>
+
                     </div>
                 </div>
+                <div id="tabs-2">
+                    <label>Working hours</label>
+                    @foreach($days as $day)
 
-                <div class="clearfix"></div>
+                        <div class="form-group">
+                            <label>{{$day->name}}</label>
+                            <div class="input-group time">
+                                <span class="input-group-addon">
+                                    <i class="far fa-clock"></i>
+                                </span>
+                                <input type="text" name="worktime[{{$day->id}}][from]" class="worktime form-control"
+                                       @if(isset($data->getWorkTime->keyBy('weekday_id')[$day->id])) value="{{$data->getWorkTime->keyBy('weekday_id')[$day->id]->from}}" @endif>
+                                <span class="input-group-addon">
+                                    <i class="far fa-clock"></i>
+                                </span>
+                                <input type="text" name="worktime[{{$day->id}}][to]" class="worktime form-control"
+                                       @if(isset($data->getWorkTime->keyBy('weekday_id')[$day->id])) value="{{$data->getWorkTime->keyBy('weekday_id')[$day->id]->to}}" @endif>
+                            </div>
+                        </div>
 
-            @endforeach
-            <label>Number of tables</label>
-            <div class="form-group">
-                <label for="pool">Pool</label>
-                <input type="number" class="form-control" id="pool" name="pool" placeholder="Enter pool" required
-                       value="{{$data->gametype->pool}}">
+                        <div class="clearfix"></div>
 
+                    @endforeach
+                    <label>Number of tables</label>
+                    <div class="form-group">
+                        <label for="pool">Pool</label>
+                        <input type="number" class="form-control" id="pool" name="pool" placeholder="Enter pool"
+                               required
+                               value="{{$data->gametype->pool}}">
+
+                    </div>
+                    <div class="form-group">
+                        <label for="russian">Russian</label>
+                        <input type="number" class="form-control" id="russian" name="russian"
+                               placeholder="Enter Russian"
+                               required value="{{$data->gametype->Russian}}">
+
+                    </div>
+                    <div class="form-group">
+                        <label for="snooker">Snooker</label>
+                        <input type="number" class="form-control" id="snooker" name="snooker"
+                               placeholder="Enter Snooker"
+                               required value="{{$data->gametype->Snooker}}">
+
+                    </div>
+                    <div class="form-group">
+                        <label for="cannon">Cannon</label>
+                        <input type="number" class="form-control" id="cannon" name="cannon" placeholder="Enter Cannon"
+                               required
+                               value="{{$data->gametype->Cannon}}">
+
+                    </div>
+                    <label>Kitchens</label>
+                    <select name="kitchen[]" class="form-control" multiple="multiple">
+                        @foreach($kitchens as $k)
+
+                            <option value="{{$k->id}}"
+                                    @if(in_array($k->id,$data->kitchens_id)) selected @endif >{{$k->name}}</option>
+                        @endforeach
+
+                    </select>
+                </div>
+                <div id="tabs-3">
+                    <div class="form-group">
+                        <label for="title">Название</label>
+                        <input type="text" class="form-control" id="name" name="name" placeholder="Название"
+                               value="{{$data->name}}">
+                    </div>
+                </div>
             </div>
-            <div class="form-group">
-                <label for="russian">Russian</label>
-                <input type="number" class="form-control" id="russian" name="russian" placeholder="Enter Russian"
-                       required value="{{$data->gametype->Russian}}">
 
-            </div>
-            <div class="form-group">
-                <label for="snooker">Snooker</label>
-                <input type="number" class="form-control" id="snooker" name="snooker" placeholder="Enter Snooker"
-                       required value="{{$data->gametype->Snooker}}">
-
-            </div>
-            <div class="form-group">
-                <label for="cannon">Cannon</label>
-                <input type="number" class="form-control" id="cannon" name="cannon" placeholder="Enter Cannon" required
-                       value="{{$data->gametype->Cannon}}">
-
-            </div>
-            <label>Kitchens</label>
-            <select name="kitchen[]" class="form-control" multiple="multiple">
-                @foreach($kitchens as $k)
-
-                    <option value="{{$k->id}}"
-                            @if(in_array($k->id,$data->kitchens_id)) selected @endif >{{$k->name}}</option>
-                @endforeach
-
-            </select>
-            <div class="form-group">
-                <label for="location">Location</label>
-                <input type="number" class="form-control" id="location" name="location" placeholder="Enter Location"
-                       value="{{$data->location_id}}" required>
-
-            </div>
-
-            <div class="form-group">
-                <label for="mob">Phone No.</label>
-                <input type="text" class="form-control" id="mob" name="mob" placeholder="Enter phone number"
-                       value="{{$data->phone}}" required>
-
-            </div>
-
-
-            <button type="Submit" class="btn btn-success" class="update">Change</button>
+            <button type="Submit" class="btn btn-success update">Change</button>
             <a href="{{route('get:club:data')}}">
                 <button type="button" class="btn btn-danger">Cancel</button>
             </a>
@@ -145,6 +160,8 @@
 @section('js')
     <script type="text/javascript"
             src="https://cdn.jsdelivr.net/jquery.validation/1.15.1/jquery.validate.min.js"></script>
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
     <script>
         $("#updated").validate({
 
@@ -220,6 +237,8 @@
         });
 
         $(document).ready(function () {
+
+            $("#tabs").tabs();
             $('.worktime').timepicker({"timeFormat": "HH:mm:ss", "showSecond": false});
         });
     </script>

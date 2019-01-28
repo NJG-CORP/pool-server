@@ -9,65 +9,62 @@
     <form action="{{route('post:save:news')}}" method="post" enctype="multipart/form-data" id="frmCreateNews">
 
         {{ csrf_field()}}
+        <div id="tabs">
+            <ul>
+                <li><a href="#tabs-1">Основное</a></li>
+                <li><a href="#tabs-2">SEO</a></li>
+            </ul>
+            <div id="tabs-1">
+                <div class="form-group field-addeventform-title required">
+                    <label class="control-label" for="addeventform-title">Title</label>
+                    <input type="text" id="addeventform-title" class="form-control" name="title" aria-required="true">
+                </div>
+                <div class="form-group field-addeventform-description">
+                    <label class="control-label" for="addeventform-description">Description</label>
+                    <textarea id="addeventform-description" class="form-control" name="description" rows="6"></textarea>
+                </div>
 
-        <div class="form-group field-addeventform-title required">
-            <label class="control-label" for="addeventform-title">Title</label>
-            <input type="text" id="addeventform-title" class="form-control" name="title" aria-required="true">
+                <div class="form-group field-addeventform-mainimg">
+                    <label class="control-label" for="addeventform-mainimg">Main image</label>
+                    <input type="hidden" name="mainImg" value=""><input type="file" id="addeventform-mainimg"
+                                                                        name="mainImg">
+                </div>
+
+                <div class="form-group field-addeventform-images">
+                    <label class="control-label" for="addeventform-images">Add. </font><font
+                                style="vertical-align: inherit;">Images</label>
+                    <input type="file" id="addeventform-images" multiple="" name="images[]">
+                </div>
+
+                <div class="form-group field-addeventform-url required">
+                    <label class="control-label" for="addeventform-url">Gallery Title</label>
+                    <input type="text" id="addeventform-url" class="form-control" name="gallery_title"
+                           aria-required="true">
+                </div>
+
+                <div class="form-group field-addeventform-images">
+                    <label class="control-label" for="addeventform-images">Gallery Images</font></label>
+                    <input type="file" id="addeventform-images" multiple="" name="gallery_images[]">
+                </div>
+
+                <div class="form-group field-addeventform-paragraph">
+                    <label class="control-label" for="addeventform-paragraph">Paragraph</label>
+                    <textarea name="paragraph" id="" cols="30" rows="10" class="textarea"></textarea>
+                </div>
+            </div>
+            <div id="tabs-2">
+                <div class="form-group field-addeventform-name required">
+                    <label class="control-label" for="addeventform-name">Название</label>
+                    <input type="text" id="addeventform-name" class="form-control" name="name">
+                </div>
+
+                <div class="form-group field-addeventform-url required">
+                    <label class="control-label" for="addeventform-url">Url</label>
+                    <input type="text" id="addeventform-url" class="form-control" name="url" aria-required="true">
+                </div>
+            </div>
         </div>
 
-        <div class="form-group field-addeventform-name required">
-            <label class="control-label" for="addeventform-name">Название</label>
-            <input type="text" id="addeventform-name" class="form-control" name="name">
-        </div>
-
-        <div class="form-group field-addeventform-url required">
-            <label class="control-label" for="addeventform-url">Url</label>
-            <input type="text" id="addeventform-url" class="form-control" name="url" aria-required="true">
-        </div>
-        <div class="form-group field-addeventform-description">
-            <label class="control-label" for="addeventform-description">Description</label>
-            <textarea id="addeventform-description" class="form-control" name="description" rows="6"></textarea>
-
-
-        </div>
-
-
-        <div class="form-group field-addeventform-mainimg">
-            <label class="control-label" for="addeventform-mainimg">Main image</label>
-            <input type="hidden" name="mainImg" value=""><input type="file" id="addeventform-mainimg" name="mainImg">
-
-
-        </div>
-        <div class="form-group field-addeventform-images">
-            <label class="control-label" for="addeventform-images">Add. </font><font style="vertical-align: inherit;">Images</label>
-            <input type="file" id="addeventform-images" multiple="" name="images[]">
-
-
-        </div>
-
-        <div class="form-group field-addeventform-url required">
-            <label class="control-label" for="addeventform-url">Gallery Title</label>
-            <input type="text" id="addeventform-url" class="form-control" name="gallery_title" aria-required="true">
-
-
-        </div>
-
-
-        <div class="form-group field-addeventform-images">
-            <label class="control-label" for="addeventform-images">Gallery Images</font></label>
-
-            <input type="file" id="addeventform-images" multiple="" name="gallery_images[]">
-
-
-        </div>
-
-
-        <div class="form-group field-addeventform-paragraph">
-            <label class="control-label" for="addeventform-paragraph">Paragraph</label>
-            <textarea name="paragraph" id="" cols="30" rows="10" class="textarea"></textarea>
-
-
-        </div>
         <div class="form-group">
             <button type="submit" class="btn btn-success" name="login-button">
                 Create
@@ -109,9 +106,12 @@
     <script src="/js/timepicker.js"></script>
     <script type="text/javascript"
             src="https://cdn.jsdelivr.net/jquery.validation/1.15.1/jquery.validate.min.js"></script>
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
     <script>
         $(document).ready(function () {
 
+            $("#tabs").tabs();
 
             $('.textarea').ckeditor();
 
