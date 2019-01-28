@@ -9,9 +9,12 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Blogs extends Model
 {
     use SoftDeletes;
+
+    const HEADER_SUFFIX = 'СУФФИКС';
     protected $dates = ['created_at', 'updated_at', 'deleted_at'];
 
-    public function images(){
+    public function images()
+    {
         return $this->morphMany(Image::class, 'imageable');
     }
 
@@ -19,12 +22,18 @@ class Blogs extends Model
      @role: 
      
      @comments: 
-     */ 
-     
-     public function getMainImageEvent() 
-     { 
-     
-        return $this->hasOne(Image::class,'id','mainImg');
-     
-     }
+     */
+
+    public function getMainImageEvent()
+    {
+
+        return $this->hasOne(Image::class, 'id', 'mainImg');
+
+    }
+
+
+    public function getHeader()
+    {
+        return !empty($this->name) ? $this->name : $this::HEADER_SUFFIX . $this->title;
+    }
 }

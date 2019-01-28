@@ -2,7 +2,6 @@
 namespace App\Services\AdminPanel;
 
 use App\Models\Blogs;
-use App\Models\Image;
 use App\Services\ImageService;
 
 
@@ -51,6 +50,7 @@ class BlogService
 	  		$blog = new Blogs;
 
 	  		$blog->title = $request->title;
+          $blog->name = $request->name;
 	  		$blog->url = $request->url;
 	  		$blog->paragraph = $request->paragraph;
 	  		$blog->description = $request->description;

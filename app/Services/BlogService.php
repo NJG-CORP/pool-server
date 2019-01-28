@@ -1,7 +1,7 @@
 <?php
 namespace App\Services;
 
-use App\Models\Blog;
+use App\Models\Blogs as Blog;
 
 class BlogService
 {
