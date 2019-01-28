@@ -1,22 +1,14 @@
 <?php
 namespace App\Services;
 
-use App\Models\City;
 use App\Models\GameTime;
 use App\Models\Location;
 use App\Models\TermRelation;
 use App\Models\User;
-use App\Models\UserGameTime;
-use App\Models\UserGameTypes;
-use App\Models\UserPayment;
 use App\Models\Weekday;
 use Devfactory\Taxonomy\Models\Term;
 use Devfactory\Taxonomy\Models\Vocabulary;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Input;
 
 class PlayerService
 {

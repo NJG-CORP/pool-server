@@ -22,7 +22,7 @@ function initMap() {
                 lng: 0
             };
             var count = 0;
-            $.each(response, function (index,marker) {
+            $.each(response, function (index, marker) {
                 centerCoords['lat'] += parseFloat(marker['lat']);
                 centerCoords['lng'] += parseFloat(marker['lng']);
                 var markerGoogle = new google.maps.Marker({
@@ -32,13 +32,13 @@ function initMap() {
                 });
                 markers.push(markerGoogle);
                 count++;
-                markerGoogle.addListener('click', function(){
+                markerGoogle.addListener('click', function () {
                     window.location = marker['url'];
                 });
             });
 
-            centerCoords['lat'] = centerCoords['lat']/count;
-            centerCoords['lng'] = centerCoords['lng']/count;
+            centerCoords['lat'] = centerCoords['lat'] / count;
+            centerCoords['lng'] = centerCoords['lng'] / count;
 
             map.setCenter(centerCoords);
         },
@@ -8156,11 +8156,11 @@ $("#range").ionRangeSlider({
     to: 23,
     step: 1,
     prettify: function (num) {
-        return num+":00";
+        return num + ":00";
     },
-    onFinish:  function (data) {
-        $("#searchform-time-from").val(data.from);
-        $("#searchform-time-to").val(data.to);
+    onFinish: function (data) {
+        $("#searchform-time-from").val(data.from + ':00:00');
+        $("#searchform-time-to").val(data.to + ':00:00');
     },
 });
 /* MAIN JS END */

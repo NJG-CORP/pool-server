@@ -30,13 +30,16 @@ class ProfileController extends Controller
         return view('site.user.profile.profile', compact('types', 'payment', 'days'));
     }
 
-    public function card(){
-        return view('site.user.profile.card');
+    public function card()
+    {
+        $user = (new UserService())->getUser();
+        $reviews = (new UserService())->getUserReviews($user->id, UserService::REVIEW_LIMIT);
+        return view('site.user.profile.card', compact('reviews'));
     }
 
     public function invites()
     {
-        return view('site.user.profile.invites',['result' => (new InvitationService())->invitationList(\Auth::user())]  );
+        return view('site.user.profile.invites', ['result' => (new InvitationService())->invitationList(\Auth::user())]);
     }
 
     public function partners()
@@ -59,20 +62,20 @@ class ProfileController extends Controller
             'types' => 'required',
             'days' => 'required',
             'payment' => 'required',
-            'sex' => 'required',
+            'gender' => 'required',
         ]);
-        if ($validator->fails()){
+        if ($validator->fails()) {
             return redirect()->back()->withErrors($validator)->withInput();
         }
 
         $fields = $request->all();
         $req_user = $fields['id'];
         $base_user = (new UserService())->getUser()->id;
-        if ($req_user == $base_user){
+        if ($req_user == $base_user) {
             $profile = new PlayerService();
-            $profile->save(Auth::user(),$fields, new CityService(), new ImageService());
+            $profile->save(Auth::user(), $fields, new CityService(), new ImageService(), new UserService());
             return redirect()->back()->with('success', 'Профиль успешно обновлен!');
-        }else{
+        } else {
             return redirect()->back()->with('error', 'Что-то пошло не так.');
         }
 

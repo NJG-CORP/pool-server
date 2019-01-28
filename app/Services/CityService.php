@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Services;
 
 use App\Models\City;
@@ -6,7 +7,8 @@ use GuzzleHttp\Client;
 
 class CityService
 {
-    public function search($search){
+    public function search($search)
+    {
         $query = [
             "query" => $search,
             "contentType" => "city",
@@ -21,41 +23,51 @@ class CityService
         );
         try {
             $result = \GuzzleHttp\json_decode($result->getBody()->getContents());
-            return collect($result->result)->map(function($e){
+            return collect($result->result)->map(function ($e) {
                 return [
                     "id" => $e->id,
                     "type" => $e->typeShort,
                     "name" => $e->name
                 ];
             });
-        } catch (\Throwable $e){
+        } catch (\Throwable $e) {
             return [];
         }
     }
 
-    public function ensureCity($id, $name){
-        $city = City::firstOrCreate([
-            'id' => $id
-        ], [
-            'name' => $name
-        ]);
-        return $city;
+    public function ensureCity($name)
+    {
+        if ($this->getCityId($name))
+            return $this->getCityId($name);
+        else
+            return $this->saveCity($name);
     }
 
-    public function getCityId($name) {
+    public function getCityId($name)
+    {
         $city = City::where('name', $name)->first();
-        return $city->id;
+        if ($city)
+            return $city->id;
+
+        return false;
     }
 
-    public function getCity($name) {
+    public function getCity($name)
+    {
         $city = City::where('name', $name)->first();
-        return $city;
+        if ($city)
+            return $city;
+
+        return false;
     }
 
-    public function saveCity($name) {
+    public function saveCity($name)
+    {
         $city = new City();
         $city->name = $name;
-        $city->save();
-        return $city->id;
+        if ($city->save())
+            return $city->id;
+
+        return false;
     }
 }
