@@ -16,7 +16,7 @@
                         <div class="news_block_div">
                             <div class="img">
                                 <a href="{{ route('news.show', $item->id) }}">
-                                    <img src="{{ $item->image }}" alt="News Image">
+                                    <img src="{{ $item->getMainImageEvent->url }}" alt="News Image">
                                 </a>
                             </div>
                             <div class="text">
@@ -24,7 +24,7 @@
                                     <a href="{{ route('news.show', $item->id) }}">{{ $item->title }}</a>
                                 </p>
                                 <span class="date">{{ $item->created_at }}</span>
-                                <p>{{ substr($item->description, 0, 200) }}...</p>
+                                <p>{{ mb_strimwidth($item->description, 0, 200) }}...</p>
                             </div>
                         </div>
                     @endforeach

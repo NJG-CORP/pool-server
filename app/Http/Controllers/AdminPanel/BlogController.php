@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers\AdminPanel;
 
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\AdminRequest\BlogRequest;
-use App\Services\AdminPanel\BlogService;
+use App\Models\Blog;
 use App\Models\Image;
-use App\Models\Blogs;
+use App\Services\AdminPanel\BlogService;
+use Illuminate\Http\Request;
 
 
 class BlogController extends Controller
@@ -165,10 +165,10 @@ class BlogController extends Controller
 	      */ 
 	      
 	      public function removeBlog(Request $request) 
-	      { 
-	      		
+	      {
 
-	      		$blog = Blogs::findorFail($request->id);
+
+              $blog = Blog::findorFail($request->id);
 
 	      		$blog_id = $blog->id;
 	      		

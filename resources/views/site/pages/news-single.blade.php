@@ -15,13 +15,14 @@
                     </p>
                 </div>
                 <div class="font50_wrap">
-                    <h2>{{ $news->title }}</h2>
+                    <h1>{{ $news->getHeader() }}</h1>
                 </div>
                 <div class="inner_news_page_wrap clearfix">
                     <div class="inner_news_block clearfix">
                         <div class="img">
                             <div class="big_img">
-                                <a class="fancy" href=""><img src="{{ asset($news->image) }}" alt=""></a>
+                                <a class="fancy" href=""><img src="{{ asset($news->getMainImageEvent->url) }}"
+                                                              alt=""></a>
                             </div>
                             <div class="mini_img">
 

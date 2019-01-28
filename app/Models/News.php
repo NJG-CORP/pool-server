@@ -8,6 +8,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class News extends Model
 {
     use SoftDeletes;
+    const HEADER_SUFFIX = 'СУФФИКС ';
+
     protected $table = 'news';
     protected $fillable = ['title', 'description'];
 
@@ -21,5 +23,11 @@ class News extends Model
     public function getMainImageEvent()
     {
         return $this->hasOne(Image::class, 'id', 'mainImg');
+    }
+
+
+    public function getHeader()
+    {
+        return !empty($this->name) ? $this->name : $this::HEADER_SUFFIX . $this->title;
     }
 }

@@ -1,7 +1,7 @@
 <?php
 namespace App\Services\AdminPanel;
 
-use App\Models\Blogs;
+use App\Models\Blog;
 use App\Services\ImageService;
 
 
@@ -16,9 +16,9 @@ class BlogService
 	 */ 
 	 
 	 public function getBlogsData() 
-	 { 
-	 
-	 		return Blogs::orderBy('id','desc')->paginate(10);
+	 {
+
+         return Blog::orderBy('id', 'desc')->paginate(10);
 	 
 	 }
 
@@ -29,9 +29,9 @@ class BlogService
 	  */ 
 	  
 	  public function getOne($id) 
-	  { 
-	  	
-	  		return Blogs::with('images')->findOrFail($id);
+	  {
+
+          return Blog::with('images')->findOrFail($id);
 	  
 	  
 	  }
@@ -45,9 +45,9 @@ class BlogService
 	  { 
 	  		
 	  		if($request->blog_id>0) // if we have update request
-	  		$blog = Blogs::findOrFail($request->blog_id);
+                $blog = Blog::findOrFail($request->blog_id);
 	  		else	// add new 
-	  		$blog = new Blogs;
+                $blog = new Blog;
 
 	  		$blog->title = $request->title;
           $blog->name = $request->name;
