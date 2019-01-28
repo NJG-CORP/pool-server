@@ -2,13 +2,11 @@
 
 namespace App\Http\Controllers\AdminPanel;
 
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Utils\R;
-use Carbon\Carbon;
-use App\Http\Responder;
-use App\Services\ClubsService;
 use App\Http\Requests\AdminRequest\ClubValidation;
+use App\Services\ClubsService;
+use App\Utils\R;
+use Illuminate\Http\Request;
 
 class ClubController extends Controller
 {
@@ -44,11 +42,12 @@ class ClubController extends Controller
         $kitchens=$this->clubs->getallKitchensData();
         $days=$this->clubs->getWeekDay();
         //$worktime=$this->clubs->getWorktime($id);
+        $gallery_images = $this->clubs->getGalleryImages($id);
           if(empty($data)){
 
                 return $this->responder->errorResponse(R::USER_LOGIN_FAILURE, null, 401);
         }
-        return view('admin_panel.clubs.edit',compact('data','kitchens','days','worktime'));
+        return view('admin_panel.clubs.edit', compact('data', 'kitchens', 'days', 'worktime', 'gallery_images'));
     }
     public function update(ClubValidation $request)
     {

@@ -41,7 +41,8 @@
                                                     Пул, Русский бильярд, Снукер, Карамболь </p>
                                                 <p>
                                                     <b>Время работы:</b>
-                                                    {{ $club->getWorkTime()->first()->from . '-' . $club->getWorkTime()->first()->to    }} </p>
+                                                    {{ $club->getWorkTime()->first()->from . '-' . $club->getWorkTime()->first()->to    }}
+                                                </p>
                                                 <p>
                                                     <b>Телефон:</b>
                                                     <a class="tel_a" href="tel:89995293121">{{ $club->phone  }}</a>

@@ -46,7 +46,7 @@ function initMap() {
     });
 }
 
-;(function (factory) { // eslint-disable-line no-extra-semi
+(function (factory) { // eslint-disable-line no-extra-semi
     'use strict';
     if (typeof define === 'function' && define.amd) {
         // AMD
@@ -2462,7 +2462,7 @@ function initMap() {
  * Copyright 2012 WooThemes
  * Contributing Author: Tyler Smith
  */
-;(function (d) {
+(function (d) {
     d.flexslider = function (i, k) {
         var a = d(i), c = d.extend({}, d.flexslider.defaults, k), e = c.namespace,
             p = "ontouchstart" in window || window.DocumentTouch && document instanceof DocumentTouch,
@@ -3172,7 +3172,7 @@ function initMap() {
             },
             onkeyup: function (element, event) {
                 if (event.which === 9 && this.elementValue(element) === "") {
-                    return;
+
                 } else if (element.name in this.submitted || element === this.lastElement) {
                     this.element(element);
                 }
@@ -4205,7 +4205,7 @@ var _$$ = {
                 case 0:
                     this.$$ = function () {
                         return _$$.$.apply(null, arguments);
-                    }
+                    };
                     break;
                 case 1:
                     obj.innerHTML = arguments[0];
@@ -4215,7 +4215,7 @@ var _$$ = {
                     break;
             }
             return obj;
-        }
+        };
         obj.$$after = function (el) {
             var elm = this;
             var th = _$$.$(el);
@@ -4233,7 +4233,7 @@ var _$$ = {
                 }
             }
             return _$$.$(elm);
-        }
+        };
         obj.$$before = function (el) {
             var elm = this;
             var th = _$$.$(el);
@@ -4255,7 +4255,7 @@ var _$$ = {
                 }
             }
             return _$$.$(elm);
-        }
+        };
         obj.$$prev = function () {
             var elm = this;
             do {
@@ -4267,7 +4267,7 @@ var _$$ = {
             else {
                 return elm;
             }
-        }
+        };
         obj.$$next = function () {
             var elm = this;
             do {
@@ -4279,7 +4279,7 @@ var _$$ = {
             else {
                 return elm;
             }
-        }
+        };
         obj.$$first = function () {
             var elm = this;
             elm = elm.firstChild;
@@ -4290,7 +4290,7 @@ var _$$ = {
             else {
                 return elm;
             }
-        }
+        };
         obj.$$last = function () {
             var elm = this;
             elm = elm.lastChild;
@@ -4301,7 +4301,7 @@ var _$$ = {
             else {
                 return elm;
             }
-        }
+        };
         obj.$$parent = function (num) {
             var elm = this;
             num = num || 1;
@@ -4313,11 +4313,11 @@ var _$$ = {
             else {
                 return elm;
             }
-        }
+        };
         obj.$$html = function () {
             var elm = this;
             return _$$.$(elm).innerHTML;
-        }
+        };
         return obj;
     },
     $a: function (arg) {
@@ -4354,7 +4354,7 @@ var _$$ = {
 
             },
             timeout: 0
-        }
+        };
 
         for (var index in default_arg) {
             if (typeof arg[index] == "undefined") arg[index] = default_arg[index];
@@ -4399,7 +4399,7 @@ var _$$ = {
                 }
             }
             return req;
-        }
+        };
 
 
         var encurl = function (d) {
@@ -4413,7 +4413,7 @@ var _$$ = {
             else {
                 return encodeURIComponent(d);
             }
-        }
+        };
 
 
         var parsehead = function (headertxt) {
@@ -4430,7 +4430,7 @@ var _$$ = {
                 headers[name] = value;
             }
             return headers;
-        }
+        };
 
 
         var req = obj();
@@ -4537,7 +4537,7 @@ var _$$ = {
                         }
                     }
 
-                }
+                };
 
                 if (type == 'get' || type == 'head') {
                     req.send(null);
@@ -4617,7 +4617,7 @@ var _$$ = {
                     for (var i in list) {
                         list[i](event);
                     }
-                }
+                };
                 if (elem.addEventListener) {
                     elem.addEventListener(type, func, false);
                 }
@@ -4661,7 +4661,7 @@ var _$$ = {
             onsend: function () {
 
             }
-        }
+        };
 
         for (var index in default_arg) {
             if (typeof arg[index] == "undefined") arg[index] = default_arg[index];
@@ -4709,7 +4709,7 @@ var _$$ = {
             onready: function () {
 
             }
-        }
+        };
 
         for (var index in default_arg) {
             if (typeof arg[index] == "undefined") arg[index] = default_arg[index];
@@ -4787,7 +4787,7 @@ var _$$ = {
                 if (called) return;
                 called = true;
                 handler();
-            }
+            };
 
             if (document.addEventListener) {
                 document.addEventListener("DOMContentLoaded", function () {
@@ -4808,7 +4808,7 @@ var _$$ = {
                         catch (e) {
                             setTimeout(tryScroll, 10);
                         }
-                    }
+                    };
                     tryScroll();
                 }
 
@@ -5086,8 +5086,7 @@ var $$s = _$$.$s;
  *
  * https://github.com/marcj/jquery-selectBox
  */
-;(function ($) {
-
+(function ($) {
     /**
      * SelectBox class.
      *
@@ -6429,7 +6428,7 @@ var $$s = _$$.$s;
                         next;
 
                     if (e.ctrlKey || e.altKey || e.metaKey || k < 32) {//Ignore
-                        return;
+
                     } else if (k) {
                         if (pos.end - pos.begin !== 0) {
                             clearBuffer(pos.begin, pos.end);
@@ -6584,7 +6583,7 @@ var $$s = _$$.$s;
             wheelSpeed: 40,
             fixedThumbWidth: undefined,
             fixedThumbHeight: undefined
-        }
+        };
 
         var Scrollable = function (element, options) {
             this.$element = $(element);
@@ -6599,7 +6598,7 @@ var $$s = _$$.$s;
             this.$element.data("scrollable", this);
             this.initKeyboardScrolling();
             this.bindEvents();
-        }
+        };
 
         Scrollable.prototype = {
 
@@ -6668,7 +6667,7 @@ var $$s = _$$.$s;
 
             addScrollBar: function (orientation, fun) {
                 if (this.$element.find(".scroll-bar." + orientation).length == 0) {
-                    this.$element[fun]("<div class='scroll-bar " + orientation + "'><div class='thumb'></div></div>")
+                    this.$element[fun]("<div class='scroll-bar " + orientation + "'><div class='thumb'></div></div>");
                     this[orientation + "ScrollbarAdded"] = true;
                 }
             },
@@ -6738,7 +6737,7 @@ var $$s = _$$.$s;
                         if (_this.hScrollbar)
                             _this.hScrollbar.keyScroll(event);
                     }
-                }
+                };
 
                 this.$element
                     .attr('tabindex', '-1')
@@ -6756,11 +6755,11 @@ var $$s = _$$.$s;
                     this.$element.on("customScroll", this.options.onCustomScroll);
             }
 
-        }
+        };
 
         var Scrollbar = function (scrollable, sizing) {
             this.scrollable = scrollable;
-            this.sizing = sizing
+            this.sizing = sizing;
             this.$scrollBar = this.sizing.scrollBar(this.scrollable.$element);
             this.$thumb = this.$scrollBar.find(".thumb");
             this.setScrollPosition(0, 0);
@@ -6770,7 +6769,7 @@ var $$s = _$$.$s;
             this.initTouchScrolling();
             this.initMouseClickScrolling();
             this.initWindowResize();
-        }
+        };
 
         Scrollbar.prototype = {
 
@@ -6796,12 +6795,12 @@ var $$s = _$$.$s;
             },
 
             calculateThumbSize: function () {
-                var fixedSize = this.sizing.fixedThumbSize(this.scrollable.options)
+                var fixedSize = this.sizing.fixedThumbSize(this.scrollable.options);
                 var size;
                 if (fixedSize)
                     size = fixedSize;
                 else
-                    size = this.ratio * this.viewPortSize
+                    size = this.ratio * this.viewPortSize;
                 return Math.max(size, this.sizing.minSize(this.$thumb));
             },
 
@@ -6852,15 +6851,15 @@ var $$s = _$$.$s;
                     this.elementTouchstart = function (event) {
                         if (_this.enabled)
                             _this.startTouchScrolling(event);
-                    }
+                    };
                     this.scrollable.$element[0].addEventListener("touchstart", this.elementTouchstart);
                     this.documentTouchmove = function (event) {
                         _this.touchScroll(event);
-                    }
+                    };
                     document.addEventListener("touchmove", this.documentTouchmove);
                     this.elementTouchend = function (event) {
                         _this.stopTouchScrolling(event);
-                    }
+                    };
                     this.scrollable.$element[0].addEventListener("touchend", this.elementTouchend);
                 }
             },
@@ -7109,10 +7108,10 @@ var $$s = _$$.$s;
                 this.removeWindowResize();
             }
 
-        }
+        };
 
         var HSizing = function () {
-        }
+        };
 
         HSizing.prototype = {
             size: function ($el, arg) {
@@ -7172,10 +7171,10 @@ var $$s = _$$.$s;
                     (elementOffset.left + $element.width() <= wrappingElementOffset.left + $wrappingElement.width());
             }
 
-        }
+        };
 
         var VSizing = function () {
-        }
+        };
 
         VSizing.prototype = {
 
@@ -7242,7 +7241,7 @@ var $$s = _$$.$s;
                     (elementOffset.top + $element.height() <= wrappingElementOffset.top + $wrappingElement.height());
             }
 
-        }
+        };
 
         return this.each(function () {
             if (options == undefined)

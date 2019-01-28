@@ -32,10 +32,10 @@
 
    <tr id="part{{$club->id}}">
    	<td>
-       @if(empty($club->name)) 
+        @if(empty($club->title))
    		 <label style="color: red">not set</label>
             @endif
-   		{{$club->name}} </td>
+        {{$club->title}} </td>
    	
    	<td>
      @if(empty($club->worktime_id)) 
@@ -53,7 +53,7 @@
    	<td> @if(empty($club->kitchens_id)) 
    		<label style="color: red">not set</label>
             @endif
-            {{$club->kitchens_id}}
+        {{$club->getKitchensLabels()}}
    	</td>
     <td> @if(empty($club->location_id)) 
       <label style="color: red">not set</label>

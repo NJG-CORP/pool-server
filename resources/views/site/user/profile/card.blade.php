@@ -61,7 +61,7 @@
                                 {{ $reviews->links() }}
                             @else
                                 <p style="font-size: 24px;">О вас еще не оставили отзывов</p></div>
-                            @endif
+                    @endif
                     <!--<div class="pagination">
                             <a class="prev" href="#"><i class="fa fa-angle-left" aria-hidden="true"></i></a>
                             <a class="active" href="#">1</a>

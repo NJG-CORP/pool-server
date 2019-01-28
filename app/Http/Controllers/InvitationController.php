@@ -79,6 +79,7 @@ class InvitationController extends Controller
                 'invitation' => $invitation
             ]);
         }
+        dd('asa');
         return $this->responder->errorResponse();
     }
 

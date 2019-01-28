@@ -4,16 +4,9 @@ namespace App\Http\Controllers\Web\User;
 
 use App\Http\Controllers\Controller;
 use App\Models\GamePayment;
-use App\Models\GameType;
-use App\Models\UserGameTime;
-use App\Models\UserGameTypes;
-use App\Models\UserPayment;
-use App\Services\CityService;
-use App\Services\ImageService;
 use App\Services\InvitationService;
 use App\Services\PlayerService;
 use App\Services\UserService;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -32,9 +25,7 @@ class ProfileController extends Controller
 
     public function card()
     {
-        $user = (new UserService())->getUser();
-        $reviews = (new UserService())->getUserReviews($user->id, UserService::REVIEW_LIMIT);
-        return view('site.user.profile.card', compact('reviews'));
+        return view('site.user.profile.card');
     }
 
     public function invites()
@@ -62,7 +53,7 @@ class ProfileController extends Controller
             'types' => 'required',
             'days' => 'required',
             'payment' => 'required',
-            'gender' => 'required',
+            'sex' => 'required',
         ]);
         if ($validator->fails()) {
             return redirect()->back()->withErrors($validator)->withInput();
@@ -73,7 +64,7 @@ class ProfileController extends Controller
         $base_user = (new UserService())->getUser()->id;
         if ($req_user == $base_user) {
             $profile = new PlayerService();
-            $profile->save(Auth::user(), $fields, new CityService(), new ImageService(), new UserService());
+            $profile->save($fields);
             return redirect()->back()->with('success', 'Профиль успешно обновлен!');
         } else {
             return redirect()->back()->with('error', 'Что-то пошло не так.');

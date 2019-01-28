@@ -87,7 +87,8 @@
                                             <label class="control-label" for="profileform-location">Город,
                                                 страна</label>
                                             <input type="text" id="profileform-location" class="form-control"
-                                                   name="city" value="{{ !old('street') && $user->city()->first() ? $user->city()->first()->name : old('street') }}"
+                                                   name="city"
+                                                   value="{{ !old('street') && $user->city()->first() ? $user->city()->first()->name : old('street') }}"
                                                    placeholder="Улица, номер, город, страна" autocomplete="off">
                                             <div class="help-block"></div>
                                         </div>
@@ -99,7 +100,8 @@
                                         <div class="form-group field-profileform-locationhouse">
                                             <label class="control-label" for="profileform-locationhouse">Дом</label>
                                             <input type="text" id="profileform-locationhouse" class="form-control"
-                                                   name="street" placeholder="Квартира" value="{{ !old('street') ? $user->street : old('street') }}">
+                                                   name="street" placeholder="Квартира"
+                                                   value="{{ !old('street') ? $user->street : old('street') }}">
                                             <div class="help-block"></div>
                                         </div>
                                     </div>
@@ -187,7 +189,8 @@
                                                    value="{{ $user->game_time_from }}">
                                             <label class="control-label" for="profileform-time">Время игры (до)</label>
                                             <input type="time" id="profileform-time" class="form-control"
-                                                   name="game_time_to" placeholder="До" value="{{ $user->game_time_to }}">
+                                                   name="game_time_to" placeholder="До"
+                                                   value="{{ $user->game_time_to }}">
 
                                             <div class="help-block"></div>
                                         </div>

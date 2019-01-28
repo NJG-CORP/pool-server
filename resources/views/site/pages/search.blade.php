@@ -289,7 +289,8 @@
                                         <div class="specs">
                                             <div class="text" style="cursor: pointer"
                                                  onclick="window.open('/user/2-%D0%94%D0%B5%D0%BD%D0%B8%D1%81+%D0%A1%D0%B8%D0%B4%D0%BE%D1%80%D0%BE%D0%B2.html')">
-                                                <p class="name">{{ $result->name ?? '' }}, {{ $result->age ?? '' }} год</p>
+                                                <p class="name">{{ $result->name ?? '' }}, {{ $result->age ?? '' }}
+                                                    год</p>
                                                 <p>Город: {{ $result->city->name ?? '' }}</p>
                                             </div>
 
@@ -298,7 +299,8 @@
                                             </div>
 
                                             <div class="descr">
-                                                <p>Вид игры: @foreach($result->getGameType as $type) {{ $type->term->name . ' ' }}  @endforeach</p>
+                                                <p>Вид
+                                                    игры: @foreach($result->getGameType as $type) {{ $type->term->name . ' ' }}  @endforeach</p>
                                             </div>
 
                                             <div class="status">

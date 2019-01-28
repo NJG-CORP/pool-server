@@ -8,6 +8,7 @@ use App\Models\Image;
 use App\Models\Kitchens;
 use App\Models\Weekday;
 use App\Models\WorkTime;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 
 class ClubsService
@@ -15,13 +16,13 @@ class ClubsService
     public function getList()
     {
         return Club::with(['rating', 'location', 'images'])
-            ->paginate(10)
+            ->get()
             ->map(function ($e) {
                 return $e->setAppends(['calculated_rating']);
             });
     }
 
-    public function getOne($id)
+    public function getOne($id): Club
     {
         return Club::with(['rating', 'location', 'images'])
             ->find($id)
@@ -46,14 +47,8 @@ class ClubsService
         return $data;
     }
 
-
     public function storingClubData(Request $request)
     {
-
-
-        //dd($request->all());
-
-
         $gametype = GameType::create([
             'pool' => $request['pool'],
             'Russian' => $request['russian'],
@@ -61,20 +56,27 @@ class ClubsService
             'Cannon' => $request['cannon']
         ]);
 
-
         $club = Club::create([
-            'name' => $request['title'],
+            'name' => $request['name'],
             'description' => $request['des'],
+            'title' => $request['title'],
 
             'gametype_id' => $gametype->id,
-            'kitchens_id' => $request['kitchen'],
             'location_id' => $request['location'],
+            'gallery_title' => $request['gallery_title'],
             'phone' => $request['mob']
         ]);
+        $club->kitchens_id = $request['kitchen'];
         if ($request->file('img')) {
             $main_image = (new ImageService)->create($request->file('img'), $club, $request->file('img')->getClientOriginalName());
         }
 
+        if ($request->gallery_images != '') {
+            foreach ($request->gallery_images as $key => $image) {
+                // save additional images
+                (new ImageService)->create($image, $club, $image->getClientOriginalName());
+            }
+        }
 
         foreach ($request['worktime'] as $key => $value) {
             if (!empty($value['from']) && !empty($value['to'])) {
@@ -86,14 +88,13 @@ class ClubsService
                 ]);
             }
         }
+        $club->save();
 
         return $club;
-
     }
 
     public function editClubData($id)
     {
-
         $data = Club::with('getWorkTime')->find($id);
 
         if (empty($data)) {
@@ -101,7 +102,6 @@ class ClubsService
         }
 
         return $data;
-
     }
 
     public function updateDetails(Request $request)
@@ -121,13 +121,22 @@ class ClubsService
         $gametype->Cannon = $request['cannon'];
         $gametype->save();
 
-        $club->name = $request['title'];
+        $club->title = $request['title'];
+        $club->name = $request['name'];
         $club->description = $request['des'];
 
         $club->gametype_id = $gametype->id;
         $club->kitchens_id = $request['kitchen'];
         $club->location_id = $request['location'];
         $club->phone = $request['mob'];
+
+        if ($request->gallery_images != '') {
+            foreach ($request->gallery_images as $key => $image) {
+                // save additional images
+                (new ImageService)->create($image, $club, $image->getClientOriginalName());
+            }
+        }
+
         $club->save();
 
 
@@ -168,5 +177,14 @@ class ClubsService
         $data->delete();
 
         return null;
+    }
+
+    public function getGalleryImages(int $clubId): Collection
+    {
+        $images = $this->getOne($clubId)->images;
+
+        $images->shift();
+
+        return $images;
     }
 }

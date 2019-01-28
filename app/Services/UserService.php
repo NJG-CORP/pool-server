@@ -1,15 +1,10 @@
 <?php
-
 namespace App\Services;
 
 use App\Exceptions\ControllableException;
 use App\Models\GameTime;
-use App\Models\Rating;
 use App\Models\TermRelation;
 use App\Models\User;
-use App\Models\UserGameTime;
-use App\Models\UserGameTypes;
-use App\Models\UserPayment;
 use App\Models\Weekday;
 use App\Utils\R;
 use App\Utils\Utils;
@@ -19,13 +14,9 @@ use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Password;
-use Illuminate\Support\Facades\Validator;
 
 class UserService
 {
-    // Reviews PerPage Limit
-    const REVIEW_LIMIT = 6;
-
     /**
      * @return string
      */
@@ -101,14 +92,14 @@ class UserService
             /**
              * @var Vocabulary $v
              */
-//            $v = \Taxonomy::getVocabularyByName('GamePaymentType');
-//            $createdUser->addTerm(
-//                $v->terms()->where('name', 'Поровну')->first()
-//            );
-//            $v = \Taxonomy::getVocabularyByName('SkillLevel');
-//            $createdUser->addTerm(
-//                $v->terms()->where('name', 'Стандартный')->first()
-//            );
+            $v = \Taxonomy::getVocabularyByName('GamePaymentType');
+            $createdUser->addTerm(
+                $v->terms()->where('name', 'Поровну')->first()
+            );
+            $v = \Taxonomy::getVocabularyByName('SkillLevel');
+            $createdUser->addTerm(
+                $v->terms()->where('name', 'Стандартный')->first()
+            );
 
             Utils::sendMail(
                 $password, $createdUser->email, R::USER_REGISTRATION_EMAIL_SUBJECT
@@ -219,7 +210,7 @@ class UserService
     public function getAvatarPath($user)
     {
         if ($user) {
-            if ($user->avatar) {
+            if ($user->avatar()->first()) {
                 return $user->avatar()->first()->path;
             }
             return '/default-person.jpg';
@@ -301,37 +292,38 @@ class UserService
         }
     }
 
-//    public function setUserData($fields, $user) {
-//        //если пользователь хочет изменить пароль
-//        if ($fields['oldPassword']){
-//            $changed_pass = $this->setChangedPassword($fields['oldPassword'], $fields['newPassword'], $user);
-//            if (!$changed_pass){
-//                return redirect()->back()->with('falsePass', 'Вы ввели неправильный пароль!');
-//            }
-//
-//        }
-//
-//        if ($fields['location']){
-//            $city = (new CityService())->getCity($fields['location']);
-//            if ($city){
-//                $city_id = $city->id;
-//            } else{
-//                $city_id = (new CityService())->saveCity($fields['location']);
-//            }
-//        }
-//
-//        //передаем данные
-//        $user->email = $fields['email'];
-//        $user->age = $fields['age'];
-//        $user->gender = $fields['sex'];
-//        $user->phone = $fields['phone'];
-//        $user->game_time_from = $fields['time_from'];
-//        $user->game_time_to = $fields['time_to'];
-//        isset($city_id) ? $user->city_id = $city_id : '';
-//        !empty($changed_pass) ? $user->password = $changed_pass : '';
-//
-//        return $user;
-//    }
+    public function setUserData($fields, $user)
+    {
+        //если пользователь хочет изменить пароль
+        if ($fields['oldPassword']) {
+            $changed_pass = $this->setChangedPassword($fields['oldPassword'], $fields['newPassword'], $user);
+            if (!$changed_pass) {
+                return redirect()->back()->with('falsePass', 'Вы ввели неправильный пароль!');
+            }
+
+        }
+
+        if ($fields['location']) {
+            $city = (new CityService())->getCity($fields['location']);
+            if ($city) {
+                $city_id = $city->id;
+            } else {
+                $city_id = (new CityService())->saveCity($fields['location']);
+            }
+        }
+
+        //передаем данные
+        $user->email = $fields['email'];
+        $user->age = $fields['age'];
+        $user->gender = $fields['sex'];
+        $user->phone = $fields['phone'];
+        $user->game_time_from = $fields['time_from'];
+        $user->game_time_to = $fields['time_to'];
+        isset($city_id) ? $user->city_id = $city_id : '';
+        !empty($changed_pass) ? $user->password = $changed_pass : '';
+
+        return $user;
+    }
 
     public function checkHashedPassword($curr, $filled)
     {
@@ -434,12 +426,5 @@ class UserService
         } else {
             return false;
         }
-    }
-
-
-    public function getUserReviews($id, $perpage)
-    {
-        $reviews = Rating::where('rateable_id', $id)->paginate($perpage);
-        return $reviews;
     }
 }

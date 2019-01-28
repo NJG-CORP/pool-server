@@ -8,19 +8,33 @@
             {{csrf_field()}}
 
             <div class="form-group">
-                <label for="title">Title</label>
+                <label for="title">Заголовок</label>
                 <input type="text" class="form-control" id="title" name="title" placeholder="Enter Title" required>
+            </div>
 
+            <div class="form-group">
+                <label for="title">Название</label>
+                <input type="text" class="form-control" id="name" name="name" placeholder="Название">
             </div>
             <div class="form-group">
                 <label for="des">Description</label>
                 <textarea name="des" id="des" class="form-control" rows="6"></textarea>
-
             </div>
             <div class="form-group">
                 <label for="img">Picture</label>
                 <input type="file" class="form-control" id="img" name="img" placeholder="Enter">
 
+            </div>
+
+            <div class="form-group field-addeventform-url required">
+                <label class="control-label" for="addeventform-url">Gallery Title</label>
+                <input type="text" id="addeventform-url" class="form-control" name="gallery_title" aria-required="true">
+            </div>
+
+            <div class="form-group field-addeventform-images">
+                <label class="control-label" for="addeventform-images">Gallery Images</label>
+
+                <input type="file" id="addeventform-images" multiple="multiple" name="gallery_images[]">
             </div>
 
             <label>Working hours</label>
@@ -66,14 +80,14 @@
                 <input type="number" class="form-control" id="cannon" name="cannon" placeholder="Enter Cannon" required>
 
             </div>
-            <label>Kitchens</label>
-            <select name="kitchen" class="form-control">
-                @foreach($kitchens as $k)
 
+            <label>Kitchens</label>
+            <select name="kitchen[]" class="form-control" multiple="multiple">
+                @foreach($kitchens as $k)
                     <option value="{{$k->id}}">{{$k->name}}</option>
                 @endforeach
-
             </select>
+
             <div class="form-group">
                 <label for="location">Location</label>
                 <input type="number" class="form-control" id="location" name="location" placeholder="Enter Location"

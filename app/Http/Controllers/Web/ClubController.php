@@ -2,9 +2,8 @@
 
 namespace App\Http\Controllers\Web;
 
-use App\Services\ClubsService;
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Services\ClubsService;
 
 class ClubController extends Controller
 {

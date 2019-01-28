@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Services;
 
 use App\Models\City;
@@ -35,39 +34,33 @@ class CityService
         }
     }
 
-    public function ensureCity($name)
+    public function ensureCity($id, $name)
     {
-        if ($this->getCityId($name))
-            return $this->getCityId($name);
-        else
-            return $this->saveCity($name);
+        $city = City::firstOrCreate([
+            'id' => $id
+        ], [
+            'name' => $name
+        ]);
+        return $city;
     }
 
     public function getCityId($name)
     {
         $city = City::where('name', $name)->first();
-        if ($city)
-            return $city->id;
-
-        return false;
+        return $city->id;
     }
 
     public function getCity($name)
     {
         $city = City::where('name', $name)->first();
-        if ($city)
-            return $city;
-
-        return false;
+        return $city;
     }
 
     public function saveCity($name)
     {
         $city = new City();
         $city->name = $name;
-        if ($city->save())
-            return $city->id;
-
-        return false;
+        $city->save();
+        return $city->id;
     }
 }
