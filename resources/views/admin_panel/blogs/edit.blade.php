@@ -7,118 +7,104 @@
 
 
     <form action="{{route('post:save:blog')}}" method="post" enctype="multipart/form-data" id="frmCreateBlog">
-
-        {{ csrf_field()}}
-        <input type="hidden" name="blog_id" value="{{$blog->id}}" readonly>
-        <div class="form-group field-addeventform-title required">
-            <label class="control-label" for="addeventform-title">Title</label>
-            <input type="text" id="addeventform-title" class="form-control" name="title" aria-required="true"
-                   value="{{ $blog->title }}">
-        </div>
-        <div class="form-group field-addeventform-name required">
-            <label class="control-label" for="addeventform-name">Название</label>
-            <input type="text" id="addeventform-name" class="form-control" name="name" aria-required="true"
-                   value="{{ $blog->name }}">
-        </div>
-
-        <div class="form-group field-addeventform-url required">
-            <label class="control-label" for="addeventform-url">Url</label>
-            <input type="text" id="addeventform-url" class="form-control" name="url" aria-required="true"
-                   value="{{ $blog->url }}">
-
-
-        </div>
-        <div class="form-group field-addeventform-description">
-            <label class="control-label" for="addeventform-description">Description</label>
-            <textarea id="addeventform-description" class="form-control" name="description"
-                      rows="6">{{ $blog->description }}</textarea>
-
-
-        </div>
-
-
-        <div class="form-group field-addeventform-mainimg">
-            <label class="control-label" for="addeventform-mainimg">Main image</label>
-            <input type="hidden" name="mainImg" value=""><input type="file" id="addeventform-mainimg" name="mainImg">
-            @if(count($blog->getMainImageEvent))
-
-
-
-                <div class="img" id="img{{$blog->getMainImageEvent->id}}">
-                    <button type="button" class="rmImg btn btn-danger btn-small"
-                            data-id="{{$blog->getMainImageEvent->id}}"> Remove
-                    </button>
-                    <img src="/assets/images/{{$blog->getMainImageEvent->path}}" style="width:100px">
-
+        <div id="tabs">
+            <ul>
+                <li><a href="#tabs-1">Основное</a></li>
+                <li><a href="#tabs-2">SEO</a></li>
+            </ul>
+            <div id="tabs-1">
+                <div class="form-group field-addeventform-title required">
+                    <label class="control-label" for="addeventform-title">Title</label>
+                    <input type="text" id="addeventform-title" class="form-control" name="title" aria-required="true"
+                           value="{{ $blog->title }}">
+                </div>
+                <div class="form-group field-addeventform-description">
+                    <label class="control-label" for="addeventform-description">Description</label>
+                    <textarea id="addeventform-description" class="form-control" name="description"
+                              rows="6">{{ $blog->description }}</textarea>
                 </div>
 
-            @endif
-            <div class="clearfix"></div>
+                <div class="form-group field-addeventform-mainimg">
+                    <label class="control-label" for="addeventform-mainimg">Main image</label>
+                    <input type="hidden" name="mainImg" value=""><input type="file" id="addeventform-mainimg"
+                                                                        name="mainImg">
+                    @if(count($blog->getMainImageEvent))
+                        <div class="img" id="img{{$blog->getMainImageEvent->id}}">
+                            <button type="button" class="rmImg btn btn-danger btn-small"
+                                    data-id="{{$blog->getMainImageEvent->id}}"> Remove
+                            </button>
+                            <img src="/assets/images/{{$blog->getMainImageEvent->path}}" style="width:100px">
+                        </div>
+                    @endif
+                    <div class="clearfix"></div>
+                </div>
 
+                <div class="form-group field-addeventform-images">
+                    <label class="control-label" for="addeventform-images">Add. </font><font
+                                style="vertical-align: inherit;">Images</label>
+                    <input type="file" id="addeventform-images" name="images[]" multiple="">
+                    @if(count($additional_images))
+                        @foreach($additional_images as $more_img)
+                            <div class="img" id="img{{$more_img->id}}">
+                                <button type="button" class="rmImg btn btn-danger btn-small"
+                                        data-id="{{$more_img->id}}">
+                                    Remove
+                                </button>
+                                <img src="/assets/images/{{$more_img->path}}" style="width:100px">
+                            </div>
+                        @endforeach
+                    @endif
+                    <div class="clearfix"></div>
+                </div>
+
+                <div class="form-group field-addeventform-url required">
+                    <label class="control-label" for="addeventform-url">Gallery Title</label>
+                    <input type="text" id="addeventform-url" class="form-control" name="gallery_title"
+                           aria-required="true"
+                           value="{{$blog->gallery_title}}">
+                </div>
+
+                <div class="form-group field-addeventform-images">
+                    <label class="control-label" for="addeventform-images">Gallery Images</font></label>
+                    <input type="file" id="addeventform-images" multiple="" name="gallery_images[]">
+                    @if(count($gallery_images))
+                        @foreach($gallery_images as $more_img)
+                            <div class="img" id="img{{$more_img->id}}">
+                                <button type="button" class="rmImg btn btn-danger btn-small"
+                                        data-id="{{$more_img->id}}">
+                                    Remove
+                                </button>
+                                <img src="/assets/images/{{$more_img->path}}" style="width:100px">
+                            </div>
+                        @endforeach
+                    @endif
+                    <div class="clearfix"></div>
+                </div>
+
+                <div class="form-group field-addeventform-paragraph">
+                    <label class="control-label" for="addeventform-paragraph">Paragraph</label>
+                    <textarea name="paragraph" id="" cols="30" rows="10"
+                              class="textarea">{{ $blog->paragraph }}</textarea>
+                </div>
+            </div>
+            <div id="tabs-2">
+                <div class="form-group field-addeventform-name required">
+                    <label class="control-label" for="addeventform-name">Название</label>
+                    <input type="text" id="addeventform-name" class="form-control" name="name"
+                           value="{{ $blog->name }}">
+                </div>
+
+                <div class="form-group field-addeventform-url required">
+                    <label class="control-label" for="addeventform-url">Url</label>
+                    <input type="text" id="addeventform-url" class="form-control" name="url" aria-required="true"
+                           value="{{ $blog->url }}">
+                </div>
+            </div>
         </div>
-        <div class="form-group field-addeventform-images">
-            <label class="control-label" for="addeventform-images">Add. </font><font style="vertical-align: inherit;">Images</label>
-            <input type="file" id="addeventform-images" name="images[]" multiple="">
-
-            @if(count($additional_images))
-
-                @foreach($additional_images as $more_img)
-                    <div class="img" id="img{{$more_img->id}}">
-                        <button type="button" class="rmImg btn btn-danger btn-small" data-id="{{$more_img->id}}">
-                            Remove
-                        </button>
-                        <img src="/assets/images/{{$more_img->path}}" style="width:100px">
-
-                    </div>
-                @endforeach
-
-            @endif
-
-            <div class="clearfix"></div>
-
-        </div>
+        {{ csrf_field()}}
+        <input type="hidden" name="blog_id" value="{{$blog->id}}" readonly>
 
 
-        <div class="form-group field-addeventform-url required">
-            <label class="control-label" for="addeventform-url">Gallery Title</label>
-            <input type="text" id="addeventform-url" class="form-control" name="gallery_title" aria-required="true"
-                   value="{{$blog->gallery_title}}">
-
-
-        </div>
-
-
-        <div class="form-group field-addeventform-images">
-            <label class="control-label" for="addeventform-images">Gallery Images</font></label>
-
-            <input type="file" id="addeventform-images" multiple="" name="gallery_images[]">
-
-            @if(count($gallery_images))
-
-                @foreach($gallery_images as $more_img)
-                    <div class="img" id="img{{$more_img->id}}">
-                        <button type="button" class="rmImg btn btn-danger btn-small" data-id="{{$more_img->id}}">
-                            Remove
-                        </button>
-                        <img src="/assets/images/{{$more_img->path}}" style="width:100px">
-
-                    </div>
-                @endforeach
-
-            @endif
-
-            <div class="clearfix"></div>
-
-
-        </div>
-
-
-        <div class="form-group field-addeventform-paragraph">
-            <label class="control-label" for="addeventform-paragraph">Paragraph</label>
-            <textarea name="paragraph" id="" cols="30" rows="10" class="textarea">{{ $blog->paragraph }}</textarea>
-
-
-        </div>
         <div class="form-group">
             <button type="submit" class="btn btn-success" name="login-button">
                 Update
@@ -160,10 +146,13 @@
     <script src="/js/timepicker.js"></script>
     <script type="text/javascript"
             src="https://cdn.jsdelivr.net/jquery.validation/1.15.1/jquery.validate.min.js"></script>
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
     <script>
         $(document).ready(function () {
 
 
+            $("#tabs").tabs();
             $('.textarea').ckeditor();
 
 
