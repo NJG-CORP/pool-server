@@ -5,12 +5,21 @@ Route::group(['namespace' => 'Web'], function(){
     Route::post('/search', 'SearchController@search')->name('search');
     Route::get('/contacts', 'ContactsController@index')->name('contacts');
     Route::post('/contacts', 'ContactsController@review')->name('send.review');
-    Route::get('/news', 'NewsController@news')->name('news');
-    Route::get('/news/{id}', 'NewsController@showNews')->name('news.show');
-    Route::get('/blog', 'BlogController@blog')->name('blog');
-    Route::get('/blog/{id}', 'BlogController@showBlog')->name('blog.show');
-    Route::get('/clubs', 'ClubController@club')->name('clubs');
-    Route::get('/club/{id}', 'ClubController@showClub')->name('club.show');
+    Route::group(['namespace' => 'News'], function () {
+        Route::get('/news', 'MainController@list')->name('news');
+        Route::get('/news/{id}', 'MainController@viewId')->where('id', '[0-9]+')->name('news.show.id');
+        Route::get('/news/{url}', 'MainController@view')->name('news.show');;
+    });
+    Route::group(['namespace' => 'Blog'], function () {
+        Route::get('/blog', 'MainController@list')->name('blog');
+        Route::get('/blog/{id}', 'MainController@viewId')->where('id', '[0-9]+')->name('blog.show.id');
+        Route::get('/blog/{url}', 'MainController@view')->name('blog.show');;
+    });
+    Route::group(['namespace' => 'Club'], function () {
+        Route::get('/club', 'MainController@list')->name('club');
+        Route::get('/club/{id}', 'MainController@viewId')->where('id', '[0-9]+')->name('club.show.id');
+        Route::get('/club/{url}', 'MainController@view')->name('club.show');;
+    });
 
     Route::group(['namespace' => 'Auth'], function(){
         Route::get('/login/vk/callback', 'LoginController@handleCallback');
@@ -39,7 +48,8 @@ Route::group(['namespace' => 'Web'], function(){
     });
     Route::group(['namespace' => 'Events'], function () {
         Route::get('/events', 'MainController@list')->name('events');
-        Route::get('/events/{id}', 'MainController@view');
+        Route::get('/events/{id}', 'MainController@viewId')->where('id', '[0-9]+')->name('eventItem');
+        Route::get('/events/{url}', 'MainController@view');
     });
 });
 Route::group(['middleware' => 'authenticated'], function() {

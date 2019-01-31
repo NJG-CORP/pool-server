@@ -19,4 +19,9 @@ class BlogService
         $blog = Blog::where('id', '!=', $id)->orderBy('id', 'desc')->take(2)->get();
         return $blog;
     }
+
+    public function getBlogByUrl(string $url)
+    {
+        return Blog::with(['images'])->where(['url' => $url])->first();
+    }
 }

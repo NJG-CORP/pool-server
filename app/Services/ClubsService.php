@@ -187,4 +187,9 @@ class ClubsService
 
         return $images;
     }
+
+    public function getClubByUrl(string $url)
+    {
+        return Club::with(['images'])->where(['url' => $url])->first();
+    }
 }

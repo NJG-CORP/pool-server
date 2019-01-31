@@ -19,7 +19,7 @@ class Events extends Model
 
     public function getUrl()
     {
-        return '/events/' . $this->id;
+        return '/events/' . $this->url;
     }
 
     public function club()

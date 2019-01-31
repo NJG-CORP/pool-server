@@ -5,8 +5,8 @@ namespace App\Http\Controllers\Web\Events;
 
 
 use App\Http\Controllers\Web\Controller;
-use App\Models\Events;
 use App\Services\EventsService;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class MainController extends Controller
 {
@@ -16,9 +16,19 @@ class MainController extends Controller
         return view('site.events.list', [ 'data' => (new EventsService())->getList()]);
     }
 
-    public function view($id)
+    public function view($url)
     {
-        return view('site.events.item', ['event' => (new EventsService())->getEvent($id)]);
+        return view('site.events.item', ['event' => (new EventsService())->getEventByUrl($url)]);
+    }
+
+    public function viewId($id)
+    {
+        $event = (new EventsService())->getEvent($id);
+        if (!$event) {
+            throw new NotFoundHttpException;
+        }
+
+        return redirect(null, 301)->route('eventItem', ['url' => $event->url]);
     }
 
 }

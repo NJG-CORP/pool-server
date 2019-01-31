@@ -38,13 +38,13 @@
                         @foreach($rec_news as $item)
                             <div class="news_block_div">
                                 <div class="img">
-                                    <a href="{{ route('news.show', $item->id) }}">
+                                    <a href="{{ route('news.show', $item->url) }}">
                                         <img src="{{ asset($item->image) }}" alt="">
                                     </a>
                                 </div>
                                 <div class="text">
                                     <p class="title">
-                                        <a href="{{ route('news.show', $item->id) }}">{{ $item->title }} </a>
+                                        <a href="{{ route('news.show', $item->url) }}">{{ $item->title }} </a>
                                     </p>
                                     <span class="date">{{ $item->created_at }}</span>
                                     <p>{{ substr($item->description, 0, 200) }}</p>

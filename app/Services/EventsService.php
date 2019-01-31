@@ -26,4 +26,12 @@ class EventsService
             ->get() ?? [];
     }
 
+    public function getEventByUrl(string $url)
+    {
+        return Events::with(['images'])
+            ->where(['url' => $url])
+            ->first();
+
+    }
+
 }

@@ -19,4 +19,9 @@ class NewsService
         $news = News::where('id', '!=', $id)->orderBy('id', 'desc')->take(2)->get();;
         return $news;
     }
+
+    public function getNewsByUrl(string $url)
+    {
+        return News::with(['images'])->where(['url' => $url])->first();
+    }
 }
