@@ -179,6 +179,14 @@
         });
         $(document).ready(function () {
 
+            const $url = $('input[name="url"]');
+            const $title = $('input[name="title"]');
+            $title.liTranslit({
+                elAlias: $url,
+            });
+            $url.on('focusin', function () {
+                $title.liTranslit('disable');
+            });
             $("#tabs").tabs();
             $('.worktime').timepicker({"timeFormat": "HH:mm:ss", "showSecond": false});
         });

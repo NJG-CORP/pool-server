@@ -89,7 +89,6 @@
     <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 
 
-    <link rel="stylesheet" href="/css/timepicker.css">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css"
           integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
 
@@ -103,13 +102,21 @@
 
     <script src="/vendor/unisharp/laravel-ckeditor/ckeditor.js"></script>
     <script src="/vendor/unisharp/laravel-ckeditor/adapters/jquery.js"></script>
-    <script src="/js/timepicker.js"></script>
     <script type="text/javascript"
             src="https://cdn.jsdelivr.net/jquery.validation/1.15.1/jquery.validate.min.js"></script>
     <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script src="/js/jquery.liTranslit.js"></script>
     <script>
         $(document).ready(function () {
+            const $url = $('input[name="url"]');
+            const $title = $('input[name="title"]');
+            $title.liTranslit({
+                elAlias: $url,
+            });
+            $url.on('focusin', function () {
+                $title.liTranslit('disable');
+            });
 
             $("#tabs").tabs();
 
