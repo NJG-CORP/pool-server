@@ -15,7 +15,7 @@
                     </p>
                 </div>
                 <div class="font50_wrap">
-                    <h1>{{ $news->getHeader() }}</h1>
+                    <h1>{{ $news->title }}</h1>
                 </div>
                 <div class="inner_news_page_wrap clearfix">
                     <div class="inner_news_block clearfix">

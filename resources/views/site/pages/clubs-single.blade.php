@@ -12,7 +12,7 @@
                         <a href="{{ route('home') }}">Главная</a> /
                         <a href="{{ route('clubs') }}">Клубы</a>
                         /
-                        <span>{{ $club->name }}</span>
+                        <span>{{ $club->title }}</span>
                     </p>
                 </div>
                 <h1>{{ $club->name }}</h1>

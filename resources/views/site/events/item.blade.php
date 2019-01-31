@@ -14,7 +14,7 @@
                 </div>
 
                 <div class="font50_wrap">
-                    <h1>{{$event->getHeader()}}</h1>
+                    <h1>{{$event->title}}</h1>
                 </div>
 
                 <div class="inner_news_page_wrap clearfix">
