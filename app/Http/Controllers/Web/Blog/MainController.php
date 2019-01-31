@@ -22,7 +22,7 @@ class MainController extends Controller
             throw new NotFoundHttpException;
         }
 
-        return redirect(null, 301)->route('blog.show', ['url' => $blog->url]);
+        return redirect()->route('blog.show', ['url' => $blog->url]);
     }
 
     public function view(string $url)

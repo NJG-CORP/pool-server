@@ -21,7 +21,7 @@ class MainController extends Controller
             throw new NotFoundHttpException;
         }
 
-        return redirect(null, 301)->route('news', ['url' => $news->url]);
+        return redirect()->route('news', ['url' => $news->url]);
     }
 
     public function view(string $url)

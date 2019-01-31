@@ -21,7 +21,7 @@ class MainController extends Controller
             throw new NotFoundHttpException;
         }
 
-        return redirect(null, 301)->route('club.show', ['url' => $club->url]);
+        return redirect()->route('club.show', ['url' => $club->url]);
     }
 
     public function view(string $url)

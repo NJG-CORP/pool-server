@@ -28,7 +28,7 @@ class MainController extends Controller
             throw new NotFoundHttpException;
         }
 
-        return redirect(null, 301)->route('eventItem', ['url' => $event->url]);
+        return redirect()->route('eventItem', ['url' => $event->url]);
     }
 
 }
