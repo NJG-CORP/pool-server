@@ -146,6 +146,13 @@
                         <input type="text" class="form-control" id="name" name="name" placeholder="Название"
                                value="{{$data->name}}">
                     </div>
+
+                    <div class="form-group">
+                        <label for="title">Url</label>
+                        <input type="text" class="form-control" id="url" name="url" placeholder="Enter Url"
+                               value="{{$data->url}}"
+                               required>
+                    </div>
                 </div>
             </div>
 

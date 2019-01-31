@@ -64,7 +64,8 @@ class ClubsService
             'gametype_id' => $gametype->id,
             'location_id' => $request['location'],
             'gallery_title' => $request['gallery_title'],
-            'phone' => $request['mob']
+            'phone' => $request['mob'],
+            'url' => $request['url']
         ]);
         $club->kitchens_id = $request['kitchen'];
         if ($request->file('img')) {
@@ -122,6 +123,7 @@ class ClubsService
         $gametype->save();
 
         $club->title = $request['title'];
+        $club->url = $request['url'];
         $club->name = $request['name'];
         $club->description = $request['des'];
 

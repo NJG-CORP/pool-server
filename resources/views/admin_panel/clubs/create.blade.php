@@ -117,6 +117,11 @@
                         <input type="text" class="form-control" id="name" name="name" placeholder="Название">
                     </div>
 
+                    <div class="form-group">
+                        <label for="title">Url</label>
+                        <input type="text" class="form-control" id="url" name="url" placeholder="Enter Url"
+                               required>
+                    </div>
                 </div>
             </div>
 
