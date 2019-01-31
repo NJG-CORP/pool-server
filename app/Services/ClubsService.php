@@ -25,8 +25,8 @@ class ClubsService
     public function getOne($id): Club
     {
         return Club::with(['rating', 'location', 'images'])
-            ->find($id)
-            ->setAppends(['calculated_rating']);
+            ->where(['id' => $id])
+            ->firstOrFail();
     }
 
     public function getAllClubsData()

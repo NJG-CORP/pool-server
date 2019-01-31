@@ -23,9 +23,9 @@ Route::group(['namespace' => 'Web'], function(){
         Route::get('/blog/{url}', 'MainController@view')->name('blog.show');;
     });
     Route::group(['namespace' => 'Club'], function () {
-        Route::get('/club', 'MainController@list')->name('clubs');
-        Route::get('/club/{id}', 'MainController@viewId')->where('id', '[0-9]+')->name('club.show.id');
-        Route::get('/club/{url}', 'MainController@view')->name('club.show');;
+        Route::get('/clubs', 'MainController@list')->name('clubs');
+        Route::get('/clubs/{id}', 'MainController@viewId')->where('id', '[0-9]+')->name('club.show.id');
+        Route::get('/clubs/{url}', 'MainController@view')->name('club.show');;
     });
 
     Route::group(['namespace' => 'Auth'], function(){
