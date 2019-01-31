@@ -58,7 +58,7 @@
                     <ul>
                         <li>
                             <a href="">
-                                <img src="{{ asset('img/' . $user->getAvatar()) }}" alt="">
+                                <img src="{{$user->getAvatarUrl() }}" alt="">
                                 <span>{{ $user->name }}</span>
                             </a>
 

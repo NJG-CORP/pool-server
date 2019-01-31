@@ -6,6 +6,13 @@ use Illuminate\Database\Eloquent\Model;
 
 class GameType extends Model
 {
-       protected $guarded = [];
-       protected $table='games_type';
+    const LABELS = [
+        'pool' => "Пул",
+        'Russian' => 'Русский',
+        'Snooker' => 'Снукер',
+        'Cannon' => 'Карамболь'
+    ];
+
+    protected $guarded = [];
+    protected $table = 'games_type';
 }

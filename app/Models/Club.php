@@ -2,7 +2,9 @@
 
 namespace App\Models;
 
+use App\Services\GameTypeService;
 use App\Services\UrlService;
+use App\Services\WorkTimeService;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -67,8 +69,23 @@ class Club extends Model
         }, $kitchens));
     }
 
+    public function getWorkingTimeHtml()
+    {
+        return WorkTimeService::getHtml($this->getWorkTime);
+    }
+
+    public function getTablesLabels(): string
+    {
+        return GameTypeService::getLabelsAndCount($this->gametype);
+    }
+
     public function getHeader()
     {
         return !empty($this->name) ? $this->name : UrlService::getMetaTitle($this->title);
+    }
+
+    public function getMainImageEvent()
+    {
+        return $this->hasOne(Image::class, 'id', 'mainImg');
     }
 }

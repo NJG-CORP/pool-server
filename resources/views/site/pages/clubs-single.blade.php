@@ -18,7 +18,8 @@
                 <h1>{{ $club->name }}</h1>
                 <div class="the_card_wrap clearfix">
                     <div class="the_card_img">
-                        <a href="/img/club-22.jpg" class="fancy"><img src="/img/club-22.jpg" alt=""></a>
+                        <a href="{{ $club->getMainImageEvent->url }}" class="fancy"><img
+                                    src="{{ $club->getMainImageEvent->url }}" alt=""></a>
                     </div>
                     <div class="the_card_description">
                         <p class="name">Подробное описание клуба</p>
@@ -31,18 +32,18 @@
                             <div class="the_card_description_bottom_div time">
                                 <p>
                                     <b>Время работы:</b><br>
-                                    Working Time </p>
+                                    {!! $club->getWorkingTimeHtml() !!} </p>
                             </div>
                             <div class="the_card_description_bottom_div kitchen">
                                 <p>
                                     <b>Кухня</b><br/>
-                                    European </p>
+                                    {{$club->getKitchensLabels()}} </p>
                             </div>
                             <div class="the_card_description_bottom_div tables">
                                 <p>
                                     <b>Число столов</b><br/>
-                                    Пул <span>1</span>,<br>Русский бильярд <span>1</span>,<br>Снукер <span>1</span>,<br>Карамболь
-                                    <span>1</span></p>
+                                    {!!  $club->getTablesLabels() !!}
+                                </p>
                             </div>
                         </div>
                         <!--
@@ -50,62 +51,27 @@
 -->
                     </div>
                 </div>
-                <div id="UpdateClubForm" data-pjax-container="" data-pjax-timeout="1000">
-                    <div class="the_form write_review_form three_col_form bg_eeeff3">
-                        <form id="club-review-form" class="frm3" action="/rating/add-club-review" method="post"
-                              data-pjax>
-                            <input type="hidden" name="_csrf-frontend"
-                                   value="i9GkvJv82eMyZvxnrUjlzrR0gVANkFhAqm5fd7tjQYjfttOIyqif13gOlQLYI52Ngx62BEejCQ6HNxofjzwT2Q==">
-                            <p class="form_title">Написать отзыв о клубе</p>
-                            <div class="form-group field-clubreviewform-clubid required">
-                                <input type="hidden" id="clubreviewform-clubid" class="form-control"
-                                       name="ClubReviewForm[clubId]" value="1">
-                                <div class="help-block"></div>
-                            </div>
-                            <div class="form-group field-clubreviewform-ip required">
-                                <input type="hidden" id="clubreviewform-ip" class="form-control"
-                                       name="ClubReviewForm[ip]" value="141.136.79.1">
-                                <div class="help-block"></div>
-                            </div>
-                            <div class="the_form_col the_form_col_third">
-                                <div class="the_form_div">
-                                    <div class="form-group field-clubreviewform-name required">
-                                        <input type="text" id="clubreviewform-name" class="form-control"
-                                               name="ClubReviewForm[name]" placeholder="Имя" aria-required="true">
-                                        <div class="help-block"></div>
-                                    </div>
-                                </div>
-                                <div class="the_form_div">
-                                    <div class="form-group field-clubreviewform-mail required">
-                                        <input type="text" id="clubreviewform-mail" class="form-control"
-                                               name="ClubReviewForm[mail]" placeholder="E-mail" aria-required="true">
-                                        <div class="help-block"></div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="the_form_col the_form_col_third the_form_col_textarea">
-                                <div class="the_form_div the_form_div_textarea">
-                                    <div class="form-group field-clubreviewform-reviewtext required">
-                                                                                <textarea id="clubreviewform-reviewtext"
-                                                                                          class="form-control"
-                                                                                          name="ClubReviewForm[reviewText]"
-                                                                                          placeholder="Текст отзыва"
-                                                                                          aria-required="true"></textarea>
-                                        <div class="help-block"></div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="the_form_col the_form_col_third the_form_col_submit">
-                                <div class="the_form_div the_form_div_submit">
-                                    <input type="submit" name="submit1" value="Отправить отзыв">
-                                    <p class="note">Ваш отзыв будет добавлен<br/>сразу после модерации<br/>администратором
-                                        сайта
-                                    </p>
-                                </div>
-                            </div>
-                        </form>
+                @if($club->gallery_title)
+                    <h2>{{$club->gallery_title}}</h2>
+                    <div class="images_grid">
+
+
+                        {{--echo "<h2>{$this->galleryTitle}</h2>";--}}
+                        {{--echo "<div class=\"images_grid\">";--}}
+                        {{--foreach ($this->galleryImages as $img) {--}}
+                        {{--echo "--}}
+                        {{--<div class=\"images_grid_div\">--}}
+                        {{--<a class=\"fancy\" href=\"" . Images::getPathById($img) . "\">--}}
+                        {{--<img src=\"" . Images::getPathById($img) . "\" alt=\"\">--}}
+                        {{--</a>--}}
+                        {{--</div>";--}}
+                        {{--}--}}
+                        {{--echo "</div>";--}}
                     </div>
-                </div>
+                @endif
+                @if($review_form)
+                    @include('site.clubs._review_form')
+                @endif;
             </div>
         </section>
         <section class="partners_reviews_section">

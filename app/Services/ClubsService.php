@@ -153,6 +153,8 @@ class ClubsService
             }
 
             $main_image = (new ImageService)->create($request->file('img'), $club, $request->file('img')->getClientOriginalName());
+            $club->mainImg = $main_image->id;
+            $club->save();
         }
 
         $timing = WorkTime::where('club_id', $club->id)->delete();

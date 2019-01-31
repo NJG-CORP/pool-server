@@ -30,7 +30,8 @@ class MainController extends Controller
         if (!$club) {
             throw new NotFoundHttpException;
         }
+        $review_form = \Auth::user() ? true : false;
 
-        return view('site.pages.clubs-single', compact('club'));
+        return view('site.pages.clubs-single', compact('club', 'review_form'));
     }
 }
