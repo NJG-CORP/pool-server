@@ -1,6 +1,6 @@
 @extends('layouts.default')
 
-@section('title', $news->title . ' | ' . 'SiteName')
+@section('title', $news->getHeader())
 
 @section('content')
 

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Services\UrlService;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -39,7 +40,7 @@ class Events extends Model
 
     public function getHeader()
     {
-        return !empty($this->name) ? $this->name : $this::HEADER_SUFFIX . $this->title;
+        return !empty($this->name) ? $this->name : UrlService::getMetaTitle($this->title);
     }
 
 }

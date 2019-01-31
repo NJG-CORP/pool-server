@@ -1,5 +1,7 @@
 @extends('layouts.default')
 
+@section('title', $news->getHeader())
+
 @section('content')
     <main class="main inner_page_main news_inner_page_main">
         <section class="the_content_section">

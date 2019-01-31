@@ -5,6 +5,13 @@ Route::group(['namespace' => 'Web'], function(){
     Route::post('/search', 'SearchController@search')->name('search');
     Route::get('/contacts', 'ContactsController@index')->name('contacts');
     Route::post('/contacts', 'ContactsController@review')->name('send.review');
+
+    Route::group(['namespace' => 'Events'], function () {
+        Route::get('/events', 'MainController@list')->name('events');
+        Route::get('/events/{id}', 'MainController@viewId')->where('id', '[0-9]+')->name('eventItem');
+        Route::get('/events/{url}', 'MainController@view');
+    });
+
     Route::group(['namespace' => 'News'], function () {
         Route::get('/news', 'MainController@list')->name('news');
         Route::get('/news/{id}', 'MainController@viewId')->where('id', '[0-9]+')->name('news.show.id');
@@ -16,7 +23,7 @@ Route::group(['namespace' => 'Web'], function(){
         Route::get('/blog/{url}', 'MainController@view')->name('blog.show');;
     });
     Route::group(['namespace' => 'Club'], function () {
-        Route::get('/club', 'MainController@list')->name('club');
+        Route::get('/club', 'MainController@list')->name('clubs');
         Route::get('/club/{id}', 'MainController@viewId')->where('id', '[0-9]+')->name('club.show.id');
         Route::get('/club/{url}', 'MainController@view')->name('club.show');;
     });
@@ -45,11 +52,6 @@ Route::group(['namespace' => 'Web'], function(){
 
             Route::post('/profile', 'ProfileController@updateProfile')->name('profile.update');
         });
-    });
-    Route::group(['namespace' => 'Events'], function () {
-        Route::get('/events', 'MainController@list')->name('events');
-        Route::get('/events/{id}', 'MainController@viewId')->where('id', '[0-9]+')->name('eventItem');
-        Route::get('/events/{url}', 'MainController@view');
     });
 });
 Route::group(['middleware' => 'authenticated'], function() {

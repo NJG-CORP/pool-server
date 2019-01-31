@@ -1,6 +1,6 @@
 @extends('layouts.default')
 
-@section('title', $blog->title . ' | ' . 'SiteName')
+@section('title', $blog->getHeader());
 
 @section('content')
 
@@ -13,7 +13,7 @@
                         <span>{{ $blog->title }}</span></p>
                 </div>
                 <div class="font50_wrap">
-                    <h1>{{ $blog->getHeader() }}</h1>
+                    <h1>{{ $blog->title }}</h1>
                 </div>
                 <div class="inner_news_page_wrap clearfix">
                     <div class="inner_news_block clearfix">

@@ -1,6 +1,6 @@
 @extends('layouts.default')
 
-@section('title', 'Клубы')
+@section('title', $club->getHeader())
 
 @section('content')
 

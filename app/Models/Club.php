@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Services\UrlService;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -64,5 +65,10 @@ class Club extends Model
         return implode(', ', array_map(function ($array) {
             return $array['name'];
         }, $kitchens));
+    }
+
+    public function getHeader()
+    {
+        return !empty($this->name) ? $this->name : UrlService::getMetaTitle($this->title);
     }
 }

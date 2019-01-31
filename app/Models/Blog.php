@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Services\UrlService;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -9,8 +10,6 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Blog extends Model
 {
     use SoftDeletes;
-
-    const HEADER_SUFFIX = 'СУФФИКС ';
 
     protected $dates = ['created_at', 'updated_at', 'deleted_at'];
 
@@ -28,6 +27,6 @@ class Blog extends Model
 
     public function getHeader()
     {
-        return !empty($this->name) ? $this->name : $this::HEADER_SUFFIX . $this->title;
+        return !empty($this->name) ? $this->name : UrlService::getMetaTitle($this->title);
     }
 }
