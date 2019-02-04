@@ -2,13 +2,14 @@
 
 namespace App\Models;
 
+use App\Services\mainImage;
 use App\Services\UrlService;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Events extends Model
 {
-    use SoftDeletes;
+    use SoftDeletes, mainImage;
     const HEADER_SUFFIX = 'СУФФИКС ';
 
     protected $dates = ['created_at', 'updated_at', 'deleted_at'];
@@ -26,11 +27,6 @@ class Events extends Model
     public function club()
     {
         return $this->hasOne(Club::class, 'id', 'club_id');
-    }
-
-    public function getMainImage()
-    {
-        return $this->getMainImageEvent()->first() ? $this->getMainImageEvent()->first()->getUrlAttribute() : Image::getDefaultImage()['url'];
     }
 
     public function getMainImageEvent()

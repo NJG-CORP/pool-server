@@ -33,7 +33,7 @@
                                         <div class="club_cat_page_left_div">
                                             <p class="title">{{ $club->name }}</p>
                                             <div class="img">
-                                                <img src="/img/club-22.jpg" alt="">
+                                                <img src="{{$club->getMainImage()}}" alt="">
                                             </div>
                                             <div class="text">
                                                 <p>
@@ -41,7 +41,7 @@
                                                     Пул, Русский бильярд, Снукер, Карамболь </p>
                                                 <p>
                                                     <b>Время работы:</b>
-                                                    {{ $club->getWorkTime()->first()->from . '-' . $club->getWorkTime()->first()->to    }}
+                                                    {!! $club->getWorkingTimeHtml() !!}
                                                 </p>
                                                 <p>
                                                     <b>Телефон:</b>
@@ -50,7 +50,7 @@
                                             </div>
                                             <div class="buttons">
                                                 <a class="button invite_button"
-                                                   href="{{ route('club.show', $club->id) }}">Подробнее</a>
+                                                   href="{{ route('club.show', $club->url) }}">Подробнее</a>
                                                 <!--
 <a class="button book_table_button" href="#">Забронировать стол</a>
 -->

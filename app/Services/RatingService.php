@@ -2,13 +2,10 @@
 namespace App\Services;
 
 use App\Exceptions\ControllableException;
-use App\Models\Club;
 use App\Models\Rating;
 use App\Models\User;
 use App\Utils\R;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Mail\Message;
-use Illuminate\Support\Facades\Mail;
 
 class RatingService
 {
@@ -33,5 +30,28 @@ class RatingService
             "score" => $score,
             "comment" => $comment
         ]);
+    }
+
+    /**
+     * @param Model $model
+     * @param User|null $rater
+     * @return bool
+     * @throws ControllableException
+     */
+    public static function canUserRate(Model $model, $rater): bool
+    {
+        if (!$rater) {
+            return false;
+        }
+        $class = get_class($model);
+        if ($class === User::class && $rater->id === $model->id) {
+            throw new ControllableException(R::RATING_SAME_MODEL);
+        }
+
+        return !Rating::query()->where([
+            'rater_id' => $rater->id,
+            'rateable_id' => $model->id,
+            'rateable_type' => $class
+        ])->exists();
     }
 }

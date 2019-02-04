@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Web\Club;
 
 use App\Http\Controllers\Controller;
 use App\Services\ClubsService;
+use App\Services\RatingService;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class MainController extends Controller
@@ -11,7 +12,7 @@ class MainController extends Controller
     public function list()
     {
         $clubs = (new ClubsService())->getList();
-        return view('site.pages.clubs', compact('clubs'));
+        return view('site.clubs.list', compact('clubs'));
     }
 
     public function viewId($id)
@@ -30,8 +31,9 @@ class MainController extends Controller
         if (!$club) {
             throw new NotFoundHttpException;
         }
-        $review_form = \Auth::user() ? true : false;
+        $review_form = RatingService::canUserRate($club, \Auth::user());
+        $partners_review = $club->rating;
 
-        return view('site.pages.clubs-single', compact('club', 'review_form'));
+        return view('site.clubs.single', compact('club', 'review_form', 'partners_review'));
     }
 }

@@ -42,9 +42,12 @@
 
                     <div class="form-group">
                         <label for="location">Location</label>
-                        <input type="number" class="form-control" id="location" name="location"
+                        <input type="text" class="form-control" id="location" name="location"
                                placeholder="Enter Location"
                                required>
+                        <input type="hidden" class="form-control" id="location-lat" name="lat" required>
+                        <input type="hidden" class="form-control" id="location-lng" name="lng" required>
+                        <input type="hidden" class="form-control" id="city-name" name="city-name" required>
 
                     </div>
 
@@ -184,6 +187,31 @@
             }
         });
         $(document).ready(function () {
+            const geocoder = new google.maps.Geocoder();
+            const $location = $('#location');
+            const $lat = $('#location-lat');
+            const $lng = $('#location-lng');
+            const $cityName = $('#city-name');
+
+
+            $location.kladr({
+                oneString: true,
+                select: function (obj) {
+
+                    $.each(obj.parents, function (index, value) {
+                        if (value.contentType === 'city') {
+                            $cityName.val(value.name);
+                        }
+                    });
+
+                    geocoder.geocode({'address': $location.val()}, function (results, status) {
+                        if (status === 'OK') {
+                            $lat.val(results[0].geometry.location.lat());
+                            $lng.val(results[0].geometry.location.lng());
+                        }
+                    });
+                }
+            });
 
             const $url = $('input[name="url"]');
             const $title = $('input[name="title"]');
@@ -198,6 +226,7 @@
         });
     </script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key={{env('GOOGLE_API_KEY')}}"></script>
 
     <script src="/js/timepicker.js"></script>
 

@@ -15,6 +15,7 @@
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
     <link rel="stylesheet" href="/css/admin_panel.css">
+    <link rel="stylesheet" href="{{ asset('css/jquery.kladr.min.css') }}">
     @yield('css')
 </head>
 <body>
@@ -37,6 +38,7 @@
         integrity="sha256-3edrmyuQ0w65f8gfBsqowzjJe2iM6n0nKciPUp8y+7E="
         crossorigin="anonymous"></script>
 <script src="{{ asset('js/app.js')}}"></script>
+<script src="{{ asset('js/jquery.kladr.min.js') }}"></script>
 @yield('js')
 </body>
 </html>

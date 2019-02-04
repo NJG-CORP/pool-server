@@ -2,10 +2,12 @@
 
 namespace App\Services;
 
+use App\Models\City;
 use App\Models\Club;
 use App\Models\GameType;
 use App\Models\Image;
 use App\Models\Kitchens;
+use App\Models\Location;
 use App\Models\Weekday;
 use App\Models\WorkTime;
 use Illuminate\Database\Eloquent\Collection;
@@ -56,13 +58,30 @@ class ClubsService
             'Cannon' => $request['cannon']
         ]);
 
+        $city = City::firstOrCreate([
+            'name' => $request['city-name']
+        ], [
+            'name' => $request['city-name']
+        ]);
+
+        $location = Location::query()->where(['latitude' => $request['lat'], 'longitude' => $request['lng']])->first();
+
+        if (!$location) {
+            $location = new Location();
+            $location->latitude = $request['lat'];
+            $location->longitude = $request['lng'];
+            $location->city_id = $city->id;
+            $location->address = $request['location'];
+            $location->save();
+        }
+
         $club = Club::create([
             'name' => $request['name'],
             'description' => $request['des'],
             'title' => $request['title'],
 
             'gametype_id' => $gametype->id,
-            'location_id' => $request['location'],
+            'location_id' => $location->id,
             'gallery_title' => $request['gallery_title'],
             'phone' => $request['mob'],
             'url' => $request['url']
@@ -122,6 +141,24 @@ class ClubsService
         $gametype->Cannon = $request['cannon'];
         $gametype->save();
 
+
+        $city = City::firstOrCreate([
+            'name' => $request['city-name']
+        ], [
+            'name' => $request['city-name']
+        ]);
+
+        $location = Location::query()->where(['latitude' => $request['lat'], 'longitude' => $request['lng']])->first();
+
+        if (!$location) {
+            $location = new Location();
+            $location->latitude = $request['lat'];
+            $location->longitude = $request['lng'];
+            $location->city_id = $city->id;
+            $location->address = $request['location'];
+            $location->save();
+        }
+
         $club->title = $request['title'];
         $club->url = $request['url'];
         $club->name = $request['name'];
@@ -129,7 +166,7 @@ class ClubsService
 
         $club->gametype_id = $gametype->id;
         $club->kitchens_id = $request['kitchen'];
-        $club->location_id = $request['location'];
+        $club->location_id = $location->id;
         $club->phone = $request['mob'];
 
         if ($request->gallery_images != '') {

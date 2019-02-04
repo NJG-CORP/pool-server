@@ -18,8 +18,8 @@
                 <h1>{{ $club->name }}</h1>
                 <div class="the_card_wrap clearfix">
                     <div class="the_card_img">
-                        <a href="{{ $club->getMainImageEvent->url }}" class="fancy"><img
-                                    src="{{ $club->getMainImageEvent->url }}" alt=""></a>
+                        <a href="{{ $club->getMainImageEventUrl()->url }}" class="fancy"><img
+                                    src="{{ $club->getMainImageEventUrl()->url }}" alt=""></a>
                     </div>
                     <div class="the_card_description">
                         <p class="name">Подробное описание клуба</p>
@@ -70,29 +70,33 @@
                     </div>
                 @endif
                 @if($review_form)
-                    @include('site.clubs._review_form')
-                @endif;
+                    @include('site.clubs._review_form', ['club_id' => $club->id])
+                @endif
             </div>
         </section>
-        <section class="partners_reviews_section">
-            <div class="inner_section clearfix">
-                <p class="section_title">Отзывы участников проекта</p>
-                <div class="partners_wrap">
-                    <div class="partners_div" style="">
-                        <div class="img">
-                            <img src="/img/default-person.jpg" alt="">
-                            <p class="name">fsdfsdfs</p>
-                            <p class="date">4 июня 2018 г.</p>
-                        </div>
-                        <div class="text">
-                            <p>
-                                sdfsdfsdfsd
-                            </p>
-                        </div>
+        @if($partners_review)
+            <section class="partners_reviews_section">
+                <div class="inner_section clearfix">
+                    <p class="section_title">Отзывы участников проекта</p>
+                    <div class="partners_wrap">
+                        @foreach($partners_review as $review)
+                            <div class="partners_div" style="">
+                                <div class="img">
+                                    <img src="{{$review->rater->getAvatarUrl()}}" alt="">
+                                    <p class="name">{{$review->rater->name}}</p>
+                                    <p class="date">{{$review->created_at}}</p>
+                                </div>
+                                <div class="text">
+                                    <p>
+                                        {{$review->comment}}
+                                    </p>
+                                </div>
+                            </div>
+                        @endforeach
                     </div>
                 </div>
-            </div>
-        </section>
+            </section>
+        @endif
     </main>
 
 @endsection

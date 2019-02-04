@@ -43,6 +43,8 @@ Route::group(['namespace' => 'Web'], function(){
     });
 
     Route::group(['middleware' => 'authenticated'], function(){
+        Route::post('/rate/club/{club_id}', 'RatingController@rateClub')->name('rate.club');
+
         Route::group(['namespace' => 'User'], function() {
             Route::get('/profile', 'ProfileController@index')->name('profile.index');
             Route::get('/user/profile', 'ProfileController@card')->name('profile.card');

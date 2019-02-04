@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Services\GameTypeService;
+use App\Services\mainImage;
 use App\Services\UrlService;
 use App\Services\WorkTimeService;
 use Illuminate\Database\Eloquent\Model;
@@ -10,7 +11,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Club extends Model
 {
-    use SoftDeletes;
+    use SoftDeletes, mainImage;
     protected $dates = ['created_at', 'updated_at', 'deleted_at'];
     protected $guarded = [];
 
@@ -36,7 +37,7 @@ class Club extends Model
 
     public function rating()
     {
-        return $this->morphMany(Rating::class, 'rateable');
+        return $this->morphMany(Rating::class, 'rateable')->where(['is_verified' => 1]);
     }
 
     public function gametype()
@@ -87,5 +88,15 @@ class Club extends Model
     public function getMainImageEvent()
     {
         return $this->hasOne(Image::class, 'id', 'mainImg');
+    }
+
+
+    public function getMainImageEventUrl()
+    {
+        if (!$this->getMainImageEvent()->first()) {
+            $this->getMainImageEvent = new \stdClass();
+            $this->getMainImageEvent->url = Image::getDefaultImage()['url'];
+        }
+        return $this->getMainImageEvent;
     }
 }
