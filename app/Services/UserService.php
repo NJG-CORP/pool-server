@@ -188,9 +188,33 @@ class UserService
         return null;
     }
 
+    public function getOrRegisterUserViaFb(\Laravel\Socialite\Contracts\User $fbUser)
+    {
+
+
+        $user = $this->getUserViaFbId($fbUser->user['id']);
+        $user = $user ?? $this->register(
+                $fbUser->getEmail(),
+                $fbUser->getName(),
+                '',
+                'fb',
+                $fbUser->user['id'],
+                null);
+
+        if ($user) {
+            return $user;
+        }
+        return null;
+    }
+
     protected function getUserViaVkId($externalId)
     {
         return User::where(['external_id' => $externalId, 'source' => 'vk'])->first() ?? null;
+    }
+
+    protected function getUserViaFbId($externalId)
+    {
+        return User::where(['external_id' => $externalId, 'source' => 'fb'])->first() ?? null;
     }
 
     public function getUserName(User $user)

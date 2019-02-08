@@ -30,7 +30,9 @@ Route::group(['namespace' => 'Web'], function(){
 
     Route::group(['namespace' => 'Auth'], function(){
         Route::get('/login/vk/callback', 'LoginController@handleCallback');
+        Route::get('/login/fb/callback', 'LoginController@handleCallbackFb');
         Route::get('/login/vk', 'LoginController@loginVk')->name('vk.auth');
+        Route::get('/login/fb', 'LoginController@loginFb')->name('fb.auth');
 
         Route::post('/login', 'LoginController@login');
         Route::post('/register', 'RegisterController@register');

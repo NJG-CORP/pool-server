@@ -58,7 +58,7 @@
                             <div class="top_section_personal_div">
                                 <div class="social">
                                     <p>Войти через соцсети:</p>
-                                    <a href="#" class="fb"></a>
+                                    <a href="{{route('fb.auth')}}" class="fb"></a>
                                     <a href="{{route('vk.auth')}}" class="vk"></a>
                                 </div>
 

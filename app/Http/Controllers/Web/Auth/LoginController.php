@@ -10,11 +10,9 @@ namespace App\Http\Controllers\Web\Auth;
 
 use App\Http\Controllers\Web\Controller;
 use App\Models\User;
-use App\Services\DeviceService;
 use App\Services\UserService;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Laravel\Socialite\Facades\Socialite;
 
 
@@ -46,6 +44,22 @@ class LoginController extends Controller
     {
         return Socialite::driver('vkontakte')->redirect();
     }
+
+    public function loginFb()
+    {
+        return Socialite::driver('facebook')->redirect();
+    }
+
+    public function handleCallbackFb()
+    {
+        $fbUser = Socialite::driver('facebook')->user();
+        $user = $this->users->getOrRegisterUserViaFb($fbUser);
+        if ($user) {
+            return $this->loginViaModel($user);
+        }
+        return 'Something went wrong.';
+    }
+
     public function handleCallback()
     {
         $vkUser = Socialite::driver('vkontakte')->user();
