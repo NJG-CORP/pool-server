@@ -3,49 +3,6 @@
  * http://brm.io/jquery-match-height/
  * License: MIT
  */
-var map;
-var markers = [];
-
-function initMap() {
-    map = new google.maps.Map(document.getElementById('map1'), {
-        zoom: 12,
-        center: {lat: 45.040458, lng: 38.981979}
-    });
-
-    $.ajax({
-        url: "/clubs/markers",
-        method: "POST",
-        success: function (response) {
-            var image = '/img/interface/balloon.png';
-            var centerCoords = {
-                lat: 0,
-                lng: 0
-            };
-            var count = 0;
-            $.each(response, function (index, marker) {
-                centerCoords['lat'] += parseFloat(marker['lat']);
-                centerCoords['lng'] += parseFloat(marker['lng']);
-                var markerGoogle = new google.maps.Marker({
-                    position: {lat: parseFloat(marker['lat']), lng: parseFloat(marker['lng'])},
-                    icon: image,
-                    map: map
-                });
-                markers.push(markerGoogle);
-                count++;
-                markerGoogle.addListener('click', function () {
-                    window.location = marker['url'];
-                });
-            });
-
-            centerCoords['lat'] = centerCoords['lat'] / count;
-            centerCoords['lng'] = centerCoords['lng'] / count;
-
-            map.setCenter(centerCoords);
-        },
-        dataType: "JSON"
-    });
-}
-
 (function (factory) { // eslint-disable-line no-extra-semi
     'use strict';
     if (typeof define === 'function' && define.amd) {
@@ -7724,21 +7681,6 @@ $(document).ready(function () {
 
     //-
 
-
-    //google map
-    if ($('#map1').length) {
-
-        setTimeout(function () {
-            var script = document.createElement('script');
-            script.onload = function () {
-
-            };
-            script.src = "https://maps.googleapis.com/maps/api/js?key=AIzaSyAMj0tzo5dL6q5svRGhyCEYhMwqRcAtve4&callback=initMap";
-            script.setAttribute('defer', '');
-            script.setAttribute('async', '');
-            document.getElementById('map1').appendChild(script);
-        }, 999);
-    }
 
 //--
 

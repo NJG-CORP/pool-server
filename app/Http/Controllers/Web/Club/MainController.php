@@ -12,7 +12,8 @@ class MainController extends Controller
     public function list()
     {
         $clubs = (new ClubsService())->getList();
-        return view('site.clubs.list', compact('clubs'));
+        $json_markers = (new ClubsService())->getMarkers($clubs);
+        return view('site.clubs.list', compact('clubs', 'json_markers'));
     }
 
     public function viewId($id)

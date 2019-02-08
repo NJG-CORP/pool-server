@@ -250,32 +250,32 @@
 
         });
 
+        function initGoogle() {
+            const $lat = $('#location-lat');
+            const $lng = $('#location-lng');
+            const $cityName = $('#city-name');
+            const autocomplete = new google.maps.places.Autocomplete(document.getElementById('location'));
+
+            autocomplete.setFields(['address_components', 'geometry', 'name']);
+            autocomplete.addListener('place_changed', function () {
+                const place = autocomplete.getPlace();
+                $lat.val(place.geometry.location.lat);
+                $lng.val(place.geometry.location.lng);
+                $cityName.val(getCity(place.address_components));
+            });
+        }
+
+        function getCity(address) {
+            let city = '';
+            $.each(address, function (index, value) {
+                if (value.types[0] === 'locality') {
+                    city = value.long_name;
+                }
+            });
+
+            return city;
+        }
         $(document).ready(function () {
-            function initGoogle() {
-                const $lat = $('#location-lat');
-                const $lng = $('#location-lng');
-                const $cityName = $('#city-name');
-                const autocomplete = new google.maps.places.Autocomplete(document.getElementById('location'));
-
-                autocomplete.setFields(['address_components', 'geometry', 'name']);
-                autocomplete.addListener('place_changed', function () {
-                    const place = autocomplete.getPlace();
-                    $lat.val(place.geometry.location.lat);
-                    $lng.val(place.geometry.location.lng);
-                    $cityName.val(getCity(place.address_components));
-                });
-            }
-
-            function getCity(address) {
-                let city = '';
-                $.each(address, function (index, value) {
-                    if (value.types[0] === 'locality') {
-                        city = value.long_name;
-                    }
-                });
-
-                return city;
-            }
 
             $("#tabs").tabs();
             $('.worktime').timepicker({"timeFormat": "HH:mm:ss", "showSecond": false});

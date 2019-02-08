@@ -233,4 +233,22 @@ class ClubsService
     {
         return Club::with(['images'])->where(['url' => $url])->first();
     }
+
+    public function getMarkers($clubs)
+    {
+        $markers = [];
+
+        foreach ($clubs as $club) {
+            if ($club->location) {
+                $markers[] = [
+                    'lat' => $club->location->latitude,
+                    'lng' => $club->location->longitude,
+                    'id' => $club->id,
+                    'url' => route('club.show', ['url' => $club->url])
+                ];
+            }
+        }
+
+        return $markers;
+    }
 }
