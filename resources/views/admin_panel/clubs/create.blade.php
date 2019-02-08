@@ -45,9 +45,9 @@
                         <input type="text" class="form-control" id="location" name="location"
                                placeholder="Enter Location"
                                required>
-                        <input type="hidden" class="form-control" id="location-lat" name="lat" required>
-                        <input type="hidden" class="form-control" id="location-lng" name="lng" required>
-                        <input type="hidden" class="form-control" id="city-name" name="city-name" required>
+                        <input type="text" class="form-control" id="location-lat" name="lat" required>
+                        <input type="text" class="form-control" id="location-lng" name="lng" required>
+                        <input type="text" class="form-control" id="city-name" name="city-name" required>
 
                     </div>
 
@@ -186,32 +186,34 @@
                 error.insertAfter(element);
             }
         });
-        $(document).ready(function () {
-            const geocoder = new google.maps.Geocoder();
-            const $location = $('#location');
+
+        function initGoogle() {
             const $lat = $('#location-lat');
             const $lng = $('#location-lng');
             const $cityName = $('#city-name');
+            const autocomplete = new google.maps.places.Autocomplete(document.getElementById('location'));
 
+            autocomplete.setFields(['address_components', 'geometry', 'name']);
+            autocomplete.addListener('place_changed', function () {
+                const place = autocomplete.getPlace();
+                $lat.val(place.geometry.location.lat);
+                $lng.val(place.geometry.location.lng);
+                $cityName.val(getCity(place.address_components));
+            });
+        }
 
-            $location.kladr({
-                oneString: true,
-                select: function (obj) {
-
-                    $.each(obj.parents, function (index, value) {
-                        if (value.contentType === 'city') {
-                            $cityName.val(value.name);
-                        }
-                    });
-
-                    geocoder.geocode({'address': $location.val()}, function (results, status) {
-                        if (status === 'OK') {
-                            $lat.val(results[0].geometry.location.lat());
-                            $lng.val(results[0].geometry.location.lng());
-                        }
-                    });
+        function getCity(address) {
+            let city = '';
+            $.each(address, function (index, value) {
+                if (value.types[0] === 'locality') {
+                    city = value.long_name;
                 }
             });
+
+            return city;
+        }
+
+        $(document).ready(function () {
 
             const $url = $('input[name="url"]');
             const $title = $('input[name="title"]');
@@ -226,7 +228,7 @@
         });
     </script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-    <script src="https://maps.googleapis.com/maps/api/js?key={{env('GOOGLE_API_KEY')}}"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key={{env('GOOGLE_API_KEY')}}&libraries=places&callback=initGoogle"></script>
 
     <script src="/js/timepicker.js"></script>
 

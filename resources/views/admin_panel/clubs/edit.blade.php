@@ -69,11 +69,11 @@
                         <input type="text" class="form-control" id="location" name="location"
                                placeholder="Enter Location"
                                value="{{$data->location->address}}" required>
-                        <input type="hidden" class="form-control" id="location-lat" name="lat"
+                        <input type="text" class="form-control" id="location-lat" name="lat"
                                value="{{$data->location->latitude}}" required>
-                        <input type="hidden" class="form-control" id="location-lng" name="lng"
+                        <input type="text" class="form-control" id="location-lng" name="lng"
                                value="{{$data->location->longitude}}" required>
-                        <input type="hidden" class="form-control" id="city-name" name="city-name"
+                        <input type="text" class="form-control" id="city-name" name="city-name"
                                value="{{$data->location->city->name}}" required>
 
                     </div>
@@ -251,39 +251,38 @@
         });
 
         $(document).ready(function () {
+            function initGoogle() {
+                const $lat = $('#location-lat');
+                const $lng = $('#location-lng');
+                const $cityName = $('#city-name');
+                const autocomplete = new google.maps.places.Autocomplete(document.getElementById('location'));
 
-            const geocoder = new google.maps.Geocoder();
-            const $location = $('#location');
-            const $lat = $('#location-lat');
-            const $lng = $('#location-lng');
-            const $cityName = $('#city-name');
+                autocomplete.setFields(['address_components', 'geometry', 'name']);
+                autocomplete.addListener('place_changed', function () {
+                    const place = autocomplete.getPlace();
+                    $lat.val(place.geometry.location.lat);
+                    $lng.val(place.geometry.location.lng);
+                    $cityName.val(getCity(place.address_components));
+                });
+            }
 
+            function getCity(address) {
+                let city = '';
+                $.each(address, function (index, value) {
+                    if (value.types[0] === 'locality') {
+                        city = value.long_name;
+                    }
+                });
 
-            $location.kladr({
-                oneString: true,
-                select: function (obj) {
-
-                    $.each(obj.parents, function (index, value) {
-                        if (value.contentType === 'city') {
-                            $cityName.val(value.name);
-                        }
-                    });
-
-                    geocoder.geocode({'address': $location.val()}, function (results, status) {
-                        if (status === 'OK') {
-                            $lat.val(results[0].geometry.location.lat());
-                            $lng.val(results[0].geometry.location.lng());
-                        }
-                    });
-                }
-            });
+                return city;
+            }
 
             $("#tabs").tabs();
             $('.worktime').timepicker({"timeFormat": "HH:mm:ss", "showSecond": false});
         });
     </script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-    <script src="https://maps.googleapis.com/maps/api/js?key={{env('GOOGLE_API_KEY')}}"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key={{env('GOOGLE_API_KEY')}}&libraries=places&callback=initGoogle"></script>
 
     <script src="/js/timepicker.js"></script>
 
