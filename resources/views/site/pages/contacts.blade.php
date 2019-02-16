@@ -7,8 +7,17 @@
     <main class="main contacts_page_main">
         <section class="the_content_section">
             <div class="inner_section">
-                <div class="breadcrumbs">
-                    <p><a href="/">Главная</a> / <span>Контакты</span></p>
+                <div class="breadcrumbs inner_section">
+                    <p itemscope itemtype="http://schema.org/BreadcrumbList">
+								<span itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+									<a href="#" itemprop="item"><span itemprop="name">Главная</span></a>
+									<meta itemprop="position" content="1">
+								</span>
+                        <span itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+									<span itemprop="item"><span itemprop="name">Контакты</span></span>
+									<meta itemprop="position" content="2">
+								</span>
+                    </p>
                 </div>
                 <h1>Контакты</h1>
                 @if(session('success'))
@@ -75,4 +84,33 @@
         </section>
     </main>
 
+    <script>
+        if ($('#map1').length) {
+            var script0 = document.createElement('script');
+            script0.onload = function () {
+            };
+            script0.text = " function initMap() {" +
+                "var map = new google.maps.Map(document.getElementById('map1'), {" +
+                " zoom: 17," +
+                " center: {lat: 45.040458, lng: 38.981979}" +
+                "});" +
+                "var image = 'img/interface/balloon.png';" +
+                "var beachMarker = new google.maps.Marker({" +
+                " position: {lat: 45.040458, lng: 38.981979}," +
+                "map: map," +
+                "icon: image" +
+                "});" +
+                "}";
+            document.getElementById('map1').appendChild(script0);
+            setTimeout(function () {
+                var script = document.createElement('script');
+                script.onload = function () {
+                };
+                script.src = "https://maps.googleapis.com/maps/api/js?key=AIzaSyAMj0tzo5dL6q5svRGhyCEYhMwqRcAtve4&callback=initMap";
+                script.setAttribute('defer', '');
+                script.setAttribute('async', '');
+                document.getElementById('map1').appendChild(script);
+            }, 999);
+        }
+    </script>
 @endsection

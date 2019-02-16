@@ -1,6 +1,6 @@
 @extends('layouts.default')
 
-@section('title', $news->getHeader())
+@section('title', $event->getHeader())
 
 @section('content')
     <main class="main inner_page_main news_inner_page_main">

@@ -19,6 +19,7 @@
                         </ul>
                     </div>
                 @endif
+                <?php dump(session('error')); dump($errors); ?>
                 @if(session('error'))
                     <div class="alert alert-danger">
                         <ul>
@@ -32,7 +33,7 @@
 
                             <div class="profile_page_avatar">
                                 <div class="img">
-                                    <img src="{{ asset('img/' . $user->getAvatar()) }}" alt="">
+                                    <img src="{{ $user->getAvatarUrl() }}" alt="">
                                 </div>
 
                                 <div class="text">
@@ -61,7 +62,7 @@
                                                    name="email" value="{{ !old('email') ? $user->email : old('email')}}"
                                                    placeholder="E-mail"
                                                    aria-invalid="false">
-                                            <div class="help-block">
+                                            <div class="help-block help-block-red @if($errors->has('email')) {{ 'has-error' }} @endif">
                                                 @if($errors->has('email'))
                                                     {{ $errors->first('email') }}
                                                 @endif
@@ -75,7 +76,7 @@
                                             <input type="number" id="profileform-age" class="form-control"
                                                    name="age" placeholder="Возраст" aria-required="true"
                                                    aria-invalid="true" value="{{ !old('age') ? $user->age : old('age') }}">
-                                            <div class="help-block">
+                                            <div class="help-block help-block-red @if($errors->has('age')) {{ 'has-error' }} @endif">
                                                 @if($errors->has('age'))
                                                     {{ $errors->first('age') }}
                                                 @endif
@@ -89,7 +90,7 @@
                                             <input type="text" id="profileform-location" class="form-control"
                                                    name="city"
                                                    value="{{ !old('street') && $user->city()->first() ? $user->city()->first()->name : old('street') }}"
-                                                   placeholder="Улица, номер, город, страна" autocomplete="off">
+                                                   placeholder="Улица, номер, город, страна">
                                             <div class="help-block"></div>
                                         </div>
                                     </div>
@@ -101,7 +102,7 @@
                                             <label class="control-label" for="profileform-locationhouse">Дом</label>
                                             <input type="text" id="profileform-locationhouse" class="form-control"
                                                    name="street" placeholder="Квартира"
-                                                   value="{{ !old('street') ? $user->street : old('street') }}">
+                                                   value="{{ !old('street') && $user->city()->first() ? $user->street : old('street') }}">
                                             <div class="help-block"></div>
                                         </div>
                                     </div>
@@ -121,7 +122,7 @@
                                                                                  class="ez-hide" {{ $user->gender == 1 ? 'checked' : '' }}>
                                                     </div>
                                                     Женщина</label></div>
-                                            <div class="help-block">
+                                            <div class="help-block help-block-red @if($errors->has('gender')) {{ 'has-error' }} @endif">
                                                 @if($errors->has('gender'))
                                                     {{ $errors->first('gender') }}
                                                 @endif
@@ -173,7 +174,7 @@
                                                     </div>
                                                     Карамболь</label>
                                             </div>
-                                            <div class="help-block">
+                                            <div class="help-block help-block-red @if($errors->has('types')) {{ 'has-error' }} @endif">
                                                 @if($errors->has('types'))
                                                     {{ $errors->first('types') }}
                                                 @endif
@@ -258,7 +259,7 @@
                                                     </div>
                                                     Воскресенье</label></div>
 
-                                            <div class="help-block">
+                                            <div class="help-block help-block-red @if($errors->has('days')) {{ 'has-error' }} @endif">
                                                 @if($errors->has('days'))
                                                     {{ $errors->first('days') }}
                                                 @endif
@@ -304,7 +305,7 @@
                                                     </div>
                                                     Не имеет значения</label></div>
 
-                                            <div class="help-block">
+                                            <div class="help-block help-block-red @if($errors->has('payment')) {{ 'has-error' }} @endif">
                                                 @if($errors->has('payment'))
                                                     {{ $errors->first('payment') }}
                                                 @endif
@@ -339,7 +340,7 @@
                                             <input type="password" id="profileform-newpassword" class="form-control"
                                                    name="newPassword" placeholder="Новый пароль">
 
-                                            <div class="help-block">
+                                            <div class="help-block help-block-red @if($errors->has('newPassword')) {{ 'has-error' }} @endif">
                                                 @if($errors->has('newPassword'))
                                                     {{ $errors->first('newPassword') }}
                                                 @endif

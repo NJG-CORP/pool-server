@@ -26,7 +26,7 @@
 
   @foreach($all_rate as $rate)
 
-   <tr id="part{{$rate->id}}">
+      <tr id="part{{$rate->id}}" class="{{$rate->is_verified === 1 ? 'success' : ''}}">
    	<td>
        @if(empty($rate->rater['name'])&& empty($rate->rater['surname'])) 
    		 <label style="color: red">not set</label>
@@ -66,10 +66,16 @@
 
 	</td>
 <td>
-	
 
-	<button type="button" class="btn btn-primary edit" data-toggle="modal" data-target="#myModal" data-id="{{$rate->id}}">Change review</button>
-	<button type="button" class="btn btn-primary delete" data-id="{{$rate->id}}">Delete review</button>
+    <div class="btn-group" role="group" aria-label="Basic example">
+        <button type="button" class="btn btn-{{$rate->is_verified ? 'warning' : 'success'}} accept-review"
+                data-id="{{$rate->id}}"
+                data-value="{{$rate->is_verified ? 0 : 1}}">{{$rate->is_verified ? 'Decline' : 'Accept&nbsp;'}}</button>
+        <button type="button" class="btn btn-primary edit" data-toggle="modal" data-target="#myModal"
+                data-id="{{$rate->id}}">Edit
+        </button>
+        <button type="button" class="btn btn-danger delete" data-id="{{$rate->id}}">Delete</button>
+    </div>
 </td>
    </tr>
 
@@ -108,6 +114,23 @@
 @section('js')
 <script type="text/javascript" src="https://cdn.jsdelivr.net/jquery.validation/1.15.1/jquery.validate.min.js"></script>
 <script>
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+    });
+    $('.accept-review').on('click', function () {
+        $.post({
+            url: "/admin/rating/accept",
+            data: {
+                id: $(this).data('id'),
+                value: $(this).data('value')
+            },
+            success: function () {
+                document.location.reload();
+            }
+        })
+    });
   
   
 	 $(document).on('click','.edit',function(){
@@ -122,9 +145,6 @@
      $("#updated").validate({
 
        rules: {
-         item: {
-           required: true,
-         },
          comment: {
            required: true,
          },
@@ -132,7 +152,6 @@
 
        },
        messages:{
-           item : 'Something going wrong.',
            comment : 'Feedback can not be empty',
            
        },

@@ -15,20 +15,52 @@ use Illuminate\Http\Request;
 
 class ClubsService
 {
-    public function getList()
+    const LIMIT_LIST = 10;
+
+    public function getList($limit = self::LIMIT_LIST, $withRating = false, $name = null, $not_id = null)
     {
-        return Club::with(['rating', 'location', 'images'])
+        $query = Club::with(['rating', 'location', 'images'])
+            ->limit($limit)
+            ->select('clubs.*')
+            ->whereRaw('deleted_at is null');
+
+        if ($withRating && !$name) {
+            $query
+                ->join('rating', 'rateable_id', '=', 'clubs.id')
+                ->where('rating.rateable_type', '=', Club::class)
+                ->where('rating.is_verified', '=', '1')
+                ->orWhere('rating.rateable_type', 'is', 'null')
+                ->selectRaw('AVG(rating.score) AS average_rating')
+                ->orderByRaw('AVG(rating.score) desc')
+                ->groupBy('clubs.id');
+        }
+
+        if ($not_id) {
+            $query->whereRaw('clubs.id NOT IN (' . implode(',', $not_id) . ')');
+        }
+
+        if ($name) {
+            $query->whereRaw('name like \'%' . $name . '%\'');
+        }
+
+        $clubs = $query
             ->get()
             ->map(function ($e) {
                 return $e->setAppends(['calculated_rating']);
             });
-    }
 
-    public function getOne($id): Club
-    {
-        return Club::with(['rating', 'location', 'images'])
-            ->where(['id' => $id])
-            ->firstOrFail();
+        if (count($clubs) < $limit && $withRating) {
+            $not_in = [];
+            foreach ($clubs as $club) {
+                $not_in[] = $club->id;
+            };
+            $additionalClubs = $this->getList($limit - count($clubs), false, $name, $not_in);
+            foreach ($additionalClubs as $club) {
+                $clubs->push($club);
+            }
+        }
+
+        return $clubs;
     }
 
     public function getAllClubsData()
@@ -229,9 +261,21 @@ class ClubsService
         return $images;
     }
 
+    public function getOne($id): Club
+    {
+        return Club::with(['rating', 'location', 'images'])
+            ->where(['id' => $id])
+            ->firstOrFail();
+    }
+
     public function getClubByUrl(string $url)
     {
         return Club::with(['images'])->where(['url' => $url])->first();
+    }
+
+    public function findSuggestion(string $name)
+    {
+        return Club::query()->select(['name'])->whereRaw('name like \'%' . $name . '%\'')->get()->toArray();
     }
 
     public function getMarkers($clubs)

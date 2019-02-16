@@ -7,14 +7,23 @@
     <main class="main inner_page_main club_card_inner_page_main">
         <section class="the_content_section">
             <div class="inner_section">
-                <div class="breadcrumbs">
-                    <p>
-                        <a href="{{ route('home') }}">Главная</a> /
-                        <a href="{{ route('clubs') }}">Клубы</a>
-                        /
-                        <span>{{ $club->title }}</span>
+                <div class="breadcrumbs inner_section">
+                    <p itemscope itemtype="http://schema.org/BreadcrumbList">
+                        <span itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+                            <a href="#" itemprop="item"><span itemprop="name">Главная</span></a>
+                            <meta itemprop="position" content="1">
+                        </span>
+                        <span itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+                            <a href="#" itemprop="item"><span itemprop="name">Клубы</span></a>
+                            <meta itemprop="position" content="2">
+                        </span>
+                        <span itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+                            <span itemprop="item"><span itemprop="name">{{$club->name}}</span></span>
+                            <meta itemprop="position" content="3">
+                        </span>
                     </p>
                 </div>
+
                 <h1>{{ $club->name }}</h1>
                 <div class="the_card_wrap clearfix">
                     <div class="the_card_img">
@@ -74,7 +83,7 @@
                 @endif
             </div>
         </section>
-        @if($partners_review)
+        @if(count($partners_review) > 0 )
             <section class="partners_reviews_section">
                 <div class="inner_section clearfix">
                     <p class="section_title">Отзывы участников проекта</p>
@@ -84,7 +93,7 @@
                                 <div class="img">
                                     <img src="{{$review->rater->getAvatarUrl()}}" alt="">
                                     <p class="name">{{$review->rater->name}}</p>
-                                    <p class="date">{{$review->created_at}}</p>
+                                    <p class="date">{{date('d.m.Y', strtotime($review->created_at))}}</p>
                                 </div>
                                 <div class="text">
                                     <p>

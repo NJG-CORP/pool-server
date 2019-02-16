@@ -21,9 +21,9 @@ class User extends Authenticatable
      *
      * @var array
      */
-//    protected $fillable = [
-//        'email', 'age', 'sex', 'phone', 'street', 'game_time_to', 'types', 'days', 'payment', 'gender', 'external_id', 'api_token',  'remember_token'
-//    ];
+    public $fillable = [
+        'email', 'age', 'gender', 'phone', 'street', 'game_time_to', 'game_time_from', 'days', 'payment', 'gender', 'external_id', 'api_token', 'remember_token'
+    ];
 
     protected $hidden = [
         'password', 'deleted_at'
@@ -121,6 +121,11 @@ class User extends Authenticatable
             $this->avatar->url = Image::getDefaultImage()['url'];
         }
         return $this->avatar->url;
+    }
+
+    public function isAdmin(): bool
+    {
+        return (bool)$this->is_admin;
     }
 
 }

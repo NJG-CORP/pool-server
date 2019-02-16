@@ -4,10 +4,13 @@ namespace App\Http\Controllers\Web\User;
 
 use App\Http\Controllers\Controller;
 use App\Models\GamePayment;
+use App\Services\CityService;
+use App\Services\ImageService;
 use App\Services\InvitationService;
 use App\Services\PlayerService;
 use App\Services\UserService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
 class ProfileController extends Controller
@@ -53,18 +56,13 @@ class ProfileController extends Controller
             'types' => 'required',
             'days' => 'required',
             'payment' => 'required',
-            'sex' => 'required',
+            'gender' => 'required',
         ]);
         if ($validator->fails()) {
             return redirect()->back()->withErrors($validator)->withInput();
         }
-
-        $fields = $request->all();
-        $req_user = $fields['id'];
-        $base_user = (new UserService())->getUser()->id;
-        if ($req_user == $base_user) {
-            $profile = new PlayerService();
-            $profile->save($fields);
+        $profile = new PlayerService();
+        if ($profile->save(Auth::user(), $request->all(), new CityService(), new ImageService())) {
             return redirect()->back()->with('success', 'Профиль успешно обновлен!');
         } else {
             return redirect()->back()->with('error', 'Что-то пошло не так.');

@@ -7,12 +7,12 @@
       {{csrf_field()}}
       <input type="hidden" name="item" value="{{$edit_data->id}}">
   <div class="form-group">
-    <label for="name">Name</label>
-    <input type="text" class="form-control" id="name" name="name" placeholder="Enter name" >
+      <label for="name">Оценка</label>
+      <input type="number" class="form-control" id="name" name="score" max="5" min="1" value="{{$edit_data->score}}">
     
   </div>
   <div class="form-group">
-    <label for="comment">Feedback</label>
+      <label for="comment">Отзыв</label>
     <input type="text" class="form-control" id="comment" name="comment" placeholder="Enter Feedback" value="{{$edit_data->comment}}">
     
   </div>

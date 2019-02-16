@@ -61,5 +61,6 @@ class Kernel extends HttpKernel
         'cors' => \Barryvdh\Cors\HandleCors::class,
         'auth.token' => AuthToken::class,
         'authenticated' => \App\Http\Middleware\Authenticated::class,
+        'admin' => \App\Http\Middleware\Admin::class,
     ];
 }

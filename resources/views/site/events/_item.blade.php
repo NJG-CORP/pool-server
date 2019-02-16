@@ -4,7 +4,7 @@
  */
 ?>
 <div class="news_block_div activities_block_div">
-    <span class="date">20 июня 2018</span>
+    <span class="date">{{date('d.m.Y', strtotime($event->created_at))}}</span>
 
     <p class="title"><a href="{{$event->getUrl()}}">{{$event->title}}</a></p>
 
@@ -24,7 +24,7 @@
         </p>
 
         <p>
-            <b>Время проведения:</b>{{$event->date}}<br>
+            <b>Время проведения:</b><br>{{$event->date}}
         </p>
     </div>
 </div>
