@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Web\User;
 
 use App\Http\Controllers\Controller;
 use App\Models\GamePayment;
+use App\Models\User;
 use App\Services\CityService;
 use App\Services\ImageService;
 use App\Services\InvitationService;
@@ -13,6 +14,7 @@ use App\Services\UserService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class ProfileController extends Controller
 {
@@ -27,10 +29,18 @@ class ProfileController extends Controller
         return view('site.user.profile.profile', compact('types', 'payment', 'days'));
     }
 
-    public function card()
+    public function card($id = 0)
     {
-        $reviews = RatingService::getUserRevies(Auth::user());
-        return view('site.user.profile.card', compact('reviews'));
+        if ($id != 0) {
+            $user_profile = User::query()->get()->where('id', '=', $id)->first();
+            if (!$user_profile) {
+                throw new NotFoundHttpException();
+            }
+        } else {
+            $user_profile = Auth::user();
+        }
+        $reviews = RatingService::getUserRevies($user_profile);
+        return view('site.user.profile.card', compact('reviews', 'user_profile'));
     }
 
     public function invites()

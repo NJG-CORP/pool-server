@@ -1,6 +1,6 @@
 @extends('layouts.default')
 
-@section('title', $user->getUserName() . ' | Карточка')
+@section('title', $user_profile->getUserName() . ' | Карточка')
 
 @section('content')
 
@@ -17,12 +17,12 @@
 
                     <div class="profile_left_column profile_left_column_avatar_block">
                         <div class="img">
-                            <img src="{{ $user->getAvatarUrl() }}" alt="">
+                            <img src="{{ $user_profile->getAvatarUrl() }}" alt="">
                         </div>
 
                         <div class="text">
                             <p class="name">
-                                {{ $user->getUserName() }} </p>
+                                {{ $user_profile->getUserName() }} </p>
                             <p>
                             </p>
 
@@ -30,16 +30,13 @@
 
                             <p>
                                 <b>Вид игры:</b><br>
-                                @foreach($user->gameType as $type)
-                                    @php($types[] = $type->term->name)
-                                @endforeach
-                                {{ implode(', ', $types) }}
+                                {{$user_profile->getGameTypes()}}
                             </p>
                             <div class="rating">
                                 <p><b>Рейтинг игрока</b></p>
 
                                 <div class="stars">
-                                    <div><span class="star{{$user->calculated_rating ?? '0' }}"></span></div>
+                                    <div><span class="star{{$user_profile->calculated_rating ?? '0' }}"></span></div>
                                 </div>
                             </div>
 
@@ -59,7 +56,8 @@
                                     <p style="font-size: 14px;">{{ $review->comment }}</p>
                                 @endforeach
                             @else
-                                <p style="font-size: 24px;">О вас еще не оставили отзывов</p></div>
+                                <p style="font-size: 24px;">{{ $user_profile->id === Auth::user()->id ? 'О вас' : ('О ползователе ' . $user_profile->getUsername() . ' ') }}
+                                    еще не оставили отзывов</p></div>
                     @endif
                     <!--<div class="pagination">
                             <a class="prev" href="#"><i class="fa fa-angle-left" aria-hidden="true"></i></a>

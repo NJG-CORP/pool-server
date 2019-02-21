@@ -2,7 +2,8 @@
 
 Route::group(['namespace' => 'Web'], function(){
     Route::get('/', 'HomeController@index')->name('home');
-    Route::post('/search', 'SearchController@search')->name('search');
+    Route::get('/search', 'SearchController@index')->name('search');
+    Route::post('/search', 'SearchController@search')->name('search-execute');
     Route::get('/contacts', 'ContactsController@index')->name('contacts');
     Route::post('/contacts', 'ContactsController@review')->name('send.review');
 
@@ -52,6 +53,7 @@ Route::group(['namespace' => 'Web'], function(){
         Route::group(['namespace' => 'User'], function() {
             Route::get('/profile', 'ProfileController@index')->name('profile.index');
             Route::get('/user/profile', 'ProfileController@card')->name('profile.card');
+            Route::get('/user/profile/{id}', 'ProfileController@card')->name('profile.card.other');
             Route::get('/invites', 'ProfileController@invites')->name('profile.invites');
             Route::get('/partners', 'ProfileController@partners')->name('profile.partners');
             Route::get('/chat', 'ProfileController@chat')->name('profile.chat');
@@ -66,7 +68,3 @@ Route::group(['middleware' => 'authenticated'], function() {
     Route::get('/invite/accept/{id}', 'InvitationController@invitationAccept')->name('accept.invite');
 
 });
-
-
-
-

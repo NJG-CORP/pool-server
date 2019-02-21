@@ -10,6 +10,7 @@ use App\Models\User;
 use App\Models\Weekday;
 use Devfactory\Taxonomy\Models\Term;
 use Devfactory\Taxonomy\Models\Vocabulary;
+use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Hash;
 
@@ -220,7 +221,8 @@ class PlayerService
                 })
                 ->sort(function ($a, $b) {
                     return $b->calculated_rating - $a->calculated_rating;
-                })->values()
+                })
+                ->values()
         ];
     }
 
@@ -294,5 +296,40 @@ class PlayerService
             'latitude' => $location['latitude'],
             'longitude' => $location['longitude']
         ]);
+    }
+
+    public function prepareWebRequest(Request $request)
+    {
+        $query = collect([
+            'gender', 'days', 'time', 'rating', 'game_type', 'game_payment_type', 'city_id'
+        ]);
+        $prepared = $query->mapWithKeys(function ($e) use ($request) {
+            return [$e => $request->get($e)];
+        });
+
+        $result = [];
+
+        if ($request->get('city')) {
+            $city = $cityModel = City::firstOrCreate([
+                'name' => $request->get('city')
+            ]);
+
+            $result['city_id'] = $city->id;
+        }
+
+        $result['time'] = [
+            'from' => $request->get('game_time_from'),
+            'to' => $request->get('game_time_to'),
+        ];
+
+        if ($prepared->get('gender') == -1) {
+            $result['gender'] = null;
+            $prepared->forget('gender');
+        }
+
+
+        return $query->mapWithKeys(function ($e) use ($result, $prepared) {
+            return [$e => $result[$e] ?? $prepared->get($e)];
+        });
     }
 }

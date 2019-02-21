@@ -184,4 +184,13 @@ class User extends Authenticatable
 
         return $address;
     }
+
+    public function getGameTypes()
+    {
+        $types = [];
+        foreach ($this->gameType as $type) {
+            $types[] = $type->term->name;
+        }
+        return !empty($types) ? implode(', ', $types) : 'Еще не выбрано';
+    }
 }

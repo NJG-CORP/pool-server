@@ -8,16 +8,30 @@ use Illuminate\Http\Request;
 
 class SearchController extends Controller
 {
+    public function index()
+    {
+        return view('site.pages.search');
+    }
+
     public function search(Request $request)
     {
         $request->validate([
-            'types' => 'required',
-            'sex' => 'required',
-            'payment' => 'required',
+            'game_type' => 'required',
+            'gender' => 'required',
+            'game_payment_type' => 'required',
             'days' => 'required'
         ]);
-        $fields = $request->all();
-        $results = (new PlayerService())->search($fields);
+        session(['_old_input' => $request->toArray()]);
+        $service = new PlayerService();
+
+        $request = $service->prepareWebRequest($request);
+
+        $results = $service->search(
+            $request->get('page', 0) * 10,
+            $request,
+            \Auth::user()
+        );
+
         return view('site.pages.search', compact('results'));
     }
 }
