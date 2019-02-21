@@ -18,4 +18,15 @@ class GameTypeService
 
         return implode(',<br>', $result);
     }
+
+    public function isChecked(int $id)
+    {
+        foreach ($this->days as $day) {
+            if ($day->id === $id) {
+
+                return true;
+            }
+        }
+        return false;
+    }
 }

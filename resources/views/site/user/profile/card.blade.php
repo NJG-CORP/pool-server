@@ -17,7 +17,7 @@
 
                     <div class="profile_left_column profile_left_column_avatar_block">
                         <div class="img">
-                            <img src="{{ asset('/img' . $user->getAvatar()) }}" alt="">
+                            <img src="{{ $user->getAvatarUrl() }}" alt="">
                         </div>
 
                         <div class="text">
@@ -30,7 +30,7 @@
 
                             <p>
                                 <b>Вид игры:</b><br>
-                                @foreach($user->getGameType as $type)
+                                @foreach($user->gameType as $type)
                                     @php($types[] = $type->term->name)
                                 @endforeach
                                 {{ implode(', ', $types) }}
@@ -53,12 +53,11 @@
                         <h2>Отзывы об игроке</h2>
 
                         <div class="partners_wrap partners_reviews_wrap">
-                            @if($reviews)
+                            @if(count($reviews) > 0)
                                 @foreach($reviews as $review)
                                     <h5>{{ $review->rater_id }}</h5>
                                     <p style="font-size: 14px;">{{ $review->comment }}</p>
                                 @endforeach
-                                {{ $reviews->links() }}
                             @else
                                 <p style="font-size: 24px;">О вас еще не оставили отзывов</p></div>
                     @endif

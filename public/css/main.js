@@ -7806,12 +7806,12 @@ $(document).ready(function () {
         $("#slider-range-time").slider({
             range: true,
             min: 0,
-            max: 24,
-            values: [8, 22],
+            max: 23,
+            values: [$('input[name="game_time_from"]').val().split(':')[0], $('input[name="game_time_to"]').val().split(':')[0]],
             slide: function (event, ui) {
                 $("input[name='time']").val("с " + ui.values[0] + " до " + ui.values[1] + " часов");
-                //$(this).find('val-min').html(ui.values[ 0 ]);
-                //$(this).find('val-max').html(ui.values[ 1 ]);
+                $('input[name="game_time_from"]').val(ui.values[0] + ":00:00");
+                $('input[name="game_time_to"]').val(ui.values[1] + ":00:00");
             }
         });
     }
@@ -7845,39 +7845,39 @@ $(document).ready(function () {
     }
     //autocomplete
 
-    if ($('.city-autocomplete').length > 0) {
-
-        var autocomplete;
-
-        function initAutocomplete() {
-            autocomplete = new google.maps.places.Autocomplete(($('.city-autocomplete')), {types: ['geocode']});
-            autocomplete.addListener('place_changed', fillInAddress);
-        }
-
-        function fillInAddress() {
-            var place = autocomplete.getPlace();
-            for (var i = 0; i < place.address_components.length; i++) {
-                var addressType = place.address_components[i].types[0];
-                switch (addressType) {
-                    case "locality":
-                        $(".city-autocomplete").val(place.address_components[i].long_name);
-                        break;
-                }
-            }
-        }
-
-        maps = document.createElement('script');
-        maps.src = 'https://maps.googleapis.com/maps/api/js?key=AIzaSyAMj0tzo5dL6q5svRGhyCEYhMwqRcAtve4&amp;libraries=places&amp;callback=initAutocomplete';
-        maps.async = true;
-        document.getElementsByTagName('body')[0].appendChild(maps);
-
-        /*
-		var cities = ['Санкт-Петербург','Колпино','Выборг'];
-		$('.city-autocomplete').autocomplete({
-			source: cities
-		});
-*/
-    }
+//     if ($('.city-autocomplete').length > 0) {
+//
+//         var autocomplete;
+//
+//         function initAutocomplete() {
+//             autocomplete = new google.maps.places.Autocomplete(($('.city-autocomplete')), {types: ['geocode']});
+//             autocomplete.addListener('place_changed', fillInAddress);
+//         }
+//
+//         function fillInAddress() {
+//             var place = autocomplete.getPlace();
+//             for (var i = 0; i < place.address_components.length; i++) {
+//                 var addressType = place.address_components[i].types[0];
+//                 switch (addressType) {
+//                     case "locality":
+//                         $(".city-autocomplete").val(place.address_components[i].long_name);
+//                         break;
+//                 }
+//             }
+//         }
+//
+//         maps = document.createElement('script');
+//         maps.src = 'https://maps.googleapis.com/maps/api/js?key=AIzaSyAMj0tzo5dL6q5svRGhyCEYhMwqRcAtve4&amp;libraries=places&amp;callback=initAutocomplete';
+//         maps.async = true;
+//         document.getElementsByTagName('body')[0].appendChild(maps);
+//
+//         /*
+// 		var cities = ['Санкт-Петербург','Колпино','Выборг'];
+// 		$('.city-autocomplete').autocomplete({
+// 			source: cities
+// 		});
+// */
+//     }
 
     //--
     if ($(".top_section_slider").length) {

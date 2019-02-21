@@ -43,13 +43,15 @@
                     {!! $event->paragraph !!}
                 </div>
 
-                <h2>Другие мероприятия</h2>
+                @if(count($more_events) > 0)
+                    <h2>Другие мероприятия</h2>
 
-                <div class="news_block_wrap other_news_block_wrap clearfix">
-                    @foreach((new \App\Services\EventsService())->getMoreEvents($event->id) as $event)
-                        @include('site.events._more', ['event' => $event])
-                    @endforeach
-                </div>
+                    <div class="news_block_wrap other_news_block_wrap clearfix">
+                        @foreach($more_events as $event)
+                            @include('site.events._more', ['event' => $event])
+                        @endforeach
+                    </div>
+                @endif;
 
                 <a class="button book_table_button list_button" href="/events">
                     Перейти к списку мероприятий

@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\City;
 use App\Models\GameTime;
 use App\Models\Location;
 use App\Models\TermRelation;
@@ -10,6 +11,7 @@ use App\Models\Weekday;
 use Devfactory\Taxonomy\Models\Term;
 use Devfactory\Taxonomy\Models\Vocabulary;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Hash;
 
 class PlayerService
 {
@@ -49,16 +51,32 @@ class PlayerService
         $gamePaymentType = $fields->pull('game_payment_type');
         $skillLevel = $fields->pull('skill_level');
         $gameDays = $fields->pull('game_days');
+        $oldPass = $fields->pull('oldpass');
+        $newPass = $fields->pull('newpass');
 
         foreach ($user->fillable as $key) {
-            if (key_exists($key, $fields)) {
-                $user->{$key} = $fields[$key];
+            if ($value = $fields->pull($key, false)) {
+                $user->{$key} = $value;
             }
         }
 
-        if ($city && $city['id']) {
-            $userCity = $cityService->ensureCity($city['id'], $city['name']);
-            $user->city_id = $userCity->id;
+        if ($newPass !== null) {
+            if (Hash::check($oldPass, $user->password)) {
+                $user->password = Hash::make($newPass);
+            }
+        }
+
+
+        if ($city) {
+            if (is_array($city)) {
+                $userCity = $cityService->ensureCity($city['id'], $city['name']);
+                $user->city_id = $userCity->id;
+            } else {
+                $cityModel = City::firstOrCreate([
+                    'name' => $city
+                ]);
+                $user->city_id = $cityModel->id;
+            }
         }
 
         if ($avatar) {
@@ -74,9 +92,34 @@ class PlayerService
         }
 
         $user->removeAllTerms();
-        if ($gameType) $user->addTerm($gameType);
-        if ($gamePaymentType) $user->addTerm($gamePaymentType);
-        if ($skillLevel) $user->addTerm($skillLevel);
+
+        if ($gameType) {
+            if (is_array($gameType)) {
+                foreach ($gameType as $type) {
+                    $user->addTerm($type);
+                }
+            } else {
+                $user->addTerm($gameType);
+            }
+        }
+        if ($gamePaymentType) {
+            if (is_array($gamePaymentType)) {
+                foreach ($gamePaymentType as $type) {
+                    $user->addTerm($type);
+                }
+            } else {
+                $user->addTerm($gamePaymentType);
+            }
+        }
+        if ($skillLevel) {
+            if (is_array($skillLevel)) {
+                foreach ($skillLevel as $type) {
+                    $user->addTerm($type);
+                }
+            } else {
+                $user->addTerm($skillLevel);
+            }
+        }
 
         if ($gameDays) {
             \DB::delete('DELETE FROM game_time WHERE user_id=' . $user->id);

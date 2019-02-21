@@ -23,8 +23,7 @@
     <meta name="twitter:description" content="">
     <meta name="twitter:title" content="">
     <meta name="robots" content="index,follow">
-    <link rel="canonical" href="">
-
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
     <link rel="icon" href="/favicon.png" type="image/x-icon">
     <!--[if IE]>
     <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon"><![endif]-->
@@ -114,6 +113,7 @@
 <script src="{{ asset('js/jquery.magnific-popup.min.js') }}"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
 <script src="https://use.fontawesome.com/f4efb12980.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 <script src="/css/main.js"></script>
 <script>
 

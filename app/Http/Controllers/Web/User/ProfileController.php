@@ -8,6 +8,7 @@ use App\Services\CityService;
 use App\Services\ImageService;
 use App\Services\InvitationService;
 use App\Services\PlayerService;
+use App\Services\RatingService;
 use App\Services\UserService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -28,7 +29,8 @@ class ProfileController extends Controller
 
     public function card()
     {
-        return view('site.user.profile.card');
+        $reviews = RatingService::getUserRevies(Auth::user());
+        return view('site.user.profile.card', compact('reviews'));
     }
 
     public function invites()
@@ -53,9 +55,9 @@ class ProfileController extends Controller
         $validator = Validator::make($request->all(), [
             'email' => 'required|email',
             'age' => 'required|numeric',
-            'types' => 'required',
-            'days' => 'required',
-            'payment' => 'required',
+            'game_type' => 'required',
+            'game_days' => 'required',
+            'game_payment_type' => 'required',
             'gender' => 'required',
         ]);
         if ($validator->fails()) {

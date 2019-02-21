@@ -18,7 +18,9 @@ class MainController extends Controller
 
     public function view($url)
     {
-        return view('site.events.item', ['event' => (new EventsService())->getEventByUrl($url)]);
+        $event = (new EventsService())->getEventByUrl($url);
+        $more_events = (new \App\Services\EventsService())->getMoreEvents($event->id);
+        return view('site.events.item', compact('event', 'more_events'));
     }
 
     public function viewId($id)

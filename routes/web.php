@@ -24,7 +24,7 @@ Route::group(['namespace' => 'Web'], function(){
     });
     Route::group(['namespace' => 'Club'], function () {
         Route::get('/clubs', 'MainController@list')->name('clubs');
-        Route::post('/clubs', 'MainController@list')->parameters()->name('clubs');
+        Route::post('/clubs', 'MainController@list')->name('clubs');
         Route::get('/clubs/{id}', 'MainController@viewId')->where('id', '[0-9]+')->name('club.show.id');
         Route::get('/clubs/{url}', 'MainController@view')->name('club.show');;
         Route::get('/clubs/find/{name}', 'MainController@suggestClub')->name('club.suggestion');;

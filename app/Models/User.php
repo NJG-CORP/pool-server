@@ -15,6 +15,19 @@ use Illuminate\Notifications\Notifiable;
  */
 class User extends Authenticatable
 {
+    const
+        SKILL_LEVEL_PROFI = 11,
+        SKILL_LEVEL_NORMAL = 10,
+        SKILL_LEVEL_WEAK = 9,
+        PAYMENT_TYPE_ALL = 4,
+        PAYMENT_TYPE_HALF = 5,
+        PAYMENT_TYPE_ME = 6,
+        PAYMENT_TYPE_YOU = 7,
+        PAYMENT_TYPE_UNIMPORTANT = 8,
+        GAME_TYPE_POOL = 3,
+        GAME_TYPE_SNOOKER = 2,
+        GAME_TYPE_RUSSIAN = 1;
+
     use Notifiable, SoftDeletes, TaxonomyTrait;
     /**
      * The attributes that should be hidden for arrays.
@@ -22,7 +35,7 @@ class User extends Authenticatable
      * @var array
      */
     public $fillable = [
-        'email', 'age', 'gender', 'phone', 'street', 'game_time_to', 'game_time_from', 'days', 'payment', 'gender', 'external_id', 'api_token', 'remember_token'
+        'name', 'surname', 'email', 'age', 'gender', 'phone', 'street', 'game_time_to', 'game_time_from', 'days', 'payment', 'gender', 'external_id', 'api_token', 'remember_token'
     ];
 
     protected $hidden = [
@@ -128,4 +141,47 @@ class User extends Authenticatable
         return (bool)$this->is_admin;
     }
 
+    public function isSkillLevel(int $id)
+    {
+        foreach ($this->skillLevel as $level) {
+            if ($level->term_id === $id) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public function isGamePaymentType(int $id)
+    {
+        foreach ($this->gamePaymentType as $level) {
+            if ($level->term_id === $id) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public function isGameType(int $id)
+    {
+        foreach ($this->gameType as $level) {
+            if ($level->term_id === $id) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public function getAddress()
+    {
+        $address = '';
+        if ($this->city) {
+            $address .= $this->city->name;
+        }
+        $address .= ', ' . $this->street;
+
+        return $address;
+    }
 }

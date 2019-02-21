@@ -54,4 +54,13 @@ class RatingService
             'rateable_type' => $class
         ])->exists();
     }
+
+    public static function getUserRevies(Model $model)
+    {
+        $class = get_class($model);
+        return Rating::query()->where([
+            'rateable_id' => $model->id,
+            'rateable_type' => $class
+        ])->get();
+    }
 }

@@ -10,6 +10,7 @@ class EventsService
 {
     public function getList() {
         return Events::with(['images'])
+            ->where('date', '>', date('Y-m-d H:i:s'))
             ->get();
     }
 
@@ -22,6 +23,7 @@ class EventsService
     public function getMoreEvents($id) {
         return Events::with(['images'])
             ->limit(2)
+                ->where('date', '>', date('Y-m-d H:i:s'))
             ->whereNotIn('id', [$id])
             ->get() ?? [];
     }
