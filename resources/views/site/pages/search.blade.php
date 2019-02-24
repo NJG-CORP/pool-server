@@ -231,7 +231,7 @@
             <form method="post" class="frm02" id="frm023">
                 <input type="hidden">
                 <div class="the_form_div">
-                    <input type="text" name="invite-city" placeholder="Город" tabindex="1">
+                    <input type="text" name="invite-city" id="invite-city" placeholder="Город" tabindex="1">
                     <!-- By default selected user city placed here -->
                 </div>
                 <div class="the_form_div">
@@ -257,16 +257,27 @@
         </div>
     </div><!--/order_call_popup invite_popup-->
 
+    @push('scripts')
     <script>
         function initAutoComplete() {
             const autocomplete = new google.maps.places.Autocomplete(document.getElementById('location'), {
                 types: ['(cities)'],
                 componentRestrictions: {country: "ru"}
             });
-
             autocomplete.addListener('place_changed', function () {
                 const place = autocomplete.getPlace();
                 $("#location").val(getCity(place.address_components));
+            });
+
+
+            const autocompleteInvite = new google.maps.places.Autocomplete(document.getElementById('invite-city'), {
+                types: ['(cities)'],
+                componentRestrictions: {country: "ru"}
+            });
+
+            autocompleteInvite.addListener('place_changed', function () {
+                const place = autocomplete.getPlace();
+                $('#invite-city').val(getCity(place.address_components));
             });
         }
 
@@ -280,8 +291,9 @@
 
             return city;
         }
+
     </script>
     <script src="https://maps.googleapis.com/maps/api/js?key={{env('GOOGLE_API_KEY')}}&libraries=places&callback=initAutoComplete"></script>
-
+    @endpush
 
 @endsection

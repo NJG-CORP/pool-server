@@ -52,7 +52,11 @@ class MainController extends Controller
 
     public function searchClubs(string $city)
     {
-        $clubs = (new ClubsService())->findByCity($city);
+        try {
+            $clubs = (new ClubsService())->findByCity($city);
+        } catch (\Exception $exception) {
+            throw new NotFoundHttpException();
+        }
 
         return response()
             ->json($clubs);

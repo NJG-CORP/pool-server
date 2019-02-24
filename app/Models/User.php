@@ -35,7 +35,7 @@ class User extends Authenticatable
      * @var array
      */
     public $fillable = [
-        'name', 'surname', 'email', 'age', 'gender', 'phone', 'street', 'game_time_to', 'game_time_from', 'days', 'payment', 'gender', 'external_id', 'api_token', 'remember_token'
+        'name', 'surname', 'source', 'email', 'age', 'gender', 'phone', 'street', 'game_time_to', 'game_time_from', 'days', 'payment', 'gender', 'external_id', 'api_token', 'remember_token'
     ];
 
     protected $hidden = [

@@ -3656,35 +3656,35 @@ $(document).ready(function () {
         });
     }
     //autocomplete
-    if ($('.city-autocomplete').length > 0) {
-        function fillInAddress(object, autocomplete) {
-            var place = autocomplete.getPlace();
-            for (var i = 0; i < place.address_components.length; i++) {
-                var addressType = place.address_components[i].types[0];
-                switch (addressType) {
-                    case "locality":
-                        object.val(place.address_components[i].long_name);
-                        if ($(object).parents('#invite_popup').length > 0) {
-                            $(object).trigger('change');
-                        }
-                        break;
-                }
-            }
-        }
-
-        function initAutocomplete() {
-            $('.city-autocomplete').each(function () {
-                var autocomplete;
-                autocomplete = new google.maps.places.Autocomplete(($(this)), {types: ['geocode']});
-                autocomplete.addListener('place_changed', fillInAddress($(this), autocomplete));
-            });
-        }
-
-        maps = document.createElement('script');
-        maps.src = 'https://maps.googleapis.com/maps/api/js?key=AIzaSyAMj0tzo5dL6q5svRGhyCEYhMwqRcAtve4&amp;libraries=places&amp;callback=initAutocomplete';
-        maps.async = true;
-        document.getElementsByTagName('body')[0].appendChild(maps);
-    }
+    // if ($('.city-autocomplete').length > 0) {
+    //     function fillInAddress(object, autocomplete) {
+    //         var place = autocomplete.getPlace();
+    //         for (var i = 0; i < place.address_components.length; i++) {
+    //             var addressType = place.address_components[i].types[0];
+    //             switch (addressType) {
+    //                 case "locality":
+    //                     object.val(place.address_components[i].long_name);
+    //                     if ($(object).parents('#invite_popup').length > 0) {
+    //                         $(object).trigger('change');
+    //                     }
+    //                     break;
+    //             }
+    //         }
+    //     }
+    //
+    //     function initAutocomplete() {
+    //         $('.city-autocomplete').each(function () {
+    //             var autocomplete;
+    //             autocomplete = new google.maps.places.Autocomplete(($(this)), {types: ['geocode']});
+    //             autocomplete.addListener('place_changed', fillInAddress($(this), autocomplete));
+    //         });
+    //     }
+    //
+    //     maps = document.createElement('script');
+    //     maps.src = 'https://maps.googleapis.com/maps/api/js?key=AIzaSyAMj0tzo5dL6q5svRGhyCEYhMwqRcAtve4&amp;libraries=places&amp;callback=initAutocomplete';
+    //     maps.async = true;
+    //     document.getElementsByTagName('body')[0].appendChild(maps);
+    // }
 
     //--
     if ($(".top_section_slider").length) {
@@ -3743,33 +3743,6 @@ $(document).ready(function () {
     });
     //-
     //google map
-    if ($('#map1').length) {
-        var script0 = document.createElement('script');
-        script0.onload = function () {
-        };
-        script0.text = " function initMap() {" +
-            "var map = new google.maps.Map(document.getElementById('map1'), {" +
-            " zoom: 17," +
-            " center: {lat: 45.040458, lng: 38.981979}" +
-            "});" +
-            "var image = 'img/interface/balloon.png';" +
-            "var beachMarker = new google.maps.Marker({" +
-            " position: {lat: 45.040458, lng: 38.981979}," +
-            "map: map," +
-            "icon: image" +
-            "});" +
-            "}";
-        document.getElementById('map1').appendChild(script0);
-        setTimeout(function () {
-            var script = document.createElement('script');
-            script.onload = function () {
-            };
-            script.src = "https://maps.googleapis.com/maps/api/js?key=AIzaSyAMj0tzo5dL6q5svRGhyCEYhMwqRcAtve4&callback=initMap";
-            script.setAttribute('defer', '');
-            script.setAttribute('async', '');
-            document.getElementById('map1').appendChild(script);
-        }, 999);
-    }
     //--
     //scroll to
     $('.to_top').click(function () {
