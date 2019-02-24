@@ -74,23 +74,12 @@ class InvitationController extends Controller
                 []
             );
         } catch (\Throwable $e){}
-        if ( $invitation ){
-            return $this->responder->successResponse([
-                'invitation' => $invitation
-            ]);
-        }
-        dd('asa');
-        return $this->responder->errorResponse();
+        return back();
     }
 
     public function invitationReject(Request $request, $id){
         $res = $this->invitation->setStatus(\Auth::user(), $id, false);
-        if ( $res ){
-            return $this->responder->successResponse([
-                'invitation' => $res
-            ]);
-        }
-        return $this->responder->errorResponse();
+        return back();
     }
 
     public function invitationDelete(Request $request, $id){

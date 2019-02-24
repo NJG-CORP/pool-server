@@ -45,7 +45,7 @@ class ProfileController extends Controller
 
     public function invites()
     {
-        return view('site.user.profile.invites', ['result' => (new InvitationService())->invitationList(\Auth::user())]);
+        return view('site.user.profile.invites', ['invites' => (new InvitationService())->invitationList(\Auth::user())]);
     }
 
     public function partners()

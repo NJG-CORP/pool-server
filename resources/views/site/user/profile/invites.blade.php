@@ -2,40 +2,44 @@
 
 @section('content')
     <main class="main" style="padding-bottom: 0">
-
         <section class="the_content_section">
+            <div class="inner_section">
 
-            <div class="breadcrumbs inner_section">
-                <p><a href="/">Главная</a> / <a href="{{ route('profile.index') }}">
-                        Мой профиль
-                    </a> / <span>Приглашения</span></p>
-            </div>
-
-            <div class="profile2_wrap clearfix">
-                <div class="profile2_wrap_inner clearfix">
-                    <div class="players_table_wrap">
-                        <div class="inner_seфction">
-                            <?php if(!empty($result)): ?>
-                                <div class="players_table">
-                                    <div class="players_table_head">
-                                        <p>Игрок</p>
-                                        <p>Рейтинг</p>
-                                        <p>Вид игры</p>
-                                    </div>
-
-                                    <div class="players_table_content">
-                                        @foreach ($result as $invite)
-                                            @include('site.user.profile._inviteRow', ['invite' => $invite])
-                                        @endforeach
-                                    </div>
-                                </div>
-                            <?php else: ?>
-                                <p>У вас пока нет приглашений</p>
-                            <?php endif; ?>
-                        </div>
-                    </div>
+                <div class="breadcrumbs inner_section">
+                    <p itemscope itemtype="http://schema.org/BreadcrumbList">
+								<span itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+									<a href="/" itemprop="item"><span itemprop="name">Главная</span></a>
+									<meta itemprop="position" content="1">
+								</span>
+                        <span itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+									<span itemprop="item"><span itemprop="name">Партнеры</span></span>
+									<meta itemprop="position" content="2">
+								</span>
+                    </p>
                 </div>
+
+                <h1>Партнеры</h1>
+
+                <div class="news_block_wrap partners_block_wrap invitation_block_wrap clearfix">
+                    @foreach ($invites as $invite)
+                        @include ('site.user.profile._inviteRow', compact('$invite'))
+                    @endforeach
+                </div><!--/news_block_wrap-->
+
+                {{--<div class="pagination pagination_mark2">--}}
+                {{--<a class="prev" href="#"><i class="fa fa-angle-left" aria-hidden="true"></i></a>--}}
+
+                {{--<a href="#">1</a>--}}
+                {{--<a href="#">2</a>--}}
+                {{--<a class="active" href="#">3</a>--}}
+                {{--<a href="#">4</a>--}}
+                {{--<a href="#">5</a>--}}
+                {{--<a href="#">6</a>--}}
+
+                {{--<a class="next" href="#"><i class="fa fa-angle-right" aria-hidden="true"></i></a>--}}
+                {{--</div>--}}
+
             </div>
-        </section>
+        </section><!--/the_content_section-->
     </main>
 @endsection

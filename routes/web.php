@@ -67,5 +67,6 @@ Route::group(['middleware' => 'authenticated'], function() {
 
     Route::post('/invite', 'InvitationController@inviteUser')->name('send.invite');
     Route::get('/invite/accept/{id}', 'InvitationController@invitationAccept')->name('accept.invite');
+    Route::get('/invite/decline/{id}', 'InvitationController@invitationReject')->name('accept.reject');
 
 });

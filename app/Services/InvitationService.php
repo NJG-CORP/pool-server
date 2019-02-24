@@ -42,6 +42,7 @@ class InvitationService
                 $q->where('inviter_id', $user->id);
             });
         return $q
+            ->orderBy('accepted', 'ASC')
             ->orderBy('created_at', 'DESC')
             ->get()
             ->map(function (Invitation $e){

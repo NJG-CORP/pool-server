@@ -4,6 +4,9 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * @property User $inviter
+ */
 class Invitation extends Model
 {
     protected $dates = ['created_at', 'updated_at'];
@@ -20,5 +23,10 @@ class Invitation extends Model
 
     public function club(){
         return $this->belongsTo(Club::class);
+    }
+
+    public function isAccepted(): bool
+    {
+        return $this->accepted ?? false;
     }
 }

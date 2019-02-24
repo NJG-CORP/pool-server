@@ -3,40 +3,51 @@
  * @var \App\Models\Invitation $invite
  */
 ?>
-<div class="players_table_row">
-    <div class="img" style="cursor: pointer"
-         onclick="window.open('{{ url('user', [$invite->inviter->id]) }}')">
-        {{--<img src="{{$invite->inviter->avatar->getUrlAttribute() }}" alt="">--}}
-    </div>
 
-    <div class="specs">
+<div class="news_block_div partners_block_div">
 
-        <div class="text" style="cursor: pointer"
-             onclick="window.open('{{ url('user', [$invite->inviter->id]) }}')">
-            <p class="name"> {{ $invite->inviter->getUserName() }}
-                , {{$invite->inviter->age ? ($invite->inviter->age . 'лет') : ''}} </p>
+    <div class="img">
+        <img src="{{$invite->inviter->getAvatarUrl()}}" alt="">
 
-            <p> {{ $invite->inviter->location ? $invite->inviter->location->address : ''}} </p>
-        </div>
-        <div class="stars">
-            <span class="star{{$invite->inviter->calculated_rating ?? '0' }}"></span>
-        </div>
-        <div class="descr">
-            <p>
-                @foreach($invite->inviter->getGameType as $type)
-                    @php($types[] = $type->term->name)
-                @endforeach
-                {{ implode(', ', $types) }}
-            </p>
-        </div>
-        @if($invite->inviter->isPro())<span class="status_span">Pro</span>@endif
-
-        @if(!$invite->accepted)
-            <a class="button invite_button" href="{{ url('/invite/accept', ['id' => $invite->id]) }}">Принять</a>
-            <a class="button invite_button" href="{{ url('/invite/decline', ['id' => $invite->id]) }}">Отклонить</a>
+        @if($invite->isAccepted())
+            <span class="mark check"></span>
         @else
-            <a class="button invite_button"
-               href="{{ url('/chat/user', ['id' => $invite->inviter->id]) }}>">Пообщаться</a>
+            <span class="mark new"></span>
         @endif
+
     </div>
+
+    <div class="text">
+        <p class="name"><a
+                    href="{{route('profile.card.other', ['id' => $invite->inviter->id])}}">{{$invite->inviter->getUserName()}}</a>
+        </p>
+
+        <p>
+            {{$invite->inviter->getAddress()}}
+        </p>
+
+        {{--<p class="status">Статус: <span>Pro</span></p>--}}
+
+
+        <p class="type">
+            <span>Вид игры:</span>
+            {{$invite->inviter->getGameTypes()}}
+        </p>
+
+        <div class="rating">
+            <div class="stars stars_small">
+                <p>Рейтинг игрока</p>
+                <div>
+                    <span class="star{{$invite->inviter->calculated_rating}}">{{$invite->inviter->calculated_rating}}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @if(!$invite->isAccepted())
+        <div class="bottom_buttons">
+            <a class="button reject_button" href="{{ url('/invite/accept', ['id' => $invite->id]) }}">Принять</a>
+            <a class="button accept_button" href="{{ url('/invite/decline', ['id' => $invite->id]) }}">Отклонить</a>
+        </div>
+    @endif
 </div>
