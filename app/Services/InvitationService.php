@@ -52,6 +52,27 @@ class InvitationService
             });
     }
 
+    public function partnersList(User $user)
+    {
+        $q = Invitation::
+        with([
+            'inviter.avatar',
+            'inviter.receivedRatings', 'club.location'
+        ])
+            ->where(function (Builder $q) use ($user) {
+                $q->where('invited_id', $user->id)
+                    ->where(function (Builder $q) {
+                        $q->where('accepted', 1);
+                    });
+            });
+        return $q
+            ->orderBy('created_at', 'DESC')
+            ->get()
+            ->map(function (Invitation $e) {
+                return $e->inviter;
+            });
+    }
+
     /**
      * @param $user
      * @param $invId

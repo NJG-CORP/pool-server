@@ -50,7 +50,8 @@ class ProfileController extends Controller
 
     public function partners()
     {
-        return view('site.user.profile.partners');
+        $partners = (new InvitationService())->partnersList(\Auth::user());
+        return view('site.user.profile.partners', compact('partners'));
     }
 
     public function chat()
