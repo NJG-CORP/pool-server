@@ -23,11 +23,10 @@
                         <li>
                             <a href="">
                                 <img src="{{$user->getAvatarUrl() }}" alt="">
-                                <span class="selectBox-label">{{ $user->name }}</span>
-                                <span class="selectBox-arrow"></span>
+                                <span class="label">{{ $user->name }}</span>
+                                <span class="arrow"></span>
                             </a>
-
-                            <ul class="selectBox-dropdown-menu selectBox-options selectBox-options-bottom">
+                            <ul class="dropdown-menu">
                                 <li>
                                     <a href="{{ route('profile.index') }}">
                                         <span>Личный кабинет</span>

@@ -209,7 +209,8 @@
                                                 {{--<p>Статус <span class="status_span">Pro</span></p>--}}
                                                 {{--</div>--}}
 
-                                                <a class="button invite_button" href="#">Пригласить</a>
+                                                <a class="button invite_button" href="#invite_popup"
+                                                   data-uid="{{$player->id}}">Пригласить</a>
                                             </div>
                                         </div><!--/players_table_row-->
                                     @endforeach
@@ -222,6 +223,39 @@
             </div>
         </section><!--/the_content_section-->
     </main>
+
+    <div class="popup order_call_popup invite_popup" id="invite_popup">
+        <div class="the_form">
+            <p class="title">Отправить приглашение</p>
+
+            <form method="post" class="frm02" id="frm023">
+                <input type="hidden">
+                <div class="the_form_div">
+                    <input type="text" name="invite-city" placeholder="Город" tabindex="1">
+                    <!-- By default selected user city placed here -->
+                </div>
+                <div class="the_form_div">
+                    <select name="invite-place" id="invite_place" data-placeholder="Выберите клуб" tabindex="2">
+                        <option disabled="disabled" selected="selected" value="">Выберите клуб</option>
+                    </select>
+                    <span class="legend">пр.Культуры, д.111, ПаркХаус</span>
+                </div>
+                <div class="the_form_div">
+                    <input type="text" name="invite-date" placeholder="Дата" tabindex="3">
+                </div>
+                <div class="the_form_div">
+                    <div><input readonly="readonly" type="text" name="time2" value="с 8 до 22 часов" tabindex="4"></div>
+                    <div class="slider-range-wrap" id="slider-range-time-wrap-2">
+                        <div class="slider-range" id="slider-range-time-2"><span class="val-min">0</span><span
+                                    class="val-max">24</span></div>
+                    </div>
+                </div>
+                <div class="the_form_div">
+                    <input type="submit" name="submit1" value="Отправить" tabindex="5">
+                </div>
+            </form>
+        </div>
+    </div><!--/order_call_popup invite_popup-->
 
     <script>
         function initAutoComplete() {

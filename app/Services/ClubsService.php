@@ -295,4 +295,25 @@ class ClubsService
 
         return $markers;
     }
+
+    /**
+     * @param string $city
+     * @return array
+     */
+    public function findByCity(string $city)
+    {
+        $city_id = City::query()->where('name', '=', $city)->firstOrFail()->id;
+
+        $clubs = Club::whereHas('location', function ($query) use ($city_id) {
+            $query->where('city_id', '=', $city_id);
+        })->get()->map(function ($e) {
+            return [
+                'club_id' => $e->id,
+                'title' => $e->title,
+                'address' => $e->location->address
+            ];
+        });
+
+        return $clubs;
+    }
 }

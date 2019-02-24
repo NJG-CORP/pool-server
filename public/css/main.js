@@ -1,367 +1,121 @@
-/**
- * jquery-match-height master by @liabru
- * http://brm.io/jquery-match-height/
- * License: MIT
- */
-;(function (factory) { // eslint-disable-line no-extra-semi
-    'use strict';
-    if (typeof define === 'function' && define.amd) {
-        // AMD
-        define(['jquery'], factory);
-    } else if (typeof module !== 'undefined' && module.exports) {
-        // CommonJS
-        module.exports = factory(require('jquery'));
-    } else {
-        // Global
-        factory(jQuery);
-    }
-})(function ($) {
-    /*
-	*  internal
-	*/
-    var _previousResizeWidth = -1,
-        _updateTimeout = -1;
-    /*
-	*  _parse
-	*  value parse utility function
-	*/
-    var _parse = function (value) {
-        // parse value and convert NaN to 0
-        return parseFloat(value) || 0;
+/* http://brm.io/jquery-match-height/ */
+!function (t) {
+    "use strict";
+    "function" == typeof define && define.amd ? define(["jquery"], t) : "undefined" != typeof module && module.exports ? module.exports = t(require("jquery")) : t(jQuery)
+}(function (l) {
+    var a = -1, n = -1, h = function (t) {
+        return parseFloat(t) || 0
+    }, c = function (t) {
+        var e = l(t), a = null, n = [];
+        return e.each(function () {
+            var t = l(this), e = t.offset().top - h(t.css("margin-top")), o = 0 < n.length ? n[n.length - 1] : null;
+            null === o ? n.push(t) : Math.floor(Math.abs(a - e)) <= 1 ? n[n.length - 1] = o.add(t) : n.push(t), a = e
+        }), n
+    }, p = function (t) {
+        var e = {byRow: !0, property: "height", target: null, remove: !1};
+        return "object" == typeof t ? l.extend(e, t) : ("boolean" == typeof t ? e.byRow = t : "remove" === t && (e.remove = !0), e)
+    }, u = l.fn.matchHeight = function (t) {
+        var e = p(t);
+        if (e.remove) {
+            var o = this;
+            return this.css(e.property, ""), l.each(u._groups, function (t, e) {
+                e.elements = e.elements.not(o)
+            }), this
+        }
+        return this.length <= 1 && !e.target || (u._groups.push({elements: this, options: e}), u._apply(this, e)), this
     };
-    /*
-	*  _rows
-	*  utility function returns array of jQuery selections representing each row
-	*  (as displayed after float wrapping applied by browser)
-	*/
-    var _rows = function (elements) {
-        var tolerance = 1,
-            $elements = $(elements),
-            lastTop = null,
-            rows = [];
-        // group elements by their top position
-        $elements.each(function () {
-            var $that = $(this),
-                top = $that.offset().top - _parse($that.css('margin-top')),
-                lastRow = rows.length > 0 ? rows[rows.length - 1] : null;
-            if (lastRow === null) {
-                // first item on the row, so just push it
-                rows.push($that);
-            } else {
-                // if the row top is the same, add to the row group
-                if (Math.floor(Math.abs(lastTop - top)) <= tolerance) {
-                    rows[rows.length - 1] = lastRow.add($that);
-                } else {
-                    // otherwise start a new row group
-                    rows.push($that);
-                }
+    u.version = "master", u._groups = [], u._throttle = 80, u._maintainScroll = !1, u._beforeUpdate = null, u._afterUpdate = null, u._rows = c, u._parse = h, u._parseOptions = p, u._apply = function (t, e) {
+        var i = p(e), o = l(t), a = [o], n = l(window).scrollTop(), r = l("html").outerHeight(!0),
+            s = o.parents().filter(":hidden");
+        return s.each(function () {
+            var t = l(this);
+            t.data("style-cache", t.attr("style"))
+        }), s.css("display", "block"), i.byRow && !i.target && (o.each(function () {
+            var t = l(this), e = t.css("display");
+            "inline-block" !== e && "flex" !== e && "inline-flex" !== e && (e = "block"), t.data("style-cache", t.attr("style")), t.css({
+                display: e,
+                "padding-top": "0",
+                "padding-bottom": "0",
+                "margin-top": "0",
+                "margin-bottom": "0",
+                "border-top-width": "0",
+                "border-bottom-width": "0",
+                height: "100px",
+                overflow: "hidden"
+            })
+        }), a = c(o), o.each(function () {
+            var t = l(this);
+            t.attr("style", t.data("style-cache") || "")
+        })), l.each(a, function (t, e) {
+            var o = l(e), n = 0;
+            if (i.target) n = i.target.outerHeight(!1); else {
+                if (i.byRow && o.length <= 1) return void o.css(i.property, "");
+                o.each(function () {
+                    var t = l(this), e = t.attr("style"), o = t.css("display");
+                    "inline-block" !== o && "flex" !== o && "inline-flex" !== o && (o = "block");
+                    var a = {display: o};
+                    a[i.property] = "", t.css(a), t.outerHeight(!1) > n && (n = t.outerHeight(!1)), e ? t.attr("style", e) : t.css("display", "")
+                })
             }
-            // keep track of the last row top
-            lastTop = top;
-        });
-        return rows;
+            o.each(function () {
+                var t = l(this), e = 0;
+                i.target && t.is(i.target) || ("border-box" !== t.css("box-sizing") && (e += h(t.css("border-top-width")) + h(t.css("border-bottom-width")), e += h(t.css("padding-top")) + h(t.css("padding-bottom"))), t.css(i.property, n - e + "px"))
+            })
+        }), s.each(function () {
+            var t = l(this);
+            t.attr("style", t.data("style-cache") || null)
+        }), u._maintainScroll && l(window).scrollTop(n / r * l("html").outerHeight(!0)), this
+    }, u._applyDataApi = function () {
+        var o = {};
+        l("[data-match-height], [data-mh]").each(function () {
+            var t = l(this), e = t.attr("data-mh") || t.attr("data-match-height");
+            o[e] = e in o ? o[e].add(t) : t
+        }), l.each(o, function () {
+            this.matchHeight(!0)
+        })
     };
-    /*
-	*  _parseOptions
-	*  handle plugin options
-	*/
-    var _parseOptions = function (options) {
-        var opts = {
-            byRow: true,
-            property: 'height',
-            target: null,
-            remove: false
-        };
-        if (typeof options === 'object') {
-            return $.extend(opts, options);
-        }
-        if (typeof options === 'boolean') {
-            opts.byRow = options;
-        } else if (options === 'remove') {
-            opts.remove = true;
-        }
-        return opts;
+    var i = function (t) {
+        u._beforeUpdate && u._beforeUpdate(t, u._groups), l.each(u._groups, function () {
+            u._apply(this.elements, this.options)
+        }), u._afterUpdate && u._afterUpdate(t, u._groups)
     };
-    /*
-	*  matchHeight
-	*  plugin definition
-	*/
-    var matchHeight = $.fn.matchHeight = function (options) {
-        var opts = _parseOptions(options);
-        // handle remove
-        if (opts.remove) {
-            var that = this;
-            // remove fixed height from all selected elements
-            this.css(opts.property, '');
-            // remove selected elements from all groups
-            $.each(matchHeight._groups, function (key, group) {
-                group.elements = group.elements.not(that);
-            });
-            // TODO: cleanup empty groups
-            return this;
+    u._update = function (t, e) {
+        if (e && "resize" === e.type) {
+            var o = l(window).width();
+            if (o === a) return;
+            a = o
         }
-        if (this.length <= 1 && !opts.target) {
-            return this;
-        }
-        // keep track of this group so we can re-apply later on load and resize events
-        matchHeight._groups.push({
-            elements: this,
-            options: opts
-        });
-        // match each element's height to the tallest element in the selection
-        matchHeight._apply(this, opts);
-        return this;
-    };
-    /*
-	*  plugin global options
-	*/
-    matchHeight.version = 'master';
-    matchHeight._groups = [];
-    matchHeight._throttle = 80;
-    matchHeight._maintainScroll = false;
-    matchHeight._beforeUpdate = null;
-    matchHeight._afterUpdate = null;
-    matchHeight._rows = _rows;
-    matchHeight._parse = _parse;
-    matchHeight._parseOptions = _parseOptions;
-    /*
-	*  matchHeight._apply
-	*  apply matchHeight to given elements
-	*/
-    matchHeight._apply = function (elements, options) {
-        var opts = _parseOptions(options),
-            $elements = $(elements),
-            rows = [$elements];
-        // take note of scroll position
-        var scrollTop = $(window).scrollTop(),
-            htmlHeight = $('html').outerHeight(true);
-        // get hidden parents
-        var $hiddenParents = $elements.parents().filter(':hidden');
-        // cache the original inline style
-        $hiddenParents.each(function () {
-            var $that = $(this);
-            $that.data('style-cache', $that.attr('style'));
-        });
-        // temporarily must force hidden parents visible
-        $hiddenParents.css('display', 'block');
-        // get rows if using byRow, otherwise assume one row
-        if (opts.byRow && !opts.target) {
-            // must first force an arbitrary equal height so floating elements break evenly
-            $elements.each(function () {
-                var $that = $(this),
-                    display = $that.css('display');
-                // temporarily force a usable display value
-                if (display !== 'inline-block' && display !== 'flex' && display !== 'inline-flex') {
-                    display = 'block';
-                }
-                // cache the original inline style
-                $that.data('style-cache', $that.attr('style'));
-                $that.css({
-                    'display': display,
-                    'padding-top': '0',
-                    'padding-bottom': '0',
-                    'margin-top': '0',
-                    'margin-bottom': '0',
-                    'border-top-width': '0',
-                    'border-bottom-width': '0',
-                    'height': '100px',
-                    'overflow': 'hidden'
-                });
-            });
-            // get the array of rows (based on element top position)
-            rows = _rows($elements);
-            // revert original inline styles
-            $elements.each(function () {
-                var $that = $(this);
-                $that.attr('style', $that.data('style-cache') || '');
-            });
-        }
-        $.each(rows, function (key, row) {
-            var $row = $(row),
-                targetHeight = 0;
-            if (!opts.target) {
-                // skip apply to rows with only one item
-                if (opts.byRow && $row.length <= 1) {
-                    $row.css(opts.property, '');
-                    return;
-                }
-                // iterate the row and find the max height
-                $row.each(function () {
-                    var $that = $(this),
-                        style = $that.attr('style'),
-                        display = $that.css('display');
-                    // temporarily force a usable display value
-                    if (display !== 'inline-block' && display !== 'flex' && display !== 'inline-flex') {
-                        display = 'block';
-                    }
-                    // ensure we get the correct actual height (and not a previously set height value)
-                    var css = {'display': display};
-                    css[opts.property] = '';
-                    $that.css(css);
-                    // find the max height (including padding, but not margin)
-                    if ($that.outerHeight(false) > targetHeight) {
-                        targetHeight = $that.outerHeight(false);
-                    }
-                    // revert styles
-                    if (style) {
-                        $that.attr('style', style);
-                    } else {
-                        $that.css('display', '');
-                    }
-                });
-            } else {
-                // if target set, use the height of the target element
-                targetHeight = opts.target.outerHeight(false);
-            }
-            // iterate the row and apply the height to all elements
-            $row.each(function () {
-                var $that = $(this),
-                    verticalPadding = 0;
-                // don't apply to a target
-                if (opts.target && $that.is(opts.target)) {
-                    return;
-                }
-                // handle padding and border correctly (required when not using border-box)
-                if ($that.css('box-sizing') !== 'border-box') {
-                    verticalPadding += _parse($that.css('border-top-width')) + _parse($that.css('border-bottom-width'));
-                    verticalPadding += _parse($that.css('padding-top')) + _parse($that.css('padding-bottom'));
-                }
-                // set the height (accounting for padding and border)
-                $that.css(opts.property, (targetHeight - verticalPadding) + 'px');
-            });
-        });
-        // revert hidden parents
-        $hiddenParents.each(function () {
-            var $that = $(this);
-            $that.attr('style', $that.data('style-cache') || null);
-        });
-        // restore scroll position if enabled
-        if (matchHeight._maintainScroll) {
-            $(window).scrollTop((scrollTop / htmlHeight) * $('html').outerHeight(true));
-        }
-        return this;
-    };
-    /*
-	*  matchHeight._applyDataApi
-	*  applies matchHeight to all elements with a data-match-height attribute
-	*/
-    matchHeight._applyDataApi = function () {
-        var groups = {};
-        // generate groups by their groupId set by elements using data-match-height
-        $('[data-match-height], [data-mh]').each(function () {
-            var $this = $(this),
-                groupId = $this.attr('data-mh') || $this.attr('data-match-height');
-            if (groupId in groups) {
-                groups[groupId] = groups[groupId].add($this);
-            } else {
-                groups[groupId] = $this;
-            }
-        });
-        // apply matchHeight to each group
-        $.each(groups, function () {
-            this.matchHeight(true);
-        });
-    };
-    /*
-	*  matchHeight._update
-	*  updates matchHeight on all current groups with their correct options
-	*/
-    var _update = function (event) {
-        if (matchHeight._beforeUpdate) {
-            matchHeight._beforeUpdate(event, matchHeight._groups);
-        }
-        $.each(matchHeight._groups, function () {
-            matchHeight._apply(this.elements, this.options);
-        });
-        if (matchHeight._afterUpdate) {
-            matchHeight._afterUpdate(event, matchHeight._groups);
-        }
-    };
-    matchHeight._update = function (throttle, event) {
-        // prevent update if fired from a resize event
-        // where the viewport width hasn't actually changed
-        // fixes an event looping bug in IE8
-        if (event && event.type === 'resize') {
-            var windowWidth = $(window).width();
-            if (windowWidth === _previousResizeWidth) {
-                return;
-            }
-            _previousResizeWidth = windowWidth;
-        }
-        // throttle updates
-        if (!throttle) {
-            _update(event);
-        } else if (_updateTimeout === -1) {
-            _updateTimeout = setTimeout(function () {
-                _update(event);
-                _updateTimeout = -1;
-            }, matchHeight._throttle);
-        }
-    };
-    /*
-	*  bind events
-	*/
-    // apply on DOM ready event
-    $(matchHeight._applyDataApi);
-    // use on or bind where supported
-    var on = $.fn.on ? 'on' : 'bind';
-    // update heights on load and resize events
-    $(window)[on]('load', function (event) {
-        matchHeight._update(false, event);
-    });
-    // throttled update heights on resize events
-    $(window)[on]('resize orientationchange', function (event) {
-        matchHeight._update(true, event);
-    });
+        t ? -1 === n && (n = setTimeout(function () {
+            i(e), n = -1
+        }, u._throttle)) : i(e)
+    }, l(u._applyDataApi);
+    var t = l.fn.on ? "on" : "bind";
+    l(window)[t]("load", function (t) {
+        u._update(!1, t)
+    }), l(window)[t]("resize orientationchange", function (t) {
+        u._update(!0, t)
+    })
 });
 
-/*!
- * fancyBox - jQuery Plugin
- * version: 2.1.5 (Fri, 14 Jun 2013)
- * @requires jQuery v1.6 or later
- *
- * Examples at http://fancyapps.com/fancybox/
- * License: www.fancyapps.com/fancybox/#license
- *
- * Copyright 2012 Janis Skarnelis - janis@fancyapps.com
- *
- */
-(function (window, document, $, undefined) {
+/* http://fancyapps.com/fancybox/ 2.1.5 */
+!function (o, i, H, h) {
     "use strict";
-    var H = $("html"),
-        W = $(window),
-        D = $(document),
-        F = $.fancybox = function () {
-            F.open.apply(this, arguments);
-        },
-        IE = navigator.userAgent.match(/msie/i),
-        didUpdate = null,
-        isTouch = document.createTouch !== undefined,
-        isQuery = function (obj) {
-            return obj && obj.hasOwnProperty && obj instanceof $;
-        },
-        isString = function (str) {
-            return str && $.type(str) === "string";
-        },
-        isPercentage = function (str) {
-            return isString(str) && str.indexOf('%') > 0;
-        },
-        isScrollable = function (el) {
-            return (el && !(el.style.overflow && el.style.overflow === 'hidden') && ((el.clientWidth && el.scrollWidth > el.clientWidth) || (el.clientHeight && el.scrollHeight > el.clientHeight)));
-        },
-        getScalar = function (orig, dim) {
-            var value = parseInt(orig, 10) || 0;
-            if (dim && isPercentage(orig)) {
-                value = F.getViewport()[dim] / 100 * value;
-            }
-            return Math.ceil(value);
-        },
-        getValue = function (value, dim) {
-            return getScalar(value, dim) + 'px';
-        };
-    $.extend(F, {
-        // The current version of fancyBox
-        version: '2.1.5',
+    var a = H("html"), r = H(o), c = H(i), M = H.fancybox = function () {
+        M.open.apply(this, arguments)
+    }, s = navigator.userAgent.match(/msie/i), l = null, d = i.createTouch !== h, f = function (e) {
+        return e && e.hasOwnProperty && e instanceof H
+    }, u = function (e) {
+        return e && "string" === H.type(e)
+    }, A = function (e) {
+        return u(e) && 0 < e.indexOf("%")
+    }, I = function (e, t) {
+        var i = parseInt(e, 10) || 0;
+        return t && A(e) && (i = M.getViewport()[t] / 100 * i), Math.ceil(i)
+    }, D = function (e, t) {
+        return I(e, t) + "px"
+    };
+    H.extend(M, {
+        version: "2.1.5",
         defaults: {
             padding: 15,
             margin: 20,
@@ -371,1904 +125,724 @@
             minHeight: 100,
             maxWidth: 9999,
             maxHeight: 9999,
-            pixelRatio: 1, // Set to 2 for retina display support
-            autoSize: true,
-            autoHeight: false,
-            autoWidth: false,
-            autoResize: true,
-            autoCenter: !isTouch,
-            fitToView: true,
-            aspectRatio: false,
-            topRatio: 0.5,
-            leftRatio: 0.5,
-            scrolling: 'auto', // 'auto', 'yes' or 'no'
-            wrapCSS: '',
-            arrows: true,
-            closeBtn: true,
-            closeClick: false,
-            nextClick: false,
-            mouseWheel: true,
-            autoPlay: false,
-            playSpeed: 3000,
+            pixelRatio: 1,
+            autoSize: !0,
+            autoHeight: !1,
+            autoWidth: !1,
+            autoResize: !0,
+            autoCenter: !d,
+            fitToView: !0,
+            aspectRatio: !1,
+            topRatio: .5,
+            leftRatio: .5,
+            scrolling: "auto",
+            wrapCSS: "",
+            arrows: !0,
+            closeBtn: !0,
+            closeClick: !1,
+            nextClick: !1,
+            mouseWheel: !0,
+            autoPlay: !1,
+            playSpeed: 3e3,
             preload: 3,
-            modal: false,
-            loop: true,
-            ajax: {
-                dataType: 'html',
-                headers: {'X-fancyBox': true}
-            },
-            iframe: {
-                scrolling: 'auto',
-                preload: true
-            },
-            swf: {
-                wmode: 'transparent',
-                allowfullscreen: 'true',
-                allowscriptaccess: 'always'
-            },
+            modal: !1,
+            loop: !0,
+            ajax: {dataType: "html", headers: {"X-fancyBox": !0}},
+            iframe: {scrolling: "auto", preload: !0},
+            swf: {wmode: "transparent", allowfullscreen: "true", allowscriptaccess: "always"},
             keys: {
-                next: {
-                    13: 'left', // enter
-                    34: 'up',   // page down
-                    39: 'left', // right arrow
-                    40: 'up'	// down arrow
-                },
-                prev: {
-                    8: 'right',  // backspace
-                    33: 'down',   // page up
-                    37: 'right',  // left arrow
-                    38: 'down'	// up arrow
-                },
-                close: [27], // escape key
-                play: [32], // space - start/stop slideshow
-                toggle: [70]  // letter "f" - toggle fullscreen
+                next: {13: "left", 34: "up", 39: "left", 40: "up"},
+                prev: {8: "right", 33: "down", 37: "right", 38: "down"},
+                close: [27],
+                play: [32],
+                toggle: [70]
             },
-            direction: {
-                next: 'left',
-                prev: 'right'
-            },
-            scrollOutside: true,
-            // Override some properties
+            direction: {next: "left", prev: "right"},
+            scrollOutside: !0,
             index: 0,
             type: null,
             href: null,
             content: null,
             title: null,
-            // HTML templates
             tpl: {
                 wrap: '<div class="fancybox-wrap" tabIndex="-1"><div class="fancybox-skin"><div class="fancybox-outer"><div class="fancybox-inner"></div></div></div></div>',
                 image: '<img class="fancybox-image" src="{href}" alt="" />',
-                iframe: '<iframe id="fancybox-frame{rnd}" name="fancybox-frame{rnd}" class="fancybox-iframe" frameborder="0" vspace="0" hspace="0" webkitAllowFullScreen mozallowfullscreen allowFullScreen' + (IE ? ' allowtransparency="true"' : '') + '></iframe>',
+                iframe: '<iframe id="fancybox-frame{rnd}" name="fancybox-frame{rnd}" class="fancybox-iframe" frameborder="0" vspace="0" hspace="0" webkitAllowFullScreen mozallowfullscreen allowFullScreen' + (s ? ' allowtransparency="true"' : "") + "></iframe>",
                 error: '<p class="fancybox-error">The requested content cannot be loaded.<br/>Please try again later.</p>',
                 closeBtn: '<a title="Close" class="fancybox-item fancybox-close" href="javascript:;"></a>',
                 next: '<a title="Next" class="fancybox-nav fancybox-next" href="javascript:;"><span></span></a>',
                 prev: '<a title="Previous" class="fancybox-nav fancybox-prev" href="javascript:;"><span></span></a>'
             },
-            // Properties for each animation type
-            // Opening fancyBox
-            openEffect: 'fade', // 'elastic', 'fade' or 'none'
+            openEffect: "fade",
             openSpeed: 250,
-            openEasing: 'swing',
-            openOpacity: true,
-            openMethod: 'zoomIn',
-            // Closing fancyBox
-            closeEffect: 'fade', // 'elastic', 'fade' or 'none'
+            openEasing: "swing",
+            openOpacity: !0,
+            openMethod: "zoomIn",
+            closeEffect: "fade",
             closeSpeed: 250,
-            closeEasing: 'swing',
-            closeOpacity: true,
-            closeMethod: 'zoomOut',
-            // Changing next gallery item
-            nextEffect: 'elastic', // 'elastic', 'fade' or 'none'
+            closeEasing: "swing",
+            closeOpacity: !0,
+            closeMethod: "zoomOut",
+            nextEffect: "elastic",
             nextSpeed: 250,
-            nextEasing: 'swing',
-            nextMethod: 'changeIn',
-            // Changing previous gallery item
-            prevEffect: 'elastic', // 'elastic', 'fade' or 'none'
+            nextEasing: "swing",
+            nextMethod: "changeIn",
+            prevEffect: "elastic",
             prevSpeed: 250,
-            prevEasing: 'swing',
-            prevMethod: 'changeOut',
-            // Enable default helpers
-            helpers: {
-                overlay: true,
-                title: true
-            },
-            // Callbacks
-            onCancel: $.noop, // If canceling
-            beforeLoad: $.noop, // Before loading
-            afterLoad: $.noop, // After loading
-            beforeShow: $.noop, // Before changing in current item
-            afterShow: $.noop, // After opening
-            beforeChange: $.noop, // Before changing gallery item
-            beforeClose: $.noop, // Before closing
-            afterClose: $.noop  // After closing
+            prevEasing: "swing",
+            prevMethod: "changeOut",
+            helpers: {overlay: !0, title: !0},
+            onCancel: H.noop,
+            beforeLoad: H.noop,
+            afterLoad: H.noop,
+            beforeShow: H.noop,
+            afterShow: H.noop,
+            beforeChange: H.noop,
+            beforeClose: H.noop,
+            afterClose: H.noop
         },
-        //Current state
-        group: {}, // Selected group
-        opts: {}, // Group options
-        previous: null,  // Previous element
-        coming: null,  // Element being loaded
-        current: null,  // Currently loaded element
-        isActive: false, // Is activated
-        isOpen: false, // Is currently open
-        isOpened: false, // Have been fully opened at least once
+        group: {},
+        opts: {},
+        previous: null,
+        coming: null,
+        current: null,
+        isActive: !1,
+        isOpen: !1,
+        isOpened: !1,
         wrap: null,
         skin: null,
         outer: null,
         inner: null,
-        player: {
-            timer: null,
-            isActive: false
-        },
-        // Loaders
+        player: {timer: null, isActive: !1},
         ajaxLoad: null,
         imgPreload: null,
-        // Some collections
         transitions: {},
         helpers: {},
-        /*
-		 *	Static methods
-		 */
-        open: function (group, opts) {
-            if (!group) {
-                return;
-            }
-            if (!$.isPlainObject(opts)) {
-                opts = {};
-            }
-            // Close if already active
-            if (false === F.close(true)) {
-                return;
-            }
-            // Normalize group
-            if (!$.isArray(group)) {
-                group = isQuery(group) ? $(group).get() : [group];
-            }
-            // Recheck if the type of each element is `object` and set content type (image, ajax, etc)
-            $.each(group, function (i, element) {
-                var obj = {},
-                    href,
-                    title,
-                    content,
-                    type,
-                    rez,
-                    hrefParts,
-                    selector;
-                if ($.type(element) === "object") {
-                    // Check if is DOM element
-                    if (element.nodeType) {
-                        element = $(element);
-                    }
-                    if (isQuery(element)) {
-                        obj = {
-                            href: element.data('fancybox-href') || element.attr('href'),
-                            title: element.data('fancybox-title') || element.attr('title'),
-                            isDom: true,
-                            element: element
-                        };
-                        if ($.metadata) {
-                            $.extend(true, obj, element.metadata());
-                        }
-                    } else {
-                        obj = element;
-                    }
-                }
-                href = opts.href || obj.href || (isString(element) ? element : null);
-                title = opts.title !== undefined ? opts.title : obj.title || '';
-                content = opts.content || obj.content;
-                type = content ? 'html' : (opts.type || obj.type);
-                if (!type && obj.isDom) {
-                    type = element.data('fancybox-type');
-                    if (!type) {
-                        rez = element.prop('class').match(/fancybox\.(\w+)/);
-                        type = rez ? rez[1] : null;
-                    }
-                }
-                if (isString(href)) {
-                    // Try to guess the content type
-                    if (!type) {
-                        if (F.isImage(href)) {
-                            type = 'image';
-                        } else if (F.isSWF(href)) {
-                            type = 'swf';
-                        } else if (href.charAt(0) === '#') {
-                            type = 'inline';
-                        } else if (isString(element)) {
-                            type = 'html';
-                            content = element;
-                        }
-                    }
-                    // Split url into two pieces with source url and content selector, e.g,
-                    // "/mypage.html #my_id" will load "/mypage.html" and display element having id "my_id"
-                    if (type === 'ajax') {
-                        hrefParts = href.split(/\s+/, 2);
-                        href = hrefParts.shift();
-                        selector = hrefParts.shift();
-                    }
-                }
-                if (!content) {
-                    if (type === 'inline') {
-                        if (href) {
-                            content = $(isString(href) ? href.replace(/.*(?=#[^\s]+$)/, '') : href); //strip for ie7
-                        } else if (obj.isDom) {
-                            content = element;
-                        }
-                    } else if (type === 'html') {
-                        content = href;
-                    } else if (!type && !href && obj.isDom) {
-                        type = 'inline';
-                        content = element;
-                    }
-                }
-                $.extend(obj, {
-                    href: href,
-                    type: type,
-                    content: content,
-                    title: title,
-                    selector: selector
-                });
-                group[i] = obj;
-            });
-            // Extend the defaults
-            F.opts = $.extend(true, {}, F.defaults, opts);
-            // All options are merged recursive except keys
-            if (opts.keys !== undefined) {
-                F.opts.keys = opts.keys ? $.extend({}, F.defaults.keys, opts.keys) : false;
-            }
-            F.group = group;
-            return F._start(F.opts.index);
+        open: function (d, p) {
+            if (d && (H.isPlainObject(p) || (p = {}), !1 !== M.close(!0))) return H.isArray(d) || (d = f(d) ? H(d).get() : [d]), H.each(d, function (e, t) {
+                var i, n, o, a, r, s, l, c = {};
+                "object" === H.type(t) && (t.nodeType && (t = H(t)), f(t) ? (c = {
+                    href: t.data("fancybox-href") || t.attr("href"),
+                    title: t.data("fancybox-title") || t.attr("title"),
+                    isDom: !0,
+                    element: t
+                }, H.metadata && H.extend(!0, c, t.metadata())) : c = t), i = p.href || c.href || (u(t) ? t : null), n = p.title !== h ? p.title : c.title || "", !(a = (o = p.content || c.content) ? "html" : p.type || c.type) && c.isDom && ((a = t.data("fancybox-type")) || (a = (r = t.prop("class").match(/fancybox\.(\w+)/)) ? r[1] : null)), u(i) && (a || (M.isImage(i) ? a = "image" : M.isSWF(i) ? a = "swf" : "#" === i.charAt(0) ? a = "inline" : u(t) && (a = "html", o = t)), "ajax" === a && (i = (s = i.split(/\s+/, 2)).shift(), l = s.shift())), o || ("inline" === a ? i ? o = H(u(i) ? i.replace(/.*(?=#[^\s]+$)/, "") : i) : c.isDom && (o = t) : "html" === a ? o = i : a || i || !c.isDom || (a = "inline", o = t)), H.extend(c, {
+                    href: i,
+                    type: a,
+                    content: o,
+                    title: n,
+                    selector: l
+                }), d[e] = c
+            }), M.opts = H.extend(!0, {}, M.defaults, p), p.keys !== h && (M.opts.keys = !!p.keys && H.extend({}, M.defaults.keys, p.keys)), M.group = d, M._start(M.opts.index)
         },
-        // Cancel image loading or abort ajax request
         cancel: function () {
-            var coming = F.coming;
-            if (!coming || false === F.trigger('onCancel')) {
-                return;
-            }
-            F.hideLoading();
-            if (F.ajaxLoad) {
-                F.ajaxLoad.abort();
-            }
-            F.ajaxLoad = null;
-            if (F.imgPreload) {
-                F.imgPreload.onload = F.imgPreload.onerror = null;
-            }
-            if (coming.wrap) {
-                coming.wrap.stop(true, true).trigger('onReset').remove();
-            }
-            F.coming = null;
-            // If the first item has been canceled, then clear everything
-            if (!F.current) {
-                F._afterZoomOut(coming);
-            }
+            var e = M.coming;
+            e && !1 !== M.trigger("onCancel") && (M.hideLoading(), M.ajaxLoad && M.ajaxLoad.abort(), M.ajaxLoad = null, M.imgPreload && (M.imgPreload.onload = M.imgPreload.onerror = null), e.wrap && e.wrap.stop(!0, !0).trigger("onReset").remove(), M.coming = null, M.current || M._afterZoomOut(e))
         },
-        // Start closing animation if is open; remove immediately if opening/closing
-        close: function (event) {
-            F.cancel();
-            if (false === F.trigger('beforeClose')) {
-                return;
-            }
-            F.unbindEvents();
-            if (!F.isActive) {
-                return;
-            }
-            if (!F.isOpen || event === true) {
-                $('.fancybox-wrap').stop(true).trigger('onReset').remove();
-                F._afterZoomOut();
-            } else {
-                F.isOpen = F.isOpened = false;
-                F.isClosing = true;
-                $('.fancybox-item, .fancybox-nav').remove();
-                F.wrap.stop(true, true).removeClass('fancybox-opened');
-                F.transitions[F.current.closeMethod]();
-            }
+        close: function (e) {
+            M.cancel(), !1 !== M.trigger("beforeClose") && (M.unbindEvents(), M.isActive && (M.isOpen && !0 !== e ? (M.isOpen = M.isOpened = !1, M.isClosing = !0, H(".fancybox-item, .fancybox-nav").remove(), M.wrap.stop(!0, !0).removeClass("fancybox-opened"), M.transitions[M.current.closeMethod]()) : (H(".fancybox-wrap").stop(!0).trigger("onReset").remove(), M._afterZoomOut())))
         },
-        // Manage slideshow:
-        //   $.fancybox.play(); - toggle slideshow
-        //   $.fancybox.play( true ); - start
-        //   $.fancybox.play( false ); - stop
-        play: function (action) {
-            var clear = function () {
-                    clearTimeout(F.player.timer);
-                },
-                set = function () {
-                    clear();
-                    if (F.current && F.player.isActive) {
-                        F.player.timer = setTimeout(F.next, F.current.playSpeed);
-                    }
-                },
-                stop = function () {
-                    clear();
-                    D.unbind('.player');
-                    F.player.isActive = false;
-                    F.trigger('onPlayEnd');
-                },
-                start = function () {
-                    if (F.current && (F.current.loop || F.current.index < F.group.length - 1)) {
-                        F.player.isActive = true;
-                        D.bind({
-                            'onCancel.player beforeClose.player': stop,
-                            'onUpdate.player': set,
-                            'beforeLoad.player': clear
-                        });
-                        set();
-                        F.trigger('onPlayStart');
-                    }
-                };
-            if (action === true || (!F.player.isActive && action !== false)) {
-                start();
-            } else {
-                stop();
-            }
+        play: function (e) {
+            var t = function () {
+                clearTimeout(M.player.timer)
+            }, i = function () {
+                t(), M.current && M.player.isActive && (M.player.timer = setTimeout(M.next, M.current.playSpeed))
+            }, n = function () {
+                t(), c.unbind(".player"), M.player.isActive = !1, M.trigger("onPlayEnd")
+            };
+            !0 === e || !M.player.isActive && !1 !== e ? M.current && (M.current.loop || M.current.index < M.group.length - 1) && (M.player.isActive = !0, c.bind({
+                "onCancel.player beforeClose.player": n,
+                "onUpdate.player": i,
+                "beforeLoad.player": t
+            }), i(), M.trigger("onPlayStart")) : n()
         },
-        // Navigate to next gallery item
-        next: function (direction) {
-            var current = F.current;
-            if (current) {
-                if (!isString(direction)) {
-                    direction = current.direction.next;
-                }
-                F.jumpto(current.index + 1, direction, 'next');
-            }
+        next: function (e) {
+            var t = M.current;
+            t && (u(e) || (e = t.direction.next), M.jumpto(t.index + 1, e, "next"))
         },
-        // Navigate to previous gallery item
-        prev: function (direction) {
-            var current = F.current;
-            if (current) {
-                if (!isString(direction)) {
-                    direction = current.direction.prev;
-                }
-                F.jumpto(current.index - 1, direction, 'prev');
-            }
+        prev: function (e) {
+            var t = M.current;
+            t && (u(e) || (e = t.direction.prev), M.jumpto(t.index - 1, e, "prev"))
         },
-        // Navigate to gallery item by index
-        jumpto: function (index, direction, router) {
-            var current = F.current;
-            if (!current) {
-                return;
-            }
-            index = getScalar(index);
-            F.direction = direction || current.direction[(index >= current.index ? 'next' : 'prev')];
-            F.router = router || 'jumpto';
-            if (current.loop) {
-                if (index < 0) {
-                    index = current.group.length + (index % current.group.length);
-                }
-                index = index % current.group.length;
-            }
-            if (current.group[index] !== undefined) {
-                F.cancel();
-                F._start(index);
-            }
+        jumpto: function (e, t, i) {
+            var n = M.current;
+            n && (e = I(e), M.direction = t || n.direction[e >= n.index ? "next" : "prev"], M.router = i || "jumpto", n.loop && (e < 0 && (e = n.group.length + e % n.group.length), e %= n.group.length), n.group[e] !== h && (M.cancel(), M._start(e)))
         },
-        // Center inside viewport and toggle position type to fixed or absolute if needed
-        reposition: function (e, onlyAbsolute) {
-            var current = F.current,
-                wrap = current ? current.wrap : null,
-                pos;
-            if (wrap) {
-                pos = F._getPosition(onlyAbsolute);
-                if (e && e.type === 'scroll') {
-                    delete pos.position;
-                    wrap.stop(true, true).animate(pos, 200);
-                } else {
-                    wrap.css(pos);
-                    current.pos = $.extend({}, current.dim, pos);
-                }
-            }
+        reposition: function (e, t) {
+            var i, n = M.current, o = n ? n.wrap : null;
+            o && (i = M._getPosition(t), e && "scroll" === e.type ? (delete i.position, o.stop(!0, !0).animate(i, 200)) : (o.css(i), n.pos = H.extend({}, n.dim, i)))
         },
-        update: function (e) {
-            var type = (e && e.type),
-                anyway = !type || type === 'orientationchange';
-            if (anyway) {
-                clearTimeout(didUpdate);
-                didUpdate = null;
-            }
-            if (!F.isOpen || didUpdate) {
-                return;
-            }
-            didUpdate = setTimeout(function () {
-                var current = F.current;
-                if (!current || F.isClosing) {
-                    return;
-                }
-                F.wrap.removeClass('fancybox-tmp');
-                if (anyway || type === 'load' || (type === 'resize' && current.autoResize)) {
-                    F._setDimension();
-                }
-                if (!(type === 'scroll' && current.canShrink)) {
-                    F.reposition(e);
-                }
-                F.trigger('onUpdate');
-                didUpdate = null;
-            }, (anyway && !isTouch ? 0 : 300));
+        update: function (t) {
+            var i = t && t.type, n = !i || "orientationchange" === i;
+            n && (clearTimeout(l), l = null), M.isOpen && !l && (l = setTimeout(function () {
+                var e = M.current;
+                e && !M.isClosing && (M.wrap.removeClass("fancybox-tmp"), (n || "load" === i || "resize" === i && e.autoResize) && M._setDimension(), "scroll" === i && e.canShrink || M.reposition(t), M.trigger("onUpdate"), l = null)
+            }, n && !d ? 0 : 300))
         },
-        // Shrink content to fit inside viewport or restore if resized
-        toggle: function (action) {
-            if (F.isOpen) {
-                F.current.fitToView = $.type(action) === "boolean" ? action : !F.current.fitToView;
-                // Help browser to restore document dimensions
-                if (isTouch) {
-                    F.wrap.removeAttr('style').addClass('fancybox-tmp');
-                    F.trigger('onUpdate');
-                }
-                F.update();
-            }
+        toggle: function (e) {
+            M.isOpen && (M.current.fitToView = "boolean" === H.type(e) ? e : !M.current.fitToView, d && (M.wrap.removeAttr("style").addClass("fancybox-tmp"), M.trigger("onUpdate")), M.update())
         },
         hideLoading: function () {
-            D.unbind('.loading');
-            $('#fancybox-loading').remove();
+            c.unbind(".loading"), H("#fancybox-loading").remove()
         },
         showLoading: function () {
-            var el, viewport;
-            F.hideLoading();
-            el = $('<div id="fancybox-loading"><div></div></div>').click(F.cancel).appendTo('body');
-            // If user will press the escape-button, the request will be canceled
-            D.bind('keydown.loading', function (e) {
-                if ((e.which || e.keyCode) === 27) {
-                    e.preventDefault();
-                    F.cancel();
-                }
-            });
-            if (!F.defaults.fixed) {
-                viewport = F.getViewport();
-                el.css({
-                    position: 'absolute',
-                    top: (viewport.h * 0.5) + viewport.y,
-                    left: (viewport.w * 0.5) + viewport.x
-                });
-            }
+            var e, t;
+            M.hideLoading(), e = H('<div id="fancybox-loading"><div></div></div>').click(M.cancel).appendTo("body"), c.bind("keydown.loading", function (e) {
+                27 === (e.which || e.keyCode) && (e.preventDefault(), M.cancel())
+            }), M.defaults.fixed || (t = M.getViewport(), e.css({
+                position: "absolute",
+                top: .5 * t.h + t.y,
+                left: .5 * t.w + t.x
+            }))
         },
         getViewport: function () {
-            var locked = (F.current && F.current.locked) || false,
-                rez = {
-                    x: W.scrollLeft(),
-                    y: W.scrollTop()
-                };
-            if (locked) {
-                rez.w = locked[0].clientWidth;
-                rez.h = locked[0].clientHeight;
-            } else {
-                // See http://bugs.jquery.com/ticket/6724
-                rez.w = isTouch && window.innerWidth ? window.innerWidth : W.width();
-                rez.h = isTouch && window.innerHeight ? window.innerHeight : W.height();
-            }
-            return rez;
+            var e = M.current && M.current.locked || !1, t = {x: r.scrollLeft(), y: r.scrollTop()};
+            return t.h = e ? (t.w = e[0].clientWidth, e[0].clientHeight) : (t.w = d && o.innerWidth ? o.innerWidth : r.width(), d && o.innerHeight ? o.innerHeight : r.height()), t
         },
-        // Unbind the keyboard / clicking actions
         unbindEvents: function () {
-            if (F.wrap && isQuery(F.wrap)) {
-                F.wrap.unbind('.fb');
-            }
-            D.unbind('.fb');
-            W.unbind('.fb');
+            M.wrap && f(M.wrap) && M.wrap.unbind(".fb"), c.unbind(".fb"), r.unbind(".fb")
         },
         bindEvents: function () {
-            var current = F.current,
-                keys;
-            if (!current) {
-                return;
-            }
-            // Changing document height on iOS devices triggers a 'resize' event,
-            // that can change document height... repeating infinitely
-            W.bind('orientationchange.fb' + (isTouch ? '' : ' resize.fb') + (current.autoCenter && !current.locked ? ' scroll.fb' : ''), F.update);
-            keys = current.keys;
-            if (keys) {
-                D.bind('keydown.fb', function (e) {
-                    var code = e.which || e.keyCode,
-                        target = e.target || e.srcElement;
-                    // Skip esc key if loading, because showLoading will cancel preloading
-                    if (code === 27 && F.coming) {
-                        return false;
-                    }
-                    // Ignore key combinations and key events within form elements
-                    if (!e.ctrlKey && !e.altKey && !e.shiftKey && !e.metaKey && !(target && (target.type || $(target).is('[contenteditable]')))) {
-                        $.each(keys, function (i, val) {
-                            if (current.group.length > 1 && val[code] !== undefined) {
-                                F[i](val[code]);
-                                e.preventDefault();
-                                return false;
-                            }
-                            if ($.inArray(code, val) > -1) {
-                                F[i]();
-                                e.preventDefault();
-                                return false;
-                            }
-                        });
-                    }
-                });
-            }
-            if ($.fn.mousewheel && current.mouseWheel) {
-                F.wrap.bind('mousewheel.fb', function (e, delta, deltaX, deltaY) {
-                    var target = e.target || null,
-                        parent = $(target),
-                        canScroll = false;
-                    while (parent.length) {
-                        if (canScroll || parent.is('.fancybox-skin') || parent.is('.fancybox-wrap')) {
-                            break;
-                        }
-                        canScroll = isScrollable(parent[0]);
-                        parent = $(parent).parent();
-                    }
-                    if (delta !== 0 && !canScroll) {
-                        if (F.group.length > 1 && !current.canShrink) {
-                            if (deltaY > 0 || deltaX > 0) {
-                                F.prev(deltaY > 0 ? 'down' : 'left');
-                            } else if (deltaY < 0 || deltaX < 0) {
-                                F.next(deltaY < 0 ? 'up' : 'right');
-                            }
-                            e.preventDefault();
-                        }
-                    }
-                });
+            var t, l = M.current;
+            l && (r.bind("orientationchange.fb" + (d ? "" : " resize.fb") + (l.autoCenter && !l.locked ? " scroll.fb" : ""), M.update), (t = l.keys) && c.bind("keydown.fb", function (i) {
+                var n = i.which || i.keyCode, e = i.target || i.srcElement;
+                if (27 === n && M.coming) return !1;
+                i.ctrlKey || i.altKey || i.shiftKey || i.metaKey || e && (e.type || H(e).is("[contenteditable]")) || H.each(t, function (e, t) {
+                    return 1 < l.group.length && t[n] !== h ? (M[e](t[n]), i.preventDefault(), !1) : -1 < H.inArray(n, t) ? (M[e](), i.preventDefault(), !1) : void 0
+                })
+            }), H.fn.mousewheel && l.mouseWheel && M.wrap.bind("mousewheel.fb", function (e, t, i, n) {
+                for (var o, a = e.target || null, r = H(a), s = !1; r.length && !(s || r.is(".fancybox-skin") || r.is(".fancybox-wrap"));) s = (o = r[0]) && !(o.style.overflow && "hidden" === o.style.overflow) && (o.clientWidth && o.scrollWidth > o.clientWidth || o.clientHeight && o.scrollHeight > o.clientHeight), r = H(r).parent();
+                0 === t || s || 1 < M.group.length && !l.canShrink && (0 < n || 0 < i ? M.prev(0 < n ? "down" : "left") : (n < 0 || i < 0) && M.next(n < 0 ? "up" : "right"), e.preventDefault())
+            }))
+        },
+        trigger: function (i, e) {
+            var t, n = e || M.coming || M.current;
+            if (n) {
+                if (H.isFunction(n[i]) && (t = n[i].apply(n, Array.prototype.slice.call(arguments, 1))), !1 === t) return !1;
+                n.helpers && H.each(n.helpers, function (e, t) {
+                    t && M.helpers[e] && H.isFunction(M.helpers[e][i]) && M.helpers[e][i](H.extend(!0, {}, M.helpers[e].defaults, t), n)
+                }), c.trigger(i)
             }
         },
-        trigger: function (event, o) {
-            var ret, obj = o || F.coming || F.current;
-            if (!obj) {
-                return;
-            }
-            if ($.isFunction(obj[event])) {
-                ret = obj[event].apply(obj, Array.prototype.slice.call(arguments, 1));
-            }
-            if (ret === false) {
-                return false;
-            }
-            if (obj.helpers) {
-                $.each(obj.helpers, function (helper, opts) {
-                    if (opts && F.helpers[helper] && $.isFunction(F.helpers[helper][event])) {
-                        F.helpers[helper][event]($.extend(true, {}, F.helpers[helper].defaults, opts), obj);
-                    }
-                });
-            }
-            D.trigger(event);
+        isImage: function (e) {
+            return u(e) && e.match(/(^data:image\/.*,)|(\.(jp(e|g|eg)|gif|png|bmp|webp|svg)((\?|#).*)?$)/i)
         },
-        isImage: function (str) {
-            return isString(str) && str.match(/(^data:image\/.*,)|(\.(jp(e|g|eg)|gif|png|bmp|webp|svg)((\?|#).*)?$)/i);
+        isSWF: function (e) {
+            return u(e) && e.match(/\.(swf)((\?|#).*)?$/i)
         },
-        isSWF: function (str) {
-            return isString(str) && str.match(/\.(swf)((\?|#).*)?$/i);
+        _start: function (e) {
+            var t, i, n, o, a, r = {};
+            if (e = I(e), !(t = M.group[e] || null)) return !1;
+            if (o = (r = H.extend(!0, {}, M.opts, t)).margin, a = r.padding, "number" === H.type(o) && (r.margin = [o, o, o, o]), "number" === H.type(a) && (r.padding = [a, a, a, a]), r.modal && H.extend(!0, r, {
+                closeBtn: !1,
+                closeClick: !1,
+                nextClick: !1,
+                arrows: !1,
+                mouseWheel: !1,
+                keys: null,
+                helpers: {overlay: {closeClick: !1}}
+            }), r.autoSize && (r.autoWidth = r.autoHeight = !0), "auto" === r.width && (r.autoWidth = !0), "auto" === r.height && (r.autoHeight = !0), r.group = M.group, r.index = e, M.coming = r, !1 !== M.trigger("beforeLoad")) {
+                if (n = r.type, i = r.href, !n) return M.coming = null, !(!M.current || !M.router || "jumpto" === M.router) && (M.current.index = e, M[M.router](M.direction));
+                if (M.isActive = !0, "image" !== n && "swf" !== n || (r.autoHeight = r.autoWidth = !1, r.scrolling = "visible"), "image" === n && (r.aspectRatio = !0), "iframe" === n && d && (r.scrolling = "scroll"), r.wrap = H(r.tpl.wrap).addClass("fancybox-" + (d ? "mobile" : "desktop") + " fancybox-type-" + n + " fancybox-tmp " + r.wrapCSS).appendTo(r.parent || "body"), H.extend(r, {
+                    skin: H(".fancybox-skin", r.wrap),
+                    outer: H(".fancybox-outer", r.wrap),
+                    inner: H(".fancybox-inner", r.wrap)
+                }), H.each(["Top", "Right", "Bottom", "Left"], function (e, t) {
+                    r.skin.css("padding" + t, D(r.padding[e]))
+                }), M.trigger("onReady"), "inline" === n || "html" === n) {
+                    if (!r.content || !r.content.length) return M._error("content")
+                } else if (!i) return M._error("href");
+                "image" === n ? M._loadImage() : "ajax" === n ? M._loadAjax() : "iframe" === n ? M._loadIframe() : M._afterLoad()
+            } else M.coming = null
         },
-        _start: function (index) {
-            var coming = {},
-                obj,
-                href,
-                type,
-                margin,
-                padding;
-            index = getScalar(index);
-            obj = F.group[index] || null;
-            if (!obj) {
-                return false;
-            }
-            coming = $.extend(true, {}, F.opts, obj);
-            // Convert margin and padding properties to array - top, right, bottom, left
-            margin = coming.margin;
-            padding = coming.padding;
-            if ($.type(margin) === 'number') {
-                coming.margin = [margin, margin, margin, margin];
-            }
-            if ($.type(padding) === 'number') {
-                coming.padding = [padding, padding, padding, padding];
-            }
-            // 'modal' propery is just a shortcut
-            if (coming.modal) {
-                $.extend(true, coming, {
-                    closeBtn: false,
-                    closeClick: false,
-                    nextClick: false,
-                    arrows: false,
-                    mouseWheel: false,
-                    keys: null,
-                    helpers: {
-                        overlay: {
-                            closeClick: false
-                        }
-                    }
-                });
-            }
-            // 'autoSize' property is a shortcut, too
-            if (coming.autoSize) {
-                coming.autoWidth = coming.autoHeight = true;
-            }
-            if (coming.width === 'auto') {
-                coming.autoWidth = true;
-            }
-            if (coming.height === 'auto') {
-                coming.autoHeight = true;
-            }
-            /*
-			 * Add reference to the group, so it`s possible to access from callbacks, example:
-			 * afterLoad : function() {
-			 *     this.title = 'Image ' + (this.index + 1) + ' of ' + this.group.length + (this.title ? ' - ' + this.title : '');
-			 * }
-			 */
-            coming.group = F.group;
-            coming.index = index;
-            // Give a chance for callback or helpers to update coming item (type, title, etc)
-            F.coming = coming;
-            if (false === F.trigger('beforeLoad')) {
-                F.coming = null;
-                return;
-            }
-            type = coming.type;
-            href = coming.href;
-            if (!type) {
-                F.coming = null;
-                //If we can not determine content type then drop silently or display next/prev item if looping through gallery
-                if (F.current && F.router && F.router !== 'jumpto') {
-                    F.current.index = index;
-                    return F[F.router](F.direction);
-                }
-                return false;
-            }
-            F.isActive = true;
-            if (type === 'image' || type === 'swf') {
-                coming.autoHeight = coming.autoWidth = false;
-                coming.scrolling = 'visible';
-            }
-            if (type === 'image') {
-                coming.aspectRatio = true;
-            }
-            if (type === 'iframe' && isTouch) {
-                coming.scrolling = 'scroll';
-            }
-            // Build the neccessary markup
-            coming.wrap = $(coming.tpl.wrap).addClass('fancybox-' + (isTouch ? 'mobile' : 'desktop') + ' fancybox-type-' + type + ' fancybox-tmp ' + coming.wrapCSS).appendTo(coming.parent || 'body');
-            $.extend(coming, {
-                skin: $('.fancybox-skin', coming.wrap),
-                outer: $('.fancybox-outer', coming.wrap),
-                inner: $('.fancybox-inner', coming.wrap)
-            });
-            $.each(["Top", "Right", "Bottom", "Left"], function (i, v) {
-                coming.skin.css('padding' + v, getValue(coming.padding[i]));
-            });
-            F.trigger('onReady');
-            // Check before try to load; 'inline' and 'html' types need content, others - href
-            if (type === 'inline' || type === 'html') {
-                if (!coming.content || !coming.content.length) {
-                    return F._error('content');
-                }
-            } else if (!href) {
-                return F._error('href');
-            }
-            if (type === 'image') {
-                F._loadImage();
-            } else if (type === 'ajax') {
-                F._loadAjax();
-            } else if (type === 'iframe') {
-                F._loadIframe();
-            } else {
-                F._afterLoad();
-            }
-        },
-        _error: function (type) {
-            $.extend(F.coming, {
-                type: 'html',
-                autoWidth: true,
-                autoHeight: true,
+        _error: function (e) {
+            H.extend(M.coming, {
+                type: "html",
+                autoWidth: !0,
+                autoHeight: !0,
                 minWidth: 0,
                 minHeight: 0,
-                scrolling: 'no',
-                hasError: type,
-                content: F.coming.tpl.error
-            });
-            F._afterLoad();
+                scrolling: "no",
+                hasError: e,
+                content: M.coming.tpl.error
+            }), M._afterLoad()
         },
         _loadImage: function () {
-            // Reset preload image so it is later possible to check "complete" property
-            var img = F.imgPreload = new Image();
-            img.onload = function () {
-                this.onload = this.onerror = null;
-                F.coming.width = this.width / F.opts.pixelRatio;
-                F.coming.height = this.height / F.opts.pixelRatio;
-                F._afterLoad();
-            };
-            img.onerror = function () {
-                this.onload = this.onerror = null;
-                F._error('image');
-            };
-            img.src = F.coming.href;
-            if (img.complete !== true) {
-                F.showLoading();
-            }
+            var e = M.imgPreload = new Image;
+            e.onload = function () {
+                this.onload = this.onerror = null, M.coming.width = this.width / M.opts.pixelRatio, M.coming.height = this.height / M.opts.pixelRatio, M._afterLoad()
+            }, e.onerror = function () {
+                this.onload = this.onerror = null, M._error("image")
+            }, e.src = M.coming.href, !0 !== e.complete && M.showLoading()
         },
         _loadAjax: function () {
-            var coming = F.coming;
-            F.showLoading();
-            F.ajaxLoad = $.ajax($.extend({}, coming.ajax, {
-                url: coming.href,
-                error: function (jqXHR, textStatus) {
-                    if (F.coming && textStatus !== 'abort') {
-                        F._error('ajax', jqXHR);
-                    } else {
-                        F.hideLoading();
-                    }
-                },
-                success: function (data, textStatus) {
-                    if (textStatus === 'success') {
-                        coming.content = data;
-                        F._afterLoad();
-                    }
+            var i = M.coming;
+            M.showLoading(), M.ajaxLoad = H.ajax(H.extend({}, i.ajax, {
+                url: i.href, error: function (e, t) {
+                    M.coming && "abort" !== t ? M._error("ajax", e) : M.hideLoading()
+                }, success: function (e, t) {
+                    "success" === t && (i.content = e, M._afterLoad())
                 }
-            }));
+            }))
         },
         _loadIframe: function () {
-            var coming = F.coming,
-                iframe = $(coming.tpl.iframe.replace(/\{rnd\}/g, new Date().getTime()))
-                    .attr('scrolling', isTouch ? 'auto' : coming.iframe.scrolling)
-                    .attr('src', coming.href);
-            // This helps IE
-            $(coming.wrap).bind('onReset', function () {
+            var e = M.coming,
+                t = H(e.tpl.iframe.replace(/\{rnd\}/g, (new Date).getTime())).attr("scrolling", d ? "auto" : e.iframe.scrolling).attr("src", e.href);
+            H(e.wrap).bind("onReset", function () {
                 try {
-                    $(this).find('iframe').hide().attr('src', '//about:blank').end().empty();
+                    H(this).find("iframe").hide().attr("src", "//about:blank").end().empty()
                 } catch (e) {
                 }
-            });
-            if (coming.iframe.preload) {
-                F.showLoading();
-                iframe.one('load', function () {
-                    $(this).data('ready', 1);
-                    // iOS will lose scrolling if we resize
-                    if (!isTouch) {
-                        $(this).bind('load.fb', F.update);
-                    }
-                    // Without this trick:
-                    //   - iframe won't scroll on iOS devices
-                    //   - IE7 sometimes displays empty iframe
-                    $(this).parents('.fancybox-wrap').width('100%').removeClass('fancybox-tmp').show();
-                    F._afterLoad();
-                });
-            }
-            coming.content = iframe.appendTo(coming.inner);
-            if (!coming.iframe.preload) {
-                F._afterLoad();
-            }
+            }), e.iframe.preload && (M.showLoading(), t.one("load", function () {
+                H(this).data("ready", 1), d || H(this).bind("load.fb", M.update), H(this).parents(".fancybox-wrap").width("100%").removeClass("fancybox-tmp").show(), M._afterLoad()
+            })), e.content = t.appendTo(e.inner), e.iframe.preload || M._afterLoad()
         },
         _preloadImages: function () {
-            var group = F.group,
-                current = F.current,
-                len = group.length,
-                cnt = current.preload ? Math.min(current.preload, len - 1) : 0,
-                item,
-                i;
-            for (i = 1; i <= cnt; i += 1) {
-                item = group[(current.index + i) % len];
-                if (item.type === 'image' && item.href) {
-                    new Image().src = item.href;
-                }
-            }
+            var e, t, i = M.group, n = M.current, o = i.length, a = n.preload ? Math.min(n.preload, o - 1) : 0;
+            for (t = 1; t <= a; t += 1) "image" === (e = i[(n.index + t) % o]).type && e.href && ((new Image).src = e.href)
         },
         _afterLoad: function () {
-            var coming = F.coming,
-                previous = F.current,
-                placeholder = 'fancybox-placeholder',
-                current,
-                content,
-                type,
-                scrolling,
-                href,
-                embed;
-            F.hideLoading();
-            if (!coming || F.isActive === false) {
-                return;
+            var e, i, t, n, o, a, r = M.coming, s = M.current, l = "fancybox-placeholder";
+            if (M.hideLoading(), r && !1 !== M.isActive) {
+                if (!1 === M.trigger("afterLoad", r, s)) return r.wrap.stop(!0).trigger("onReset").remove(), void(M.coming = null);
+                switch (s && (M.trigger("beforeChange", s), s.wrap.stop(!0).removeClass("fancybox-opened").find(".fancybox-item, .fancybox-nav").remove()), M.unbindEvents(), i = (e = r).content, t = r.type, n = r.scrolling, H.extend(M, {
+                    wrap: e.wrap,
+                    skin: e.skin,
+                    outer: e.outer,
+                    inner: e.inner,
+                    current: e,
+                    previous: s
+                }), o = e.href, t) {
+                    case"inline":
+                    case"ajax":
+                    case"html":
+                        e.selector ? i = H("<div>").html(i).find(e.selector) : f(i) && (i.data(l) || i.data(l, H('<div class="' + l + '"></div>').insertAfter(i).hide()), i = i.show().detach(), e.wrap.bind("onReset", function () {
+                            H(this).find(i).length && i.hide().replaceAll(i.data(l)).data(l, !1)
+                        }));
+                        break;
+                    case"image":
+                        i = e.tpl.image.replace("{href}", o);
+                        break;
+                    case"swf":
+                        i = '<object id="fancybox-swf" classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" width="100%" height="100%"><param name="movie" value="' + o + '"></param>', a = "", H.each(e.swf, function (e, t) {
+                            i += '<param name="' + e + '" value="' + t + '"></param>', a += " " + e + '="' + t + '"'
+                        }), i += '<embed src="' + o + '" type="application/x-shockwave-flash" width="100%" height="100%"' + a + "></embed></object>"
+                }
+                f(i) && i.parent().is(e.inner) || e.inner.append(i), M.trigger("beforeShow"), e.inner.css("overflow", "yes" === n ? "scroll" : "no" === n ? "hidden" : n), M._setDimension(), M.reposition(), M.isOpen = !1, M.coming = null, M.bindEvents(), M.isOpened ? s.prevMethod && M.transitions[s.prevMethod]() : H(".fancybox-wrap").not(e.wrap).stop(!0).trigger("onReset").remove(), M.transitions[M.isOpened ? e.nextMethod : e.openMethod](), M._preloadImages()
             }
-            if (false === F.trigger('afterLoad', coming, previous)) {
-                coming.wrap.stop(true).trigger('onReset').remove();
-                F.coming = null;
-                return;
-            }
-            if (previous) {
-                F.trigger('beforeChange', previous);
-                previous.wrap.stop(true).removeClass('fancybox-opened')
-                    .find('.fancybox-item, .fancybox-nav')
-                    .remove();
-            }
-            F.unbindEvents();
-            current = coming;
-            content = coming.content;
-            type = coming.type;
-            scrolling = coming.scrolling;
-            $.extend(F, {
-                wrap: current.wrap,
-                skin: current.skin,
-                outer: current.outer,
-                inner: current.inner,
-                current: current,
-                previous: previous
-            });
-            href = current.href;
-            switch (type) {
-                case 'inline':
-                case 'ajax':
-                case 'html':
-                    if (current.selector) {
-                        content = $('<div>').html(content).find(current.selector);
-                    } else if (isQuery(content)) {
-                        if (!content.data(placeholder)) {
-                            content.data(placeholder, $('<div class="' + placeholder + '"></div>').insertAfter(content).hide());
-                        }
-                        content = content.show().detach();
-                        current.wrap.bind('onReset', function () {
-                            if ($(this).find(content).length) {
-                                content.hide().replaceAll(content.data(placeholder)).data(placeholder, false);
-                            }
-                        });
-                    }
-                    break;
-                case 'image':
-                    content = current.tpl.image.replace('{href}', href);
-                    break;
-                case 'swf':
-                    content = '<object id="fancybox-swf" classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" width="100%" height="100%"><param name="movie" value="' + href + '"></param>';
-                    embed = '';
-                    $.each(current.swf, function (name, val) {
-                        content += '<param name="' + name + '" value="' + val + '"></param>';
-                        embed += ' ' + name + '="' + val + '"';
-                    });
-                    content += '<embed src="' + href + '" type="application/x-shockwave-flash" width="100%" height="100%"' + embed + '></embed></object>';
-                    break;
-            }
-            if (!(isQuery(content) && content.parent().is(current.inner))) {
-                current.inner.append(content);
-            }
-            // Give a chance for helpers or callbacks to update elements
-            F.trigger('beforeShow');
-            // Set scrolling before calculating dimensions
-            current.inner.css('overflow', scrolling === 'yes' ? 'scroll' : (scrolling === 'no' ? 'hidden' : scrolling));
-            // Set initial dimensions and start position
-            F._setDimension();
-            F.reposition();
-            F.isOpen = false;
-            F.coming = null;
-            F.bindEvents();
-            if (!F.isOpened) {
-                $('.fancybox-wrap').not(current.wrap).stop(true).trigger('onReset').remove();
-            } else if (previous.prevMethod) {
-                F.transitions[previous.prevMethod]();
-            }
-            F.transitions[F.isOpened ? current.nextMethod : current.openMethod]();
-            F._preloadImages();
         },
         _setDimension: function () {
-            var viewport = F.getViewport(),
-                steps = 0,
-                canShrink = false,
-                canExpand = false,
-                wrap = F.wrap,
-                skin = F.skin,
-                inner = F.inner,
-                current = F.current,
-                width = current.width,
-                height = current.height,
-                minWidth = current.minWidth,
-                minHeight = current.minHeight,
-                maxWidth = current.maxWidth,
-                maxHeight = current.maxHeight,
-                scrolling = current.scrolling,
-                scrollOut = current.scrollOutside ? current.scrollbarWidth : 0,
-                margin = current.margin,
-                wMargin = getScalar(margin[1] + margin[3]),
-                hMargin = getScalar(margin[0] + margin[2]),
-                wPadding,
-                hPadding,
-                wSpace,
-                hSpace,
-                origWidth,
-                origHeight,
-                origMaxWidth,
-                origMaxHeight,
-                ratio,
-                width_,
-                height_,
-                maxWidth_,
-                maxHeight_,
-                iframe,
-                body;
-            // Reset dimensions so we could re-check actual size
-            wrap.add(skin).add(inner).width('auto').height('auto').removeClass('fancybox-tmp');
-            wPadding = getScalar(skin.outerWidth(true) - skin.width());
-            hPadding = getScalar(skin.outerHeight(true) - skin.height());
-            // Any space between content and viewport (margin, padding, border, title)
-            wSpace = wMargin + wPadding;
-            hSpace = hMargin + hPadding;
-            origWidth = isPercentage(width) ? (viewport.w - wSpace) * getScalar(width) / 100 : width;
-            origHeight = isPercentage(height) ? (viewport.h - hSpace) * getScalar(height) / 100 : height;
-            if (current.type === 'iframe') {
-                iframe = current.content;
-                if (current.autoHeight && iframe.data('ready') === 1) {
-                    try {
-                        if (iframe[0].contentWindow.document.location) {
-                            inner.width(origWidth).height(9999);
-                            body = iframe.contents().find('body');
-                            if (scrollOut) {
-                                body.css('overflow-x', 'hidden');
-                            }
-                            origHeight = body.outerHeight(true);
-                        }
-                    } catch (e) {
-                    }
+            var e, t, i, n, o, a, r, s, l, c, d, p, h, f, u, g, m, y = M.getViewport(), x = 0, v = M.wrap, w = M.skin,
+                b = M.inner, k = M.current, C = k.width, O = k.height, W = k.minWidth, _ = k.minHeight, S = k.maxWidth,
+                T = k.maxHeight, L = k.scrolling, E = k.scrollOutside ? k.scrollbarWidth : 0, R = k.margin,
+                j = I(R[1] + R[3]), P = I(R[0] + R[2]);
+            if (v.add(w).add(b).width("auto").height("auto").removeClass("fancybox-tmp"), o = j + (i = I(w.outerWidth(!0) - w.width())), a = P + (n = I(w.outerHeight(!0) - w.height())), r = A(C) ? (y.w - o) * I(C) / 100 : C, s = A(O) ? (y.h - a) * I(O) / 100 : O, "iframe" === k.type) {
+                if (g = k.content, k.autoHeight && 1 === g.data("ready")) try {
+                    g[0].contentWindow.document.location && (b.width(r).height(9999), m = g.contents().find("body"), E && m.css("overflow-x", "hidden"), s = m.outerHeight(!0))
+                } catch (e) {
                 }
-            } else if (current.autoWidth || current.autoHeight) {
-                inner.addClass('fancybox-tmp');
-                // Set width or height in case we need to calculate only one dimension
-                if (!current.autoWidth) {
-                    inner.width(origWidth);
-                }
-                if (!current.autoHeight) {
-                    inner.height(origHeight);
-                }
-                if (current.autoWidth) {
-                    origWidth = inner.width();
-                }
-                if (current.autoHeight) {
-                    origHeight = inner.height();
-                }
-                inner.removeClass('fancybox-tmp');
-            }
-            width = getScalar(origWidth);
-            height = getScalar(origHeight);
-            ratio = origWidth / origHeight;
-            // Calculations for the content
-            minWidth = getScalar(isPercentage(minWidth) ? getScalar(minWidth, 'w') - wSpace : minWidth);
-            maxWidth = getScalar(isPercentage(maxWidth) ? getScalar(maxWidth, 'w') - wSpace : maxWidth);
-            minHeight = getScalar(isPercentage(minHeight) ? getScalar(minHeight, 'h') - hSpace : minHeight);
-            maxHeight = getScalar(isPercentage(maxHeight) ? getScalar(maxHeight, 'h') - hSpace : maxHeight);
-            // These will be used to determine if wrap can fit in the viewport
-            origMaxWidth = maxWidth;
-            origMaxHeight = maxHeight;
-            if (current.fitToView) {
-                maxWidth = Math.min(viewport.w - wSpace, maxWidth);
-                maxHeight = Math.min(viewport.h - hSpace, maxHeight);
-            }
-            maxWidth_ = viewport.w - wMargin;
-            maxHeight_ = viewport.h - hMargin;
-            if (current.aspectRatio) {
-                if (width > maxWidth) {
-                    width = maxWidth;
-                    height = getScalar(width / ratio);
-                }
-                if (height > maxHeight) {
-                    height = maxHeight;
-                    width = getScalar(height * ratio);
-                }
-                if (width < minWidth) {
-                    width = minWidth;
-                    height = getScalar(width / ratio);
-                }
-                if (height < minHeight) {
-                    height = minHeight;
-                    width = getScalar(height * ratio);
-                }
-            } else {
-                width = Math.max(minWidth, Math.min(width, maxWidth));
-                if (current.autoHeight && current.type !== 'iframe') {
-                    inner.width(width);
-                    height = inner.height();
-                }
-                height = Math.max(minHeight, Math.min(height, maxHeight));
-            }
-            // Try to fit inside viewport (including the title)
-            if (current.fitToView) {
-                inner.width(width).height(height);
-                wrap.width(width + wPadding);
-                // Real wrap dimensions
-                width_ = wrap.width();
-                height_ = wrap.height();
-                if (current.aspectRatio) {
-                    while ((width_ > maxWidth_ || height_ > maxHeight_) && width > minWidth && height > minHeight) {
-                        if (steps++ > 19) {
-                            break;
-                        }
-                        height = Math.max(minHeight, Math.min(maxHeight, height - 10));
-                        width = getScalar(height * ratio);
-                        if (width < minWidth) {
-                            width = minWidth;
-                            height = getScalar(width / ratio);
-                        }
-                        if (width > maxWidth) {
-                            width = maxWidth;
-                            height = getScalar(width / ratio);
-                        }
-                        inner.width(width).height(height);
-                        wrap.width(width + wPadding);
-                        width_ = wrap.width();
-                        height_ = wrap.height();
-                    }
-                } else {
-                    width = Math.max(minWidth, Math.min(width, width - (width_ - maxWidth_)));
-                    height = Math.max(minHeight, Math.min(height, height - (height_ - maxHeight_)));
-                }
-            }
-            if (scrollOut && scrolling === 'auto' && height < origHeight && (width + wPadding + scrollOut) < maxWidth_) {
-                width += scrollOut;
-            }
-            inner.width(width).height(height);
-            wrap.width(width + wPadding);
-            width_ = wrap.width();
-            height_ = wrap.height();
-            canShrink = (width_ > maxWidth_ || height_ > maxHeight_) && width > minWidth && height > minHeight;
-            canExpand = current.aspectRatio ? (width < origMaxWidth && height < origMaxHeight && width < origWidth && height < origHeight) : ((width < origMaxWidth || height < origMaxHeight) && (width < origWidth || height < origHeight));
-            $.extend(current, {
+            } else (k.autoWidth || k.autoHeight) && (b.addClass("fancybox-tmp"), k.autoWidth || b.width(r), k.autoHeight || b.height(s), k.autoWidth && (r = b.width()), k.autoHeight && (s = b.height()), b.removeClass("fancybox-tmp"));
+            if (C = I(r), O = I(s), d = r / s, W = I(A(W) ? I(W, "w") - o : W), S = I(A(S) ? I(S, "w") - o : S), _ = I(A(_) ? I(_, "h") - a : _), l = S, c = T = I(A(T) ? I(T, "h") - a : T), k.fitToView && (S = Math.min(y.w - o, S), T = Math.min(y.h - a, T)), f = y.w - j, u = y.h - P, k.aspectRatio ? (S < C && (O = I((C = S) / d)), T < O && (C = I((O = T) * d)), C < W && (O = I((C = W) / d)), O < _ && (C = I((O = _) * d))) : (C = Math.max(W, Math.min(C, S)), k.autoHeight && "iframe" !== k.type && (b.width(C), O = b.height()), O = Math.max(_, Math.min(O, T))), k.fitToView) if (b.width(C).height(O), v.width(C + i), p = v.width(), h = v.height(), k.aspectRatio) for (; (f < p || u < h) && W < C && _ < O && !(19 < x++);) O = Math.max(_, Math.min(T, O - 10)), (C = I(O * d)) < W && (O = I((C = W) / d)), S < C && (O = I((C = S) / d)), b.width(C).height(O), v.width(C + i), p = v.width(), h = v.height(); else C = Math.max(W, Math.min(C, C - (p - f))), O = Math.max(_, Math.min(O, O - (h - u)));
+            E && "auto" === L && O < s && C + i + E < f && (C += E), b.width(C).height(O), v.width(C + i), p = v.width(), h = v.height(), e = (f < p || u < h) && W < C && _ < O, t = k.aspectRatio ? C < l && O < c && C < r && O < s : (C < l || O < c) && (C < r || O < s), H.extend(k, {
                 dim: {
-                    width: getValue(width_),
-                    height: getValue(height_)
+                    width: D(p),
+                    height: D(h)
                 },
-                origWidth: origWidth,
-                origHeight: origHeight,
-                canShrink: canShrink,
-                canExpand: canExpand,
-                wPadding: wPadding,
-                hPadding: hPadding,
-                wrapSpace: height_ - skin.outerHeight(true),
-                skinSpace: skin.height() - height
-            });
-            if (!iframe && current.autoHeight && height > minHeight && height < maxHeight && !canExpand) {
-                inner.height('auto');
-            }
+                origWidth: r,
+                origHeight: s,
+                canShrink: e,
+                canExpand: t,
+                wPadding: i,
+                hPadding: n,
+                wrapSpace: h - w.outerHeight(!0),
+                skinSpace: w.height() - O
+            }), !g && k.autoHeight && _ < O && O < T && !t && b.height("auto")
         },
-        _getPosition: function (onlyAbsolute) {
-            var current = F.current,
-                viewport = F.getViewport(),
-                margin = current.margin,
-                width = F.wrap.width() + margin[1] + margin[3],
-                height = F.wrap.height() + margin[0] + margin[2],
-                rez = {
-                    position: 'absolute',
-                    top: margin[0],
-                    left: margin[3]
-                };
-            if (current.autoCenter && current.fixed && !onlyAbsolute && height <= viewport.h && width <= viewport.w) {
-                rez.position = 'fixed';
-            } else if (!current.locked) {
-                rez.top += viewport.y;
-                rez.left += viewport.x;
-            }
-            rez.top = getValue(Math.max(rez.top, rez.top + ((viewport.h - height) * current.topRatio)));
-            rez.left = getValue(Math.max(rez.left, rez.left + ((viewport.w - width) * current.leftRatio)));
-            return rez;
+        _getPosition: function (e) {
+            var t = M.current, i = M.getViewport(), n = t.margin, o = M.wrap.width() + n[1] + n[3],
+                a = M.wrap.height() + n[0] + n[2], r = {position: "absolute", top: n[0], left: n[3]};
+            return t.autoCenter && t.fixed && !e && a <= i.h && o <= i.w ? r.position = "fixed" : t.locked || (r.top += i.y, r.left += i.x), r.top = D(Math.max(r.top, r.top + (i.h - a) * t.topRatio)), r.left = D(Math.max(r.left, r.left + (i.w - o) * t.leftRatio)), r
         },
         _afterZoomIn: function () {
-            var current = F.current;
-            if (!current) {
-                return;
-            }
-            F.isOpen = F.isOpened = true;
-            F.wrap.css('overflow', 'visible').addClass('fancybox-opened');
-            F.update();
-            // Assign a click event
-            if (current.closeClick || (current.nextClick && F.group.length > 1)) {
-                F.inner.css('cursor', 'pointer').bind('click.fb', function (e) {
-                    if (!$(e.target).is('a') && !$(e.target).parent().is('a')) {
-                        e.preventDefault();
-                        F[current.closeClick ? 'close' : 'next']();
-                    }
-                });
-            }
-            // Create a close button
-            if (current.closeBtn) {
-                $(current.tpl.closeBtn).appendTo(F.skin).bind('click.fb', function (e) {
-                    e.preventDefault();
-                    F.close();
-                });
-            }
-            // Create navigation arrows
-            if (current.arrows && F.group.length > 1) {
-                if (current.loop || current.index > 0) {
-                    $(current.tpl.prev).appendTo(F.outer).bind('click.fb', F.prev);
-                }
-                if (current.loop || current.index < F.group.length - 1) {
-                    $(current.tpl.next).appendTo(F.outer).bind('click.fb', F.next);
-                }
-            }
-            F.trigger('afterShow');
-            // Stop the slideshow if this is the last item
-            if (!current.loop && current.index === current.group.length - 1) {
-                F.play(false);
-            } else if (F.opts.autoPlay && !F.player.isActive) {
-                F.opts.autoPlay = false;
-                F.play();
-            }
+            var t = M.current;
+            t && (M.isOpen = M.isOpened = !0, M.wrap.css("overflow", "visible").addClass("fancybox-opened"), M.update(), (t.closeClick || t.nextClick && 1 < M.group.length) && M.inner.css("cursor", "pointer").bind("click.fb", function (e) {
+                H(e.target).is("a") || H(e.target).parent().is("a") || (e.preventDefault(), M[t.closeClick ? "close" : "next"]())
+            }), t.closeBtn && H(t.tpl.closeBtn).appendTo(M.skin).bind("click.fb", function (e) {
+                e.preventDefault(), M.close()
+            }), t.arrows && 1 < M.group.length && ((t.loop || 0 < t.index) && H(t.tpl.prev).appendTo(M.outer).bind("click.fb", M.prev), (t.loop || t.index < M.group.length - 1) && H(t.tpl.next).appendTo(M.outer).bind("click.fb", M.next)), M.trigger("afterShow"), t.loop || t.index !== t.group.length - 1 ? M.opts.autoPlay && !M.player.isActive && (M.opts.autoPlay = !1, M.play()) : M.play(!1))
         },
-        _afterZoomOut: function (obj) {
-            obj = obj || F.current;
-            $('.fancybox-wrap').trigger('onReset').remove();
-            $.extend(F, {
+        _afterZoomOut: function (e) {
+            e = e || M.current, H(".fancybox-wrap").trigger("onReset").remove(), H.extend(M, {
                 group: {},
                 opts: {},
-                router: false,
+                router: !1,
                 current: null,
-                isActive: false,
-                isOpened: false,
-                isOpen: false,
-                isClosing: false,
+                isActive: !1,
+                isOpened: !1,
+                isOpen: !1,
+                isClosing: !1,
                 wrap: null,
                 skin: null,
                 outer: null,
                 inner: null
-            });
-            F.trigger('afterClose', obj);
+            }), M.trigger("afterClose", e)
         }
-    });
-    /*
-	 *	Default transitions
-	 */
-    F.transitions = {
+    }), M.transitions = {
         getOrigPosition: function () {
-            var current = F.current,
-                element = current.element,
-                orig = current.orig,
-                pos = {},
-                width = 50,
-                height = 50,
-                hPadding = current.hPadding,
-                wPadding = current.wPadding,
-                viewport = F.getViewport();
-            if (!orig && current.isDom && element.is(':visible')) {
-                orig = element.find('img:first');
-                if (!orig.length) {
-                    orig = element;
-                }
+            var e = M.current, t = e.element, i = e.orig, n = {}, o = 50, a = 50, r = e.hPadding, s = e.wPadding,
+                l = M.getViewport();
+            return !i && e.isDom && t.is(":visible") && ((i = t.find("img:first")).length || (i = t)), f(i) ? (n = i.offset(), i.is("img") && (o = i.outerWidth(), a = i.outerHeight())) : (n.top = l.y + (l.h - a) * e.topRatio, n.left = l.x + (l.w - o) * e.leftRatio), ("fixed" === M.wrap.css("position") || e.locked) && (n.top -= l.y, n.left -= l.x), n = {
+                top: D(n.top - r * e.topRatio),
+                left: D(n.left - s * e.leftRatio),
+                width: D(o + s),
+                height: D(a + r)
             }
-            if (isQuery(orig)) {
-                pos = orig.offset();
-                if (orig.is('img')) {
-                    width = orig.outerWidth();
-                    height = orig.outerHeight();
-                }
-            } else {
-                pos.top = viewport.y + (viewport.h - height) * current.topRatio;
-                pos.left = viewport.x + (viewport.w - width) * current.leftRatio;
-            }
-            if (F.wrap.css('position') === 'fixed' || current.locked) {
-                pos.top -= viewport.y;
-                pos.left -= viewport.x;
-            }
-            pos = {
-                top: getValue(pos.top - hPadding * current.topRatio),
-                left: getValue(pos.left - wPadding * current.leftRatio),
-                width: getValue(width + wPadding),
-                height: getValue(height + hPadding)
-            };
-            return pos;
-        },
-        step: function (now, fx) {
-            var ratio,
-                padding,
-                value,
-                prop = fx.prop,
-                current = F.current,
-                wrapSpace = current.wrapSpace,
-                skinSpace = current.skinSpace;
-            if (prop === 'width' || prop === 'height') {
-                ratio = fx.end === fx.start ? 1 : (now - fx.start) / (fx.end - fx.start);
-                if (F.isClosing) {
-                    ratio = 1 - ratio;
-                }
-                padding = prop === 'width' ? current.wPadding : current.hPadding;
-                value = now - padding;
-                F.skin[prop](getScalar(prop === 'width' ? value : value - (wrapSpace * ratio)));
-                F.inner[prop](getScalar(prop === 'width' ? value : value - (wrapSpace * ratio) - (skinSpace * ratio)));
-            }
-        },
-        zoomIn: function () {
-            var current = F.current,
-                startPos = current.pos,
-                effect = current.openEffect,
-                elastic = effect === 'elastic',
-                endPos = $.extend({opacity: 1}, startPos);
-            // Remove "position" property that breaks older IE
-            delete endPos.position;
-            if (elastic) {
-                startPos = this.getOrigPosition();
-                if (current.openOpacity) {
-                    startPos.opacity = 0.1;
-                }
-            } else if (effect === 'fade') {
-                startPos.opacity = 0.1;
-            }
-            F.wrap.css(startPos).animate(endPos, {
-                duration: effect === 'none' ? 0 : current.openSpeed,
-                easing: current.openEasing,
-                step: elastic ? this.step : null,
-                complete: F._afterZoomIn
-            });
-        },
-        zoomOut: function () {
-            var current = F.current,
-                effect = current.closeEffect,
-                elastic = effect === 'elastic',
-                endPos = {opacity: 0.1};
-            if (elastic) {
-                endPos = this.getOrigPosition();
-                if (current.closeOpacity) {
-                    endPos.opacity = 0.1;
-                }
-            }
-            F.wrap.animate(endPos, {
-                duration: effect === 'none' ? 0 : current.closeSpeed,
-                easing: current.closeEasing,
-                step: elastic ? this.step : null,
-                complete: F._afterZoomOut
-            });
-        },
-        changeIn: function () {
-            var current = F.current,
-                effect = current.nextEffect,
-                startPos = current.pos,
-                endPos = {opacity: 1},
-                direction = F.direction,
-                distance = 200,
-                field;
-            startPos.opacity = 0.1;
-            if (effect === 'elastic') {
-                field = direction === 'down' || direction === 'up' ? 'top' : 'left';
-                if (direction === 'down' || direction === 'right') {
-                    startPos[field] = getValue(getScalar(startPos[field]) - distance);
-                    endPos[field] = '+=' + distance + 'px';
-                } else {
-                    startPos[field] = getValue(getScalar(startPos[field]) + distance);
-                    endPos[field] = '-=' + distance + 'px';
-                }
-            }
-            // Workaround for http://bugs.jquery.com/ticket/12273
-            if (effect === 'none') {
-                F._afterZoomIn();
-            } else {
-                F.wrap.css(startPos).animate(endPos, {
-                    duration: current.nextSpeed,
-                    easing: current.nextEasing,
-                    complete: F._afterZoomIn
-                });
-            }
-        },
-        changeOut: function () {
-            var previous = F.previous,
-                effect = previous.prevEffect,
-                endPos = {opacity: 0.1},
-                direction = F.direction,
-                distance = 200;
-            if (effect === 'elastic') {
-                endPos[direction === 'down' || direction === 'up' ? 'top' : 'left'] = (direction === 'up' || direction === 'left' ? '-' : '+') + '=' + distance + 'px';
-            }
-            previous.wrap.animate(endPos, {
-                duration: effect === 'none' ? 0 : previous.prevSpeed,
-                easing: previous.prevEasing,
+        }, step: function (e, t) {
+            var i, n, o = t.prop, a = M.current, r = a.wrapSpace, s = a.skinSpace;
+            "width" !== o && "height" !== o || (i = t.end === t.start ? 1 : (e - t.start) / (t.end - t.start), M.isClosing && (i = 1 - i), n = e - ("width" === o ? a.wPadding : a.hPadding), M.skin[o](I("width" === o ? n : n - r * i)), M.inner[o](I("width" === o ? n : n - r * i - s * i)))
+        }, zoomIn: function () {
+            var e = M.current, t = e.pos, i = e.openEffect, n = "elastic" === i, o = H.extend({opacity: 1}, t);
+            delete o.position, n ? (t = this.getOrigPosition(), e.openOpacity && (t.opacity = .1)) : "fade" === i && (t.opacity = .1), M.wrap.css(t).animate(o, {
+                duration: "none" === i ? 0 : e.openSpeed,
+                easing: e.openEasing,
+                step: n ? this.step : null,
+                complete: M._afterZoomIn
+            })
+        }, zoomOut: function () {
+            var e = M.current, t = e.closeEffect, i = "elastic" === t, n = {opacity: .1};
+            i && (n = this.getOrigPosition(), e.closeOpacity && (n.opacity = .1)), M.wrap.animate(n, {
+                duration: "none" === t ? 0 : e.closeSpeed,
+                easing: e.closeEasing,
+                step: i ? this.step : null,
+                complete: M._afterZoomOut
+            })
+        }, changeIn: function () {
+            var e, t = M.current, i = t.nextEffect, n = t.pos, o = {opacity: 1}, a = M.direction;
+            n.opacity = .1, "elastic" === i && (o[e = "down" === a || "up" === a ? "top" : "left"] = "down" === a || "right" === a ? (n[e] = D(I(n[e]) - 200), "+=200px") : (n[e] = D(I(n[e]) + 200), "-=200px")), "none" === i ? M._afterZoomIn() : M.wrap.css(n).animate(o, {
+                duration: t.nextSpeed,
+                easing: t.nextEasing,
+                complete: M._afterZoomIn
+            })
+        }, changeOut: function () {
+            var e = M.previous, t = e.prevEffect, i = {opacity: .1}, n = M.direction;
+            "elastic" === t && (i["down" === n || "up" === n ? "top" : "left"] = ("up" === n || "left" === n ? "-" : "+") + "=200px"), e.wrap.animate(i, {
+                duration: "none" === t ? 0 : e.prevSpeed,
+                easing: e.prevEasing,
                 complete: function () {
-                    $(this).trigger('onReset').remove();
+                    H(this).trigger("onReset").remove()
                 }
-            });
+            })
         }
-    };
-    /*
-	 *	Overlay helper
-	 */
-    F.helpers.overlay = {
-        defaults: {
-            closeClick: true,	  // if true, fancyBox will be closed when user clicks on the overlay
-            speedOut: 200,	   // duration of fadeOut animation
-            showEarly: true,	  // indicates if should be opened immediately or wait until the content is ready
-            css: {},		// custom CSS properties
-            locked: !isTouch,  // if true, the content will be locked into overlay
-            fixed: true	   // if false, the overlay CSS position property will not be set to "fixed"
+    }, M.helpers.overlay = {
+        defaults: {closeClick: !0, speedOut: 200, showEarly: !0, css: {}, locked: !d, fixed: !0},
+        overlay: null,
+        fixed: !1,
+        el: H("html"),
+        create: function (e) {
+            e = H.extend({}, this.defaults, e), this.overlay && this.close(), this.overlay = H('<div class="fancybox-overlay"></div>').appendTo(M.coming ? M.coming.parent : e.parent), this.fixed = !1, e.fixed && M.defaults.fixed && (this.overlay.addClass("fancybox-overlay-fixed"), this.fixed = !0)
         },
-        overlay: null,	  // current handle
-        fixed: false,	 // indicates if the overlay has position "fixed"
-        el: $('html'), // element that contains "the lock"
-        // Public methods
-        create: function (opts) {
-            opts = $.extend({}, this.defaults, opts);
-            if (this.overlay) {
-                this.close();
-            }
-            this.overlay = $('<div class="fancybox-overlay"></div>').appendTo(F.coming ? F.coming.parent : opts.parent);
-            this.fixed = false;
-            if (opts.fixed && F.defaults.fixed) {
-                this.overlay.addClass('fancybox-overlay-fixed');
-                this.fixed = true;
-            }
-        },
-        open: function (opts) {
-            var that = this;
-            opts = $.extend({}, this.defaults, opts);
-            if (this.overlay) {
-                this.overlay.unbind('.overlay').width('auto').height('auto');
-            } else {
-                this.create(opts);
-            }
-            if (!this.fixed) {
-                W.bind('resize.overlay', $.proxy(this.update, this));
-                this.update();
-            }
-            if (opts.closeClick) {
-                this.overlay.bind('click.overlay', function (e) {
-                    if ($(e.target).hasClass('fancybox-overlay')) {
-                        if (F.isActive) {
-                            F.close();
-                        } else {
-                            that.close();
-                        }
-                        return false;
-                    }
-                });
-            }
-            this.overlay.css(opts.css).show();
+        open: function (e) {
+            var t = this;
+            e = H.extend({}, this.defaults, e), this.overlay ? this.overlay.unbind(".overlay").width("auto").height("auto") : this.create(e), this.fixed || (r.bind("resize.overlay", H.proxy(this.update, this)), this.update()), e.closeClick && this.overlay.bind("click.overlay", function (e) {
+                if (H(e.target).hasClass("fancybox-overlay")) return M.isActive ? M.close() : t.close(), !1
+            }), this.overlay.css(e.css).show()
         },
         close: function () {
-            var scrollV, scrollH;
-            W.unbind('resize.overlay');
-            if (this.el.hasClass('fancybox-lock')) {
-                $('.fancybox-margin').removeClass('fancybox-margin');
-                scrollV = W.scrollTop();
-                scrollH = W.scrollLeft();
-                this.el.removeClass('fancybox-lock');
-                W.scrollTop(scrollV).scrollLeft(scrollH);
-            }
-            $('.fancybox-overlay').remove().hide();
-            $.extend(this, {
+            var e, t;
+            r.unbind("resize.overlay"), this.el.hasClass("fancybox-lock") && (H(".fancybox-margin").removeClass("fancybox-margin"), e = r.scrollTop(), t = r.scrollLeft(), this.el.removeClass("fancybox-lock"), r.scrollTop(e).scrollLeft(t)), H(".fancybox-overlay").remove().hide(), H.extend(this, {
                 overlay: null,
-                fixed: false
-            });
+                fixed: !1
+            })
         },
-        // Private, callbacks
         update: function () {
-            var width = '100%', offsetWidth;
-            // Reset width/height so it will not mess
-            this.overlay.width(width).height('100%');
-            // jQuery does not return reliable result for IE
-            if (IE) {
-                offsetWidth = Math.max(document.documentElement.offsetWidth, document.body.offsetWidth);
-                if (D.width() > offsetWidth) {
-                    width = D.width();
-                }
-            } else if (D.width() > W.width()) {
-                width = D.width();
-            }
-            this.overlay.width(width).height(D.height());
+            var e, t = "100%";
+            this.overlay.width(t).height("100%"), s ? (e = Math.max(i.documentElement.offsetWidth, i.body.offsetWidth), c.width() > e && (t = c.width())) : c.width() > r.width() && (t = c.width()), this.overlay.width(t).height(c.height())
         },
-        // This is where we can manipulate DOM, because later it would cause iframes to reload
-        onReady: function (opts, obj) {
-            var overlay = this.overlay;
-            $('.fancybox-overlay').stop(true, true);
-            if (!overlay) {
-                this.create(opts);
-            }
-            if (opts.locked && this.fixed && obj.fixed) {
-                if (!overlay) {
-                    this.margin = D.height() > W.height() ? $('html').css('margin-right').replace("px", "") : false;
-                }
-                obj.locked = this.overlay.append(obj.wrap);
-                obj.fixed = false;
-            }
-            if (opts.showEarly === true) {
-                this.beforeShow.apply(this, arguments);
-            }
+        onReady: function (e, t) {
+            var i = this.overlay;
+            H(".fancybox-overlay").stop(!0, !0), i || this.create(e), e.locked && this.fixed && t.fixed && (i || (this.margin = c.height() > r.height() && H("html").css("margin-right").replace("px", "")), t.locked = this.overlay.append(t.wrap), t.fixed = !1), !0 === e.showEarly && this.beforeShow.apply(this, arguments)
         },
-        beforeShow: function (opts, obj) {
-            var scrollV, scrollH;
-            if (obj.locked) {
-                if (this.margin !== false) {
-                    $('*').filter(function () {
-                        return ($(this).css('position') === 'fixed' && !$(this).hasClass("fancybox-overlay") && !$(this).hasClass("fancybox-wrap"));
-                    }).addClass('fancybox-margin');
-                    this.el.addClass('fancybox-margin');
-                }
-                scrollV = W.scrollTop();
-                scrollH = W.scrollLeft();
-                this.el.addClass('fancybox-lock');
-                W.scrollTop(scrollV).scrollLeft(scrollH);
-            }
-            this.open(opts);
+        beforeShow: function (e, t) {
+            var i, n;
+            t.locked && (!1 !== this.margin && (H("*").filter(function () {
+                return "fixed" === H(this).css("position") && !H(this).hasClass("fancybox-overlay") && !H(this).hasClass("fancybox-wrap")
+            }).addClass("fancybox-margin"), this.el.addClass("fancybox-margin")), i = r.scrollTop(), n = r.scrollLeft(), this.el.addClass("fancybox-lock"), r.scrollTop(i).scrollLeft(n)), this.open(e)
         },
         onUpdate: function () {
-            if (!this.fixed) {
-                this.update();
-            }
+            this.fixed || this.update()
         },
-        afterClose: function (opts) {
-            // Remove overlay if exists and fancyBox is not opening
-            // (e.g., it is not being open using afterClose callback)
-            //if (this.overlay && !F.isActive) {
-            if (this.overlay && !F.coming) {
-                this.overlay.fadeOut(opts.speedOut, $.proxy(this.close, this));
-            }
+        afterClose: function (e) {
+            this.overlay && !M.coming && this.overlay.fadeOut(e.speedOut, H.proxy(this.close, this))
         }
-    };
-    /*
-	 *	Title helper
-	 */
-    F.helpers.title = {
-        defaults: {
-            type: 'float', // 'float', 'inside', 'outside' or 'over',
-            position: 'bottom' // 'top' or 'bottom'
-        },
-        beforeShow: function (opts) {
-            var current = F.current,
-                text = current.title,
-                type = opts.type,
-                title,
-                target;
-            if ($.isFunction(text)) {
-                text = text.call(current.element, current);
-            }
-            if (!isString(text) || $.trim(text) === '') {
-                return;
-            }
-            title = $('<div class="fancybox-title fancybox-title-' + type + '-wrap">' + text + '</div>');
-            switch (type) {
-                case 'inside':
-                    target = F.skin;
-                    break;
-                case 'outside':
-                    target = F.wrap;
-                    break;
-                case 'over':
-                    target = F.inner;
-                    break;
-                default: // 'float'
-                    target = F.skin;
-                    title.appendTo('body');
-                    if (IE) {
-                        title.width(title.width());
-                    }
-                    title.wrapInner('<span class="child"></span>');
-                    //Increase bottom margin so this title will also fit into viewport
-                    F.current.margin[2] += Math.abs(getScalar(title.css('margin-bottom')));
-                    break;
-            }
-            title[(opts.position === 'top' ? 'prependTo' : 'appendTo')](target);
-        }
-    };
-    // jQuery plugin initialization
-    $.fn.fancybox = function (options) {
-        var index,
-            that = $(this),
-            selector = this.selector || '',
-            run = function (e) {
-                var what = $(this).blur(), idx = index, relType, relVal;
-                if (!(e.ctrlKey || e.altKey || e.shiftKey || e.metaKey) && !what.is('.fancybox-wrap')) {
-                    relType = options.groupAttr || 'data-fancybox-group';
-                    relVal = what.attr(relType);
-                    if (!relVal) {
-                        relType = 'rel';
-                        relVal = what.get(0)[relType];
-                    }
-                    if (relVal && relVal !== '' && relVal !== 'nofollow') {
-                        what = selector.length ? $(selector) : that;
-                        what = what.filter('[' + relType + '="' + relVal + '"]');
-                        idx = what.index(this);
-                    }
-                    options.index = idx;
-                    // Stop an event from bubbling if everything is fine
-                    if (F.open(what, options) !== false) {
-                        e.preventDefault();
-                    }
+    }, M.helpers.title = {
+        defaults: {type: "float", position: "bottom"}, beforeShow: function (e) {
+            var t, i, n = M.current, o = n.title, a = e.type;
+            if (H.isFunction(o) && (o = o.call(n.element, n)), u(o) && "" !== H.trim(o)) {
+                switch (t = H('<div class="fancybox-title fancybox-title-' + a + '-wrap">' + o + "</div>"), a) {
+                    case"inside":
+                        i = M.skin;
+                        break;
+                    case"outside":
+                        i = M.wrap;
+                        break;
+                    case"over":
+                        i = M.inner;
+                        break;
+                    default:
+                        i = M.skin, t.appendTo("body"), s && t.width(t.width()), t.wrapInner('<span class="child"></span>'), M.current.margin[2] += Math.abs(I(t.css("margin-bottom")))
                 }
-            };
-        options = options || {};
-        index = options.index || 0;
-        if (!selector || options.live === false) {
-            that.unbind('click.fb-start').bind('click.fb-start', run);
-        } else {
-            D.undelegate(selector, 'click.fb-start').delegate(selector + ":not('.fancybox-item, .fancybox-nav')", 'click.fb-start', run);
+                t["top" === e.position ? "prependTo" : "appendTo"](i)
+            }
         }
-        this.filter('[data-fancybox-start=1]').trigger('click');
-        return this;
-    };
-    // Tests that need a body at doc ready
-    D.ready(function () {
-        var w1, w2;
-        if ($.scrollbarWidth === undefined) {
-            // http://benalman.com/projects/jquery-misc-plugins/#scrollbarwidth
-            $.scrollbarWidth = function () {
-                var parent = $('<div style="width:50px;height:50px;overflow:auto"><div/></div>').appendTo('body'),
-                    child = parent.children(),
-                    width = child.innerWidth() - child.height(99).innerWidth();
-                parent.remove();
-                return width;
-            };
-        }
-        if ($.support.fixedPosition === undefined) {
-            $.support.fixedPosition = (function () {
-                var elem = $('<div style="position:fixed;top:20px;"></div>').appendTo('body'),
-                    fixed = (elem[0].offsetTop === 20 || elem[0].offsetTop === 15);
-                elem.remove();
-                return fixed;
-            }());
-        }
-        $.extend(F.defaults, {
-            scrollbarWidth: $.scrollbarWidth(),
-            fixed: $.support.fixedPosition,
-            parent: $('body')
-        });
-        //Get real width of page scroll-bar
-        w1 = $(window).width();
-        H.addClass('fancybox-lock-test');
-        w2 = $(window).width();
-        H.removeClass('fancybox-lock-test');
-        $("<style type='text/css'>.fancybox-margin{margin-right:" + (w2 - w1) + "px;}</style>").appendTo("head");
-    });
-}(window, document, jQuery));
+    }, H.fn.fancybox = function (a) {
+        var r, s = H(this), l = this.selector || "", e = function (e) {
+            var t, i, n = H(this).blur(), o = r;
+            e.ctrlKey || e.altKey || e.shiftKey || e.metaKey || n.is(".fancybox-wrap") || (t = a.groupAttr || "data-fancybox-group", (i = n.attr(t)) || (t = "rel", i = n.get(0)[t]), i && "" !== i && "nofollow" !== i && (o = (n = (n = l.length ? H(l) : s).filter("[" + t + '="' + i + '"]')).index(this)), a.index = o, !1 !== M.open(n, a) && e.preventDefault())
+        };
+        return r = (a = a || {}).index || 0, l && !1 !== a.live ? c.undelegate(l, "click.fb-start").delegate(l + ":not('.fancybox-item, .fancybox-nav')", "click.fb-start", e) : s.unbind("click.fb-start").bind("click.fb-start", e), this.filter("[data-fancybox-start=1]").trigger("click"), this
+    }, c.ready(function () {
+        var e, t, i, n;
+        H.scrollbarWidth === h && (H.scrollbarWidth = function () {
+            var e = H('<div style="width:50px;height:50px;overflow:auto"><div/></div>').appendTo("body"),
+                t = e.children(), i = t.innerWidth() - t.height(99).innerWidth();
+            return e.remove(), i
+        }), H.support.fixedPosition === h && (H.support.fixedPosition = (i = H('<div style="position:fixed;top:20px;"></div>').appendTo("body"), n = 20 === i[0].offsetTop || 15 === i[0].offsetTop, i.remove(), n)), H.extend(M.defaults, {
+            scrollbarWidth: H.scrollbarWidth(),
+            fixed: H.support.fixedPosition,
+            parent: H("body")
+        }), e = H(o).width(), a.addClass("fancybox-lock-test"), t = H(o).width(), a.removeClass("fancybox-lock-test"), H("<style type='text/css'>.fancybox-margin{margin-right:" + (t - e) + "px;}</style>").appendTo("head")
+    })
+}(window, document, jQuery);
 
-/*
- * jQuery FlexSlider v2.1
- * Copyright 2012 WooThemes
- * Contributing Author: Tyler Smith
- */
-(function (d) {
-    d.flexslider = function (i, k) {
-        var a = d(i), c = d.extend({}, d.flexslider.defaults, k), e = c.namespace,
-            p = "ontouchstart" in window || window.DocumentTouch && document instanceof DocumentTouch,
-            t = p ? "touchend" : "click", l = "vertical" === c.direction, m = c.reverse, h = 0 < c.itemWidth,
-            r = "fade" === c.animation, s = "" !== c.asNavFor, f = {};
-        d.data(i, "flexslider", a);
-        f = {
+/* jQuery FlexSlider v2.1 */
+!function (d) {
+    d.flexslider = function (u, e) {
+        var p = d(u), m = d.extend({}, d.flexslider.defaults, e), s = m.namespace,
+            r = "ontouchstart" in window || window.DocumentTouch && document instanceof DocumentTouch,
+            a = r ? "touchend" : "click", v = "vertical" === m.direction, f = m.reverse, g = 0 < m.itemWidth,
+            h = "fade" === m.animation, l = "" !== m.asNavFor, c = {};
+        d.data(u, "flexslider", p), c = {
             init: function () {
-                a.animating = !1;
-                a.currentSlide = c.startAt;
-                a.animatingTo = a.currentSlide;
-                a.atEnd = 0 === a.currentSlide || a.currentSlide === a.last;
-                a.containerSelector = c.selector.substr(0,
-                    c.selector.search(" "));
-                a.slides = d(c.selector, a);
-                a.container = d(a.containerSelector, a);
-                a.count = a.slides.length;
-                a.syncExists = 0 < d(c.sync).length;
-                "slide" === c.animation && (c.animation = "swing");
-                a.prop = l ? "top" : "marginLeft";
-                a.args = {};
-                a.manualPause = !1;
-                var b = a, g;
-                if (g = !c.video) if (g = !r) if (g = c.useCSS) a:{
-                    g = document.createElement("div");
-                    var n = ["perspectiveProperty", "WebkitPerspective", "MozPerspective", "OPerspective", "msPerspective"],
-                        e;
-                    for (e in n) if (void 0 !== g.style[n[e]]) {
-                        a.pfx = n[e].replace("Perspective", "").toLowerCase();
-                        a.prop = "-" + a.pfx + "-transform";
-                        g = !0;
-                        break a
+                p.animating = !1, p.currentSlide = m.startAt, p.animatingTo = p.currentSlide, p.atEnd = 0 === p.currentSlide || p.currentSlide === p.last, p.containerSelector = m.selector.substr(0, m.selector.search(" ")), p.slides = d(m.selector, p), p.container = d(p.containerSelector, p), p.count = p.slides.length, p.syncExists = 0 < d(m.sync).length, "slide" === m.animation && (m.animation = "swing"), p.prop = v ? "top" : "marginLeft", p.args = {}, p.manualPause = !1;
+                var e, t = p;
+                if ((e = !m.video) && (e = !h) && (e = m.useCSS)) e:{
+                    e = document.createElement("div");
+                    var n,
+                        a = ["perspectiveProperty", "WebkitPerspective", "MozPerspective", "OPerspective", "msPerspective"];
+                    for (n in a) if (void 0 !== e.style[a[n]]) {
+                        p.pfx = a[n].replace("Perspective", "").toLowerCase(), p.prop = "-" + p.pfx + "-transform", e = !0;
+                        break e
                     }
-                    g = !1
+                    e = !1
                 }
-                b.transitions = g;
-                "" !== c.controlsContainer && (a.controlsContainer = 0 < d(c.controlsContainer).length && d(c.controlsContainer));
-                "" !== c.manualControls && (a.manualControls = 0 < d(c.manualControls).length && d(c.manualControls));
-                c.randomize && (a.slides.sort(function () {
-                    return Math.round(Math.random()) - 0.5
-                }), a.container.empty().append(a.slides));
-                a.doMath();
-                s && f.asNav.setup();
-                a.setup("init");
-                c.controlNav && f.controlNav.setup();
-                c.directionNav && f.directionNav.setup();
-                c.keyboard &&
-                (1 === d(a.containerSelector).length || c.multipleKeyboard) && d(document).bind("keyup", function (b) {
-                    b = b.keyCode;
-                    if (!a.animating && (39 === b || 37 === b)) b = 39 === b ? a.getTarget("next") : 37 === b ? a.getTarget("prev") : !1, a.flexAnimate(b, c.pauseOnAction)
-                });
-                c.mousewheel && a.bind("mousewheel", function (b, g) {
-                    b.preventDefault();
-                    var d = 0 > g ? a.getTarget("next") : a.getTarget("prev");
-                    a.flexAnimate(d, c.pauseOnAction)
-                });
-                c.pausePlay && f.pausePlay.setup();
-                c.slideshow && (c.pauseOnHover && a.hover(function () {
-                        !a.manualPlay && !a.manualPause && a.pause()
-                    },
-                    function () {
-                        !a.manualPause && !a.manualPlay && a.play()
-                    }), 0 < c.initDelay ? setTimeout(a.play, c.initDelay) : a.play());
-                p && c.touch && f.touch();
-                (!r || r && c.smoothHeight) && d(window).bind("resize focus", f.resize);
-                setTimeout(function () {
-                    c.start(a)
+                t.transitions = e, "" !== m.controlsContainer && (p.controlsContainer = 0 < d(m.controlsContainer).length && d(m.controlsContainer)), "" !== m.manualControls && (p.manualControls = 0 < d(m.manualControls).length && d(m.manualControls)), m.randomize && (p.slides.sort(function () {
+                    return Math.round(Math.random()) - .5
+                }), p.container.empty().append(p.slides)), p.doMath(), l && c.asNav.setup(), p.setup("init"), m.controlNav && c.controlNav.setup(), m.directionNav && c.directionNav.setup(), m.keyboard && (1 === d(p.containerSelector).length || m.multipleKeyboard) && d(document).bind("keyup", function (e) {
+                    e = e.keyCode, p.animating || 39 !== e && 37 !== e || (e = 39 === e ? p.getTarget("next") : 37 === e && p.getTarget("prev"), p.flexAnimate(e, m.pauseOnAction))
+                }), m.mousewheel && p.bind("mousewheel", function (e, t) {
+                    e.preventDefault();
+                    var n = t < 0 ? p.getTarget("next") : p.getTarget("prev");
+                    p.flexAnimate(n, m.pauseOnAction)
+                }), m.pausePlay && c.pausePlay.setup(), m.slideshow && (m.pauseOnHover && p.hover(function () {
+                    !p.manualPlay && !p.manualPause && p.pause()
+                }, function () {
+                    !p.manualPause && !p.manualPlay && p.play()
+                }), 0 < m.initDelay ? setTimeout(p.play, m.initDelay) : p.play()), r && m.touch && c.touch(), (!h || h && m.smoothHeight) && d(window).bind("resize focus", c.resize), setTimeout(function () {
+                    m.start(p)
                 }, 200)
             }, asNav: {
                 setup: function () {
-                    a.asNav = !0;
-                    a.animatingTo = Math.floor(a.currentSlide / a.move);
-                    a.currentItem = a.currentSlide;
-                    a.slides.removeClass(e + "active-slide").eq(a.currentItem).addClass(e + "active-slide");
-                    a.slides.click(function (b) {
-                        b.preventDefault();
-                        var b = d(this), g = b.index();
-                        !d(c.asNavFor).data("flexslider").animating && !b.hasClass("active") && (a.direction = a.currentItem < g ? "next" : "prev", a.flexAnimate(g, c.pauseOnAction, !1, !0, !0))
+                    p.asNav = !0, p.animatingTo = Math.floor(p.currentSlide / p.move), p.currentItem = p.currentSlide, p.slides.removeClass(s + "active-slide").eq(p.currentItem).addClass(s + "active-slide"), p.slides.click(function (e) {
+                        e.preventDefault();
+                        var t = (e = d(this)).index();
+                        !d(m.asNavFor).data("flexslider").animating && !e.hasClass("active") && (p.direction = p.currentItem < t ? "next" : "prev", p.flexAnimate(t, m.pauseOnAction, !1, !0, !0))
                     })
                 }
             }, controlNav: {
                 setup: function () {
-                    a.manualControls ? f.controlNav.setupManual() : f.controlNav.setupPaging()
+                    p.manualControls ? c.controlNav.setupManual() : c.controlNav.setupPaging()
                 }, setupPaging: function () {
-                    var b = 1, g;
-                    a.controlNavScaffold = d('<ol class="' + e + "control-nav " + e + ("thumbnails" === c.controlNav ? "control-thumbs" : "control-paging") + '"></ol>');
-                    if (1 < a.pagingCount) for (var n = 0; n < a.pagingCount; n++) g = "thumbnails" === c.controlNav ?
-                        '<img src="' + a.slides.eq(n).attr("data-thumb") + '"/>' : "<a>" + b + "</a>", a.controlNavScaffold.append("<li>" + g + "</li>"), b++;
-                    a.controlsContainer ? d(a.controlsContainer).append(a.controlNavScaffold) : a.append(a.controlNavScaffold);
-                    f.controlNav.set();
-                    f.controlNav.active();
-                    a.controlNavScaffold.delegate("a, img", t, function (b) {
-                        b.preventDefault();
-                        var b = d(this), g = a.controlNav.index(b);
-                        b.hasClass(e + "active") || (a.direction = g > a.currentSlide ? "next" : "prev", a.flexAnimate(g, c.pauseOnAction))
-                    });
-                    p && a.controlNavScaffold.delegate("a",
-                        "click touchstart", function (a) {
-                            a.preventDefault()
-                        })
+                    var e, t = 1;
+                    if (p.controlNavScaffold = d('<ol class="' + s + "control-nav " + s + ("thumbnails" === m.controlNav ? "control-thumbs" : "control-paging") + '"></ol>'), 1 < p.pagingCount) for (var n = 0; n < p.pagingCount; n++) e = "thumbnails" === m.controlNav ? '<img src="' + p.slides.eq(n).attr("data-thumb") + '"/>' : "<a>" + t + "</a>", p.controlNavScaffold.append("<li>" + e + "</li>"), t++;
+                    p.controlsContainer ? d(p.controlsContainer).append(p.controlNavScaffold) : p.append(p.controlNavScaffold), c.controlNav.set(), c.controlNav.active(), p.controlNavScaffold.delegate("a, img", a, function (e) {
+                        e.preventDefault();
+                        e = d(this);
+                        var t = p.controlNav.index(e);
+                        e.hasClass(s + "active") || (p.direction = t > p.currentSlide ? "next" : "prev", p.flexAnimate(t, m.pauseOnAction))
+                    }), r && p.controlNavScaffold.delegate("a", "click touchstart", function (e) {
+                        e.preventDefault()
+                    })
                 }, setupManual: function () {
-                    a.controlNav = a.manualControls;
-                    f.controlNav.active();
-                    a.controlNav.live(t, function (b) {
-                        b.preventDefault();
-                        var b = d(this), g = a.controlNav.index(b);
-                        b.hasClass(e + "active") || (g > a.currentSlide ? a.direction = "next" : a.direction = "prev", a.flexAnimate(g, c.pauseOnAction))
-                    });
-                    p && a.controlNav.live("click touchstart", function (a) {
-                        a.preventDefault()
+                    p.controlNav = p.manualControls, c.controlNav.active(), p.controlNav.live(a, function (e) {
+                        e.preventDefault();
+                        e = d(this);
+                        var t = p.controlNav.index(e);
+                        e.hasClass(s + "active") || (t > p.currentSlide ? p.direction = "next" : p.direction = "prev", p.flexAnimate(t, m.pauseOnAction))
+                    }), r && p.controlNav.live("click touchstart", function (e) {
+                        e.preventDefault()
                     })
                 }, set: function () {
-                    a.controlNav = d("." + e + "control-nav li " + ("thumbnails" === c.controlNav ? "img" : "a"),
-                        a.controlsContainer ? a.controlsContainer : a)
+                    p.controlNav = d("." + s + "control-nav li " + ("thumbnails" === m.controlNav ? "img" : "a"), p.controlsContainer ? p.controlsContainer : p)
                 }, active: function () {
-                    a.controlNav.removeClass(e + "active").eq(a.animatingTo).addClass(e + "active")
-                }, update: function (b, c) {
-                    1 < a.pagingCount && "add" === b ? a.controlNavScaffold.append(d("<li><a>" + a.count + "</a></li>")) : 1 === a.pagingCount ? a.controlNavScaffold.find("li").remove() : a.controlNav.eq(c).closest("li").remove();
-                    f.controlNav.set();
-                    1 < a.pagingCount && a.pagingCount !== a.controlNav.length ? a.update(c, b) : f.controlNav.active()
+                    p.controlNav.removeClass(s + "active").eq(p.animatingTo).addClass(s + "active")
+                }, update: function (e, t) {
+                    1 < p.pagingCount && "add" === e ? p.controlNavScaffold.append(d("<li><a>" + p.count + "</a></li>")) : 1 === p.pagingCount ? p.controlNavScaffold.find("li").remove() : p.controlNav.eq(t).closest("li").remove(), c.controlNav.set(), 1 < p.pagingCount && p.pagingCount !== p.controlNav.length ? p.update(t, e) : c.controlNav.active()
                 }
             }, directionNav: {
                 setup: function () {
-                    var b = d('<ul class="' +
-                        e + 'direction-nav"><li><a class="' + e + 'prev" href="#">' + c.prevText + '</a></li><li><a class="' + e + 'next" href="#">' + c.nextText + "</a></li></ul>");
-                    a.controlsContainer ? (d(a.controlsContainer).append(b), a.directionNav = d("." + e + "direction-nav li a", a.controlsContainer)) : (a.append(b), a.directionNav = d("." + e + "direction-nav li a", a));
-                    f.directionNav.update();
-                    a.directionNav.bind(t, function (b) {
-                        b.preventDefault();
-                        b = d(this).hasClass(e + "next") ? a.getTarget("next") : a.getTarget("prev");
-                        a.flexAnimate(b, c.pauseOnAction)
-                    });
-                    p && a.directionNav.bind("click touchstart", function (a) {
-                        a.preventDefault()
+                    var e = d('<ul class="' + s + 'direction-nav"><li><a class="' + s + 'prev" href="#">' + m.prevText + '</a></li><li><a class="' + s + 'next" href="#">' + m.nextText + "</a></li></ul>");
+                    p.controlsContainer ? (d(p.controlsContainer).append(e), p.directionNav = d("." + s + "direction-nav li a", p.controlsContainer)) : (p.append(e), p.directionNav = d("." + s + "direction-nav li a", p)), c.directionNav.update(), p.directionNav.bind(a, function (e) {
+                        e.preventDefault(), e = d(this).hasClass(s + "next") ? p.getTarget("next") : p.getTarget("prev"), p.flexAnimate(e, m.pauseOnAction)
+                    }), r && p.directionNav.bind("click touchstart", function (e) {
+                        e.preventDefault()
                     })
                 }, update: function () {
-                    var b = e + "disabled";
-                    1 === a.pagingCount ? a.directionNav.addClass(b) : c.animationLoop ? a.directionNav.removeClass(b) : 0 === a.animatingTo ? a.directionNav.removeClass(b).filter("." + e + "prev").addClass(b) : a.animatingTo === a.last ? a.directionNav.removeClass(b).filter("." + e + "next").addClass(b) : a.directionNav.removeClass(b)
+                    var e = s + "disabled";
+                    1 === p.pagingCount ? p.directionNav.addClass(e) : m.animationLoop ? p.directionNav.removeClass(e) : 0 === p.animatingTo ? p.directionNav.removeClass(e).filter("." + s + "prev").addClass(e) : p.animatingTo === p.last ? p.directionNav.removeClass(e).filter("." + s + "next").addClass(e) : p.directionNav.removeClass(e)
                 }
             }, pausePlay: {
                 setup: function () {
-                    var b = d('<div class="' + e + 'pauseplay"><a></a></div>');
-                    a.controlsContainer ?
-                        (a.controlsContainer.append(b), a.pausePlay = d("." + e + "pauseplay a", a.controlsContainer)) : (a.append(b), a.pausePlay = d("." + e + "pauseplay a", a));
-                    f.pausePlay.update(c.slideshow ? e + "pause" : e + "play");
-                    a.pausePlay.bind(t, function (b) {
-                        b.preventDefault();
-                        d(this).hasClass(e + "pause") ? (a.manualPause = !0, a.manualPlay = !1, a.pause()) : (a.manualPause = !1, a.manualPlay = !0, a.play())
-                    });
-                    p && a.pausePlay.bind("click touchstart", function (a) {
-                        a.preventDefault()
+                    var e = d('<div class="' + s + 'pauseplay"><a></a></div>');
+                    p.controlsContainer ? (p.controlsContainer.append(e), p.pausePlay = d("." + s + "pauseplay a", p.controlsContainer)) : (p.append(e), p.pausePlay = d("." + s + "pauseplay a", p)), c.pausePlay.update(m.slideshow ? s + "pause" : s + "play"), p.pausePlay.bind(a, function (e) {
+                        e.preventDefault(), d(this).hasClass(s + "pause") ? (p.manualPause = !0, p.manualPlay = !1, p.pause()) : (p.manualPause = !1, p.manualPlay = !0, p.play())
+                    }), r && p.pausePlay.bind("click touchstart", function (e) {
+                        e.preventDefault()
                     })
-                }, update: function (b) {
-                    "play" === b ? a.pausePlay.removeClass(e + "pause").addClass(e +
-                        "play").text(c.playText) : a.pausePlay.removeClass(e + "play").addClass(e + "pause").text(c.pauseText)
+                }, update: function (e) {
+                    "play" === e ? p.pausePlay.removeClass(s + "pause").addClass(s + "play").text(m.playText) : p.pausePlay.removeClass(s + "play").addClass(s + "pause").text(m.pauseText)
                 }
             }, touch: function () {
-                function b(b) {
-                    j = l ? d - b.touches[0].pageY : d - b.touches[0].pageX;
-                    p = l ? Math.abs(j) < Math.abs(b.touches[0].pageX - e) : Math.abs(j) < Math.abs(b.touches[0].pageY - e);
-                    if (!p || 500 < Number(new Date) - k) b.preventDefault(), !r && a.transitions && (c.animationLoop || (j /= 0 === a.currentSlide && 0 > j || a.currentSlide === a.last && 0 < j ? Math.abs(j) / q + 2 : 1), a.setProps(f + j, "setTouch"))
+                function n(e) {
+                    l = v ? i - e.touches[0].pageY : i - e.touches[0].pageX, (!(d = v ? Math.abs(l) < Math.abs(e.touches[0].pageX - o) : Math.abs(l) < Math.abs(e.touches[0].pageY - o)) || 500 < Number(new Date) - c) && (e.preventDefault(), !h && p.transitions && (m.animationLoop || (l /= 0 === p.currentSlide && l < 0 || p.currentSlide === p.last && 0 < l ? Math.abs(l) / r + 2 : 1), p.setProps(s + l, "setTouch")))
                 }
 
-                function g() {
-                    i.removeEventListener("touchmove",
-                        b, !1);
-                    if (a.animatingTo === a.currentSlide && !p && null !== j) {
-                        var h = m ? -j : j, l = 0 < h ? a.getTarget("next") : a.getTarget("prev");
-                        a.canAdvance(l) && (550 > Number(new Date) - k && 50 < Math.abs(h) || Math.abs(h) > q / 2) ? a.flexAnimate(l, c.pauseOnAction) : r || a.flexAnimate(a.currentSlide, c.pauseOnAction, !0)
+                function a() {
+                    if (u.removeEventListener("touchmove", n, !1), p.animatingTo === p.currentSlide && !d && null !== l) {
+                        var e = f ? -l : l, t = 0 < e ? p.getTarget("next") : p.getTarget("prev");
+                        p.canAdvance(t) && (Number(new Date) - c < 550 && 50 < Math.abs(e) || Math.abs(e) > r / 2) ? p.flexAnimate(t, m.pauseOnAction) : h || p.flexAnimate(p.currentSlide, m.pauseOnAction, !0)
                     }
-                    i.removeEventListener("touchend", g, !1);
-                    f = j = e = d = null
+                    u.removeEventListener("touchend", a, !1), s = l = o = i = null
                 }
 
-                var d, e, f, q, j, k, p = !1;
-                i.addEventListener("touchstart", function (j) {
-                    a.animating ? j.preventDefault() : 1 === j.touches.length && (a.pause(), q = l ? a.h : a.w, k = Number(new Date), f = h && m && a.animatingTo ===
-                    a.last ? 0 : h && m ? a.limit - (a.itemW + c.itemMargin) * a.move * a.animatingTo : h && a.currentSlide === a.last ? a.limit : h ? (a.itemW + c.itemMargin) * a.move * a.currentSlide : m ? (a.last - a.currentSlide + a.cloneOffset) * q : (a.currentSlide + a.cloneOffset) * q, d = l ? j.touches[0].pageY : j.touches[0].pageX, e = l ? j.touches[0].pageX : j.touches[0].pageY, i.addEventListener("touchmove", b, !1), i.addEventListener("touchend", g, !1))
+                var i, o, s, r, l, c, d = !1;
+                u.addEventListener("touchstart", function (e) {
+                    p.animating ? e.preventDefault() : 1 === e.touches.length && (p.pause(), r = v ? p.h : p.w, c = Number(new Date), s = g && f && p.animatingTo === p.last ? 0 : g && f ? p.limit - (p.itemW + m.itemMargin) * p.move * p.animatingTo : g && p.currentSlide === p.last ? p.limit : g ? (p.itemW + m.itemMargin) * p.move * p.currentSlide : f ? (p.last - p.currentSlide + p.cloneOffset) * r : (p.currentSlide + p.cloneOffset) * r, i = v ? e.touches[0].pageY : e.touches[0].pageX, o = v ? e.touches[0].pageX : e.touches[0].pageY, u.addEventListener("touchmove", n, !1), u.addEventListener("touchend", a, !1))
                 }, !1)
             }, resize: function () {
-                !a.animating && a.is(":visible") && (h || a.doMath(), r ? f.smoothHeight() : h ? (a.slides.width(a.computedW),
-                    a.update(a.pagingCount), a.setProps()) : l ? (a.viewport.height(a.h), a.setProps(a.h, "setTotal")) : (c.smoothHeight && f.smoothHeight(), a.newSlides.width(a.computedW), a.setProps(a.computedW, "setTotal")))
-            }, smoothHeight: function (b) {
-                if (!l || r) {
-                    var c = r ? a : a.viewport;
-                    b ? c.animate({height: a.slides.eq(a.animatingTo).height()}, b) : c.height(a.slides.eq(a.animatingTo).height())
+                !p.animating && p.is(":visible") && (g || p.doMath(), h ? c.smoothHeight() : g ? (p.slides.width(p.computedW), p.update(p.pagingCount), p.setProps()) : v ? (p.viewport.height(p.h), p.setProps(p.h, "setTotal")) : (m.smoothHeight && c.smoothHeight(), p.newSlides.width(p.computedW), p.setProps(p.computedW, "setTotal")))
+            }, smoothHeight: function (e) {
+                if (!v || h) {
+                    var t = h ? p : p.viewport;
+                    e ? t.animate({height: p.slides.eq(p.animatingTo).height()}, e) : t.height(p.slides.eq(p.animatingTo).height())
                 }
-            }, sync: function (b) {
-                var g = d(c.sync).data("flexslider"), e = a.animatingTo;
-                switch (b) {
-                    case "animate":
-                        g.flexAnimate(e, c.pauseOnAction, !1, !0);
+            }, sync: function (e) {
+                var t = d(m.sync).data("flexslider"), n = p.animatingTo;
+                switch (e) {
+                    case"animate":
+                        t.flexAnimate(n, m.pauseOnAction, !1, !0);
                         break;
-                    case "play":
-                        !g.playing &&
-                        !g.asNav && g.play();
+                    case"play":
+                        !t.playing && !t.asNav && t.play();
                         break;
-                    case "pause":
-                        g.pause()
+                    case"pause":
+                        t.pause()
                 }
             }
-        };
-        a.flexAnimate = function (b, g, n, i, k) {
-            s && 1 === a.pagingCount && (a.direction = a.currentItem < b ? "next" : "prev");
-            if (!a.animating && (a.canAdvance(b, k) || n) && a.is(":visible")) {
-                if (s && i) if (n = d(c.asNavFor).data("flexslider"), a.atEnd = 0 === b || b === a.count - 1, n.flexAnimate(b, !0, !1, !0, k), a.direction = a.currentItem < b ? "next" : "prev", n.direction = a.direction, Math.ceil((b + 1) / a.visible) - 1 !== a.currentSlide && 0 !== b) a.currentItem = b, a.slides.removeClass(e + "active-slide").eq(b).addClass(e +
-                    "active-slide"), b = Math.floor(b / a.visible); else return a.currentItem = b, a.slides.removeClass(e + "active-slide").eq(b).addClass(e + "active-slide"), !1;
-                a.animating = !0;
-                a.animatingTo = b;
-                c.before(a);
-                g && a.pause();
-                a.syncExists && !k && f.sync("animate");
-                c.controlNav && f.controlNav.active();
-                h || a.slides.removeClass(e + "active-slide").eq(b).addClass(e + "active-slide");
-                a.atEnd = 0 === b || b === a.last;
-                c.directionNav && f.directionNav.update();
-                b === a.last && (c.end(a), c.animationLoop || a.pause());
-                if (r) p ? (a.slides.eq(a.currentSlide).css({
+        }, p.flexAnimate = function (e, t, n, a, i) {
+            if (l && 1 === p.pagingCount && (p.direction = p.currentItem < e ? "next" : "prev"), !p.animating && (p.canAdvance(e, i) || n) && p.is(":visible")) {
+                if (l && a) {
+                    if (n = d(m.asNavFor).data("flexslider"), p.atEnd = 0 === e || e === p.count - 1, n.flexAnimate(e, !0, !1, !0, i), p.direction = p.currentItem < e ? "next" : "prev", n.direction = p.direction, Math.ceil((e + 1) / p.visible) - 1 === p.currentSlide || 0 === e) return p.currentItem = e, p.slides.removeClass(s + "active-slide").eq(e).addClass(s + "active-slide"), !1;
+                    p.currentItem = e, p.slides.removeClass(s + "active-slide").eq(e).addClass(s + "active-slide"), e = Math.floor(e / p.visible)
+                }
+                if (p.animating = !0, p.animatingTo = e, m.before(p), t && p.pause(), p.syncExists && !i && c.sync("animate"), m.controlNav && c.controlNav.active(), g || p.slides.removeClass(s + "active-slide").eq(e).addClass(s + "active-slide"), p.atEnd = 0 === e || e === p.last, m.directionNav && c.directionNav.update(), e === p.last && (m.end(p), m.animationLoop || p.pause()), h) r ? (p.slides.eq(p.currentSlide).css({
                     opacity: 0,
                     zIndex: 1
-                }), a.slides.eq(b).css({
+                }), p.slides.eq(e).css({
                     opacity: 1,
                     zIndex: 2
-                }), a.slides.unbind("webkitTransitionEnd transitionend"), a.slides.eq(a.currentSlide).bind("webkitTransitionEnd transitionend", function () {
-                    c.after(a)
-                }), a.animating = !1, a.currentSlide = a.animatingTo) : (a.slides.eq(a.currentSlide).fadeOut(c.animationSpeed, c.easing), a.slides.eq(b).fadeIn(c.animationSpeed, c.easing, a.wrapup)); else {
-                    var q = l ? a.slides.filter(":first").height() : a.computedW;
-                    h ? (b = c.itemWidth > a.w ? 2 * c.itemMargin : c.itemMargin, b = (a.itemW + b) * a.move * a.animatingTo,
-                        b = b > a.limit && 1 !== a.visible ? a.limit : b) : b = 0 === a.currentSlide && b === a.count - 1 && c.animationLoop && "next" !== a.direction ? m ? (a.count + a.cloneOffset) * q : 0 : a.currentSlide === a.last && 0 === b && c.animationLoop && "prev" !== a.direction ? m ? 0 : (a.count + 1) * q : m ? (a.count - 1 - b + a.cloneOffset) * q : (b + a.cloneOffset) * q;
-                    a.setProps(b, "", c.animationSpeed);
-                    if (a.transitions) {
-                        if (!c.animationLoop || !a.atEnd) a.animating = !1, a.currentSlide = a.animatingTo;
-                        a.container.unbind("webkitTransitionEnd transitionend");
-                        a.container.bind("webkitTransitionEnd transitionend",
-                            function () {
-                                a.wrapup(q)
-                            })
-                    } else a.container.animate(a.args, c.animationSpeed, c.easing, function () {
-                        a.wrapup(q)
+                }), p.slides.unbind("webkitTransitionEnd transitionend"), p.slides.eq(p.currentSlide).bind("webkitTransitionEnd transitionend", function () {
+                    m.after(p)
+                }), p.animating = !1, p.currentSlide = p.animatingTo) : (p.slides.eq(p.currentSlide).fadeOut(m.animationSpeed, m.easing), p.slides.eq(e).fadeIn(m.animationSpeed, m.easing, p.wrapup)); else {
+                    var o = v ? p.slides.filter(":first").height() : p.computedW;
+                    e = g ? (e = m.itemWidth > p.w ? 2 * m.itemMargin : m.itemMargin, (e = (p.itemW + e) * p.move * p.animatingTo) > p.limit && 1 !== p.visible ? p.limit : e) : 0 === p.currentSlide && e === p.count - 1 && m.animationLoop && "next" !== p.direction ? f ? (p.count + p.cloneOffset) * o : 0 : p.currentSlide === p.last && 0 === e && m.animationLoop && "prev" !== p.direction ? f ? 0 : (p.count + 1) * o : f ? (p.count - 1 - e + p.cloneOffset) * o : (e + p.cloneOffset) * o, p.setProps(e, "", m.animationSpeed), p.transitions ? (m.animationLoop && p.atEnd || (p.animating = !1, p.currentSlide = p.animatingTo), p.container.unbind("webkitTransitionEnd transitionend"), p.container.bind("webkitTransitionEnd transitionend", function () {
+                        p.wrapup(o)
+                    })) : p.container.animate(p.args, m.animationSpeed, m.easing, function () {
+                        p.wrapup(o)
                     })
                 }
-                c.smoothHeight && f.smoothHeight(c.animationSpeed)
+                m.smoothHeight && c.smoothHeight(m.animationSpeed)
             }
-        };
-        a.wrapup = function (b) {
-            !r && !h && (0 === a.currentSlide && a.animatingTo === a.last && c.animationLoop ? a.setProps(b, "jumpEnd") : a.currentSlide === a.last && (0 === a.animatingTo && c.animationLoop) && a.setProps(b, "jumpStart"));
-            a.animating = !1;
-            a.currentSlide = a.animatingTo;
-            c.after(a)
-        };
-        a.animateSlides = function () {
-            a.animating || a.flexAnimate(a.getTarget("next"))
-        };
-        a.pause =
-            function () {
-                clearInterval(a.animatedSlides);
-                a.playing = !1;
-                c.pausePlay && f.pausePlay.update("play");
-                a.syncExists && f.sync("pause")
-            };
-        a.play = function () {
-            a.animatedSlides = setInterval(a.animateSlides, c.slideshowSpeed);
-            a.playing = !0;
-            c.pausePlay && f.pausePlay.update("pause");
-            a.syncExists && f.sync("play")
-        };
-        a.canAdvance = function (b, g) {
-            var d = s ? a.pagingCount - 1 : a.last;
-            return g ? !0 : s && a.currentItem === a.count - 1 && 0 === b && "prev" === a.direction ? !0 : s && 0 === a.currentItem && b === a.pagingCount - 1 && "next" !== a.direction ? !1 : b === a.currentSlide &&
-            !s ? !1 : c.animationLoop ? !0 : a.atEnd && 0 === a.currentSlide && b === d && "next" !== a.direction ? !1 : a.atEnd && a.currentSlide === d && 0 === b && "next" === a.direction ? !1 : !0
-        };
-        a.getTarget = function (b) {
-            a.direction = b;
-            return "next" === b ? a.currentSlide === a.last ? 0 : a.currentSlide + 1 : 0 === a.currentSlide ? a.last : a.currentSlide - 1
-        };
-        a.setProps = function (b, g, d) {
-            var e, f = b ? b : (a.itemW + c.itemMargin) * a.move * a.animatingTo;
-            e = -1 * function () {
-                if (h) return "setTouch" === g ? b : m && a.animatingTo === a.last ? 0 : m ? a.limit - (a.itemW + c.itemMargin) * a.move * a.animatingTo : a.animatingTo ===
-                a.last ? a.limit : f;
-                switch (g) {
-                    case "setTotal":
-                        return m ? (a.count - 1 - a.currentSlide + a.cloneOffset) * b : (a.currentSlide + a.cloneOffset) * b;
-                    case "setTouch":
-                        return b;
-                    case "jumpEnd":
-                        return m ? b : a.count * b;
-                    case "jumpStart":
-                        return m ? a.count * b : b;
+        }, p.wrapup = function (e) {
+            !h && !g && (0 === p.currentSlide && p.animatingTo === p.last && m.animationLoop ? p.setProps(e, "jumpEnd") : p.currentSlide === p.last && 0 === p.animatingTo && m.animationLoop && p.setProps(e, "jumpStart")), p.animating = !1, p.currentSlide = p.animatingTo, m.after(p)
+        }, p.animateSlides = function () {
+            p.animating || p.flexAnimate(p.getTarget("next"))
+        }, p.pause = function () {
+            clearInterval(p.animatedSlides), p.playing = !1, m.pausePlay && c.pausePlay.update("play"), p.syncExists && c.sync("pause")
+        }, p.play = function () {
+            p.animatedSlides = setInterval(p.animateSlides, m.slideshowSpeed), p.playing = !0, m.pausePlay && c.pausePlay.update("pause"), p.syncExists && c.sync("play")
+        }, p.canAdvance = function (e, t) {
+            var n = l ? p.pagingCount - 1 : p.last;
+            return !!t || (!(!l || p.currentItem !== p.count - 1 || 0 !== e || "prev" !== p.direction) || (!l || 0 !== p.currentItem || e !== p.pagingCount - 1 || "next" === p.direction) && (!(e === p.currentSlide && !l) && (!!m.animationLoop || (!p.atEnd || 0 !== p.currentSlide || e !== n || "next" === p.direction) && (!p.atEnd || p.currentSlide !== n || 0 !== e || "next" !== p.direction))))
+        }, p.getTarget = function (e) {
+            return "next" === (p.direction = e) ? p.currentSlide === p.last ? 0 : p.currentSlide + 1 : 0 === p.currentSlide ? p.last : p.currentSlide - 1
+        }, p.setProps = function (e, t, n) {
+            var a, i = e || (p.itemW + m.itemMargin) * p.move * p.animatingTo;
+            a = -1 * function () {
+                if (g) return "setTouch" === t ? e : f && p.animatingTo === p.last ? 0 : f ? p.limit - (p.itemW + m.itemMargin) * p.move * p.animatingTo : p.animatingTo === p.last ? p.limit : i;
+                switch (t) {
+                    case"setTotal":
+                        return f ? (p.count - 1 - p.currentSlide + p.cloneOffset) * e : (p.currentSlide + p.cloneOffset) * e;
+                    case"setTouch":
+                        return e;
+                    case"jumpEnd":
+                        return f ? e : p.count * e;
+                    case"jumpStart":
+                        return f ? p.count * e : e;
                     default:
-                        return b
+                        return e
                 }
-            }() + "px";
-            a.transitions && (e = l ? "translate3d(0," + e + ",0)" : "translate3d(" + e + ",0,0)", d = void 0 !== d ? d / 1E3 + "s" : "0s", a.container.css("-" + a.pfx + "-transition-duration", d));
-            a.args[a.prop] = e;
-            (a.transitions || void 0 === d) && a.container.css(a.args)
-        };
-        a.setup = function (b) {
-            if (r) a.slides.css({
+            }() + "px", p.transitions && (a = v ? "translate3d(0," + a + ",0)" : "translate3d(" + a + ",0,0)", n = void 0 !== n ? n / 1e3 + "s" : "0s", p.container.css("-" + p.pfx + "-transition-duration", n)), p.args[p.prop] = a, (p.transitions || void 0 === n) && p.container.css(p.args)
+        }, p.setup = function (e) {
+            var t, n;
+            h ? (p.slides.css({
                 width: "100%",
-                "float": "left", marginRight: "-100%", position: "relative"
-            }), "init" === b && (p ? a.slides.css({
+                float: "left",
+                marginRight: "-100%",
+                position: "relative"
+            }), "init" === e && (r ? p.slides.css({
                 opacity: 0,
                 display: "block",
-                webkitTransition: "opacity " + c.animationSpeed / 1E3 + "s ease",
+                webkitTransition: "opacity " + m.animationSpeed / 1e3 + "s ease",
                 zIndex: 1
-            }).eq(a.currentSlide).css({
+            }).eq(p.currentSlide).css({
                 opacity: 1,
                 zIndex: 2
-            }) : a.slides.eq(a.currentSlide).fadeIn(c.animationSpeed, c.easing)), c.smoothHeight && f.smoothHeight(); else {
-                var g, n;
-                "init" === b && (a.viewport = d('<div class="' + e + 'viewport"></div>').css({
-                    overflow: "hidden",
-                    position: "relative"
-                }).appendTo(a).append(a.container), a.cloneCount = 0, a.cloneOffset =
-                    0, m && (n = d.makeArray(a.slides).reverse(), a.slides = d(n), a.container.empty().append(a.slides)));
-                c.animationLoop && !h && (a.cloneCount = 2, a.cloneOffset = 1, "init" !== b && a.container.find(".clone").remove(), a.container.append(a.slides.first().clone().addClass("clone")).prepend(a.slides.last().clone().addClass("clone")));
-                a.newSlides = d(c.selector, a);
-                g = m ? a.count - 1 - a.currentSlide + a.cloneOffset : a.currentSlide + a.cloneOffset;
-                l && !h ? (a.container.height(200 * (a.count + a.cloneCount) + "%").css("position", "absolute").width("100%"),
-                    setTimeout(function () {
-                        a.newSlides.css({display: "block"});
-                        a.doMath();
-                        a.viewport.height(a.h);
-                        a.setProps(g * a.h, "init")
-                    }, "init" === b ? 100 : 0)) : (a.container.width(200 * (a.count + a.cloneCount) + "%"), a.setProps(g * a.computedW, "init"), setTimeout(function () {
-                    a.doMath();
-                    a.newSlides.css({width: a.computedW, "float": "left", display: "block"});
-                    c.smoothHeight && f.smoothHeight()
-                }, "init" === b ? 100 : 0))
-            }
-            h || a.slides.removeClass(e + "active-slide").eq(a.currentSlide).addClass(e + "active-slide")
-        };
-        a.doMath = function () {
-            var b = a.slides.first(),
-                d = c.itemMargin, e = c.minItems, f = c.maxItems;
-            a.w = a.width();
-            a.h = b.height();
-            a.boxPadding = b.outerWidth() - b.width();
-            h ? (a.itemT = c.itemWidth + d, a.minW = e ? e * a.itemT : a.w, a.maxW = f ? f * a.itemT : a.w, a.itemW = a.minW > a.w ? (a.w - d * e) / e : a.maxW < a.w ? (a.w - d * f) / f : c.itemWidth > a.w ? a.w : c.itemWidth, a.visible = Math.floor(a.w / (a.itemW + d)), a.move = 0 < c.move && c.move < a.visible ? c.move : a.visible, a.pagingCount = Math.ceil((a.count - a.visible) / a.move + 1), a.last = a.pagingCount - 1, a.limit = 1 === a.pagingCount ? 0 : c.itemWidth > a.w ? (a.itemW + 2 * d) * a.count - a.w -
-                d : (a.itemW + d) * a.count - a.w - d) : (a.itemW = a.w, a.pagingCount = a.count, a.last = a.count - 1);
-            a.computedW = a.itemW - a.boxPadding
-        };
-        a.update = function (b, d) {
-            a.doMath();
-            h || (b < a.currentSlide ? a.currentSlide += 1 : b <= a.currentSlide && 0 !== b && (a.currentSlide -= 1), a.animatingTo = a.currentSlide);
-            if (c.controlNav && !a.manualControls) if ("add" === d && !h || a.pagingCount > a.controlNav.length) f.controlNav.update("add"); else if ("remove" === d && !h || a.pagingCount < a.controlNav.length) h && a.currentSlide > a.last && (a.currentSlide -= 1, a.animatingTo -= 1),
-                f.controlNav.update("remove", a.last);
-            c.directionNav && f.directionNav.update()
-        };
-        a.addSlide = function (b, e) {
-            var f = d(b);
-            a.count += 1;
-            a.last = a.count - 1;
-            l && m ? void 0 !== e ? a.slides.eq(a.count - e).after(f) : a.container.prepend(f) : void 0 !== e ? a.slides.eq(e).before(f) : a.container.append(f);
-            a.update(e, "add");
-            a.slides = d(c.selector + ":not(.clone)", a);
-            a.setup();
-            c.added(a)
-        };
-        a.removeSlide = function (b) {
-            var e = isNaN(b) ? a.slides.index(d(b)) : b;
-            a.count -= 1;
-            a.last = a.count - 1;
-            isNaN(b) ? d(b, a.slides).remove() : l && m ? a.slides.eq(a.last).remove() :
-                a.slides.eq(b).remove();
-            a.doMath();
-            a.update(e, "remove");
-            a.slides = d(c.selector + ":not(.clone)", a);
-            a.setup();
-            c.removed(a)
-        };
-        f.init()
-    };
-    d.flexslider.defaults = {
+            }) : p.slides.eq(p.currentSlide).fadeIn(m.animationSpeed, m.easing)), m.smoothHeight && c.smoothHeight()) : ("init" === e && (p.viewport = d('<div class="' + s + 'viewport"></div>').css({
+                overflow: "hidden",
+                position: "relative"
+            }).appendTo(p).append(p.container), p.cloneCount = 0, p.cloneOffset = 0, f && (n = d.makeArray(p.slides).reverse(), p.slides = d(n), p.container.empty().append(p.slides))), m.animationLoop && !g && (p.cloneCount = 2, p.cloneOffset = 1, "init" !== e && p.container.find(".clone").remove(), p.container.append(p.slides.first().clone().addClass("clone")).prepend(p.slides.last().clone().addClass("clone"))), p.newSlides = d(m.selector, p), t = f ? p.count - 1 - p.currentSlide + p.cloneOffset : p.currentSlide + p.cloneOffset, v && !g ? (p.container.height(200 * (p.count + p.cloneCount) + "%").css("position", "absolute").width("100%"), setTimeout(function () {
+                p.newSlides.css({display: "block"}), p.doMath(), p.viewport.height(p.h), p.setProps(t * p.h, "init")
+            }, "init" === e ? 100 : 0)) : (p.container.width(200 * (p.count + p.cloneCount) + "%"), p.setProps(t * p.computedW, "init"), setTimeout(function () {
+                p.doMath(), p.newSlides.css({
+                    width: p.computedW,
+                    float: "left",
+                    display: "block"
+                }), m.smoothHeight && c.smoothHeight()
+            }, "init" === e ? 100 : 0)));
+            g || p.slides.removeClass(s + "active-slide").eq(p.currentSlide).addClass(s + "active-slide")
+        }, p.doMath = function () {
+            var e = p.slides.first(), t = m.itemMargin, n = m.minItems, a = m.maxItems;
+            p.w = p.width(), p.h = e.height(), p.boxPadding = e.outerWidth() - e.width(), g ? (p.itemT = m.itemWidth + t, p.minW = n ? n * p.itemT : p.w, p.maxW = a ? a * p.itemT : p.w, p.itemW = p.minW > p.w ? (p.w - t * n) / n : p.maxW < p.w ? (p.w - t * a) / a : m.itemWidth > p.w ? p.w : m.itemWidth, p.visible = Math.floor(p.w / (p.itemW + t)), p.move = 0 < m.move && m.move < p.visible ? m.move : p.visible, p.pagingCount = Math.ceil((p.count - p.visible) / p.move + 1), p.last = p.pagingCount - 1, p.limit = 1 === p.pagingCount ? 0 : m.itemWidth > p.w ? (p.itemW + 2 * t) * p.count - p.w - t : (p.itemW + t) * p.count - p.w - t) : (p.itemW = p.w, p.pagingCount = p.count, p.last = p.count - 1), p.computedW = p.itemW - p.boxPadding
+        }, p.update = function (e, t) {
+            p.doMath(), g || (e < p.currentSlide ? p.currentSlide += 1 : e <= p.currentSlide && 0 !== e && (p.currentSlide -= 1), p.animatingTo = p.currentSlide), m.controlNav && !p.manualControls && ("add" === t && !g || p.pagingCount > p.controlNav.length ? c.controlNav.update("add") : ("remove" === t && !g || p.pagingCount < p.controlNav.length) && (g && p.currentSlide > p.last && (p.currentSlide -= 1, p.animatingTo -= 1), c.controlNav.update("remove", p.last))), m.directionNav && c.directionNav.update()
+        }, p.addSlide = function (e, t) {
+            var n = d(e);
+            p.count += 1, p.last = p.count - 1, v && f ? void 0 !== t ? p.slides.eq(p.count - t).after(n) : p.container.prepend(n) : void 0 !== t ? p.slides.eq(t).before(n) : p.container.append(n), p.update(t, "add"), p.slides = d(m.selector + ":not(.clone)", p), p.setup(), m.added(p)
+        }, p.removeSlide = function (e) {
+            var t = isNaN(e) ? p.slides.index(d(e)) : e;
+            p.count -= 1, p.last = p.count - 1, isNaN(e) ? d(e, p.slides).remove() : v && f ? p.slides.eq(p.last).remove() : p.slides.eq(e).remove(), p.doMath(), p.update(t, "remove"), p.slides = d(m.selector + ":not(.clone)", p), p.setup(), m.removed(p)
+        }, c.init()
+    }, d.flexslider.defaults = {
         namespace: "flex-",
         selector: ".slides > li",
         animation: "fade",
@@ -2279,7 +853,7 @@
         smoothHeight: !1,
         startAt: 0,
         slideshow: !0,
-        slideshowSpeed: 7E3,
+        slideshowSpeed: 7e3,
         animationSpeed: 600,
         initDelay: 0,
         randomize: !1,
@@ -2319,235 +893,104 @@
         },
         removed: function () {
         }
-    };
-    d.fn.flexslider = function (i) {
-        void 0 === i && (i = {});
-        if ("object" === typeof i) return this.each(function () {
-            var a = d(this), c = a.find(i.selector ? i.selector : ".slides > li");
-            1 === c.length ? (c.fadeIn(400),
-            i.start && i.start(a)) : void 0 == a.data("flexslider") && new d.flexslider(this, i)
+    }, d.fn.flexslider = function (n) {
+        if (void 0 === n && (n = {}), "object" == typeof n) return this.each(function () {
+            var e = d(this), t = e.find(n.selector ? n.selector : ".slides > li");
+            1 === t.length ? (t.fadeIn(400), n.start && n.start(e)) : null == e.data("flexslider") && new d.flexslider(this, n)
         });
-        var k = d(this).data("flexslider");
-        switch (i) {
-            case "play":
-                k.play();
+        var e = d(this).data("flexslider");
+        switch (n) {
+            case"play":
+                e.play();
                 break;
-            case "pause":
-                k.pause();
+            case"pause":
+                e.pause();
                 break;
-            case "next":
-                k.flexAnimate(k.getTarget("next"), !0);
+            case"next":
+                e.flexAnimate(e.getTarget("next"), !0);
                 break;
-            case "prev":
-            case "previous":
-                k.flexAnimate(k.getTarget("prev"), !0);
+            case"prev":
+            case"previous":
+                e.flexAnimate(e.getTarget("prev"), !0);
                 break;
             default:
-                "number" === typeof i && k.flexAnimate(i, !0)
+                "number" == typeof n && e.flexAnimate(n, !0)
         }
     }
-})(jQuery);
+}(jQuery);
 
-/*!
- * jQuery Validation Plugin 1.11.1
- *
- * http://bassistance.de/jquery-plugins/jquery-plugin-validation/
- * http://docs.jquery.com/Plugins/Validation
- *
- * Copyright 2013 Jörn Zaefferer
- * Released under the MIT license:
- *   http://www.opensource.org/licenses/mit-license.php
- */
-(function ($) {
-    $.extend($.fn, {
-        // http://docs.jquery.com/Plugins/Validation/validate
-        validate: function (options) {
-            // if nothing is selected, return nothing; can't chain anyway
-            if (!this.length) {
-                if (options && options.debug && window.console) {
-                    console.warn("Nothing selected, can't validate, returning nothing.");
-                }
-                return;
-            }
-            // check if a validator for this form was already created
-            var validator = $.data(this[0], "validator");
-            if (validator) {
-                return validator;
-            }
-            // Add novalidate tag if HTML5.
-            this.attr("novalidate", "novalidate");
-            validator = new $.validator(options, this[0]);
-            $.data(this[0], "validator", validator);
-            if (validator.settings.onsubmit) {
-                this.validateDelegate(":submit", "click", function (event) {
-                    if (validator.settings.submitHandler) {
-                        validator.submitButton = event.target;
-                    }
-                    // allow suppressing validation by adding a cancel class to the submit button
-                    if ($(event.target).hasClass("cancel")) {
-                        validator.cancelSubmit = true;
-                    }
-                    // allow suppressing validation by adding the html5 formnovalidate attribute to the submit button
-                    if ($(event.target).attr("formnovalidate") !== undefined) {
-                        validator.cancelSubmit = true;
-                    }
-                });
-                // validate the form on submit
-                this.submit(function (event) {
-                    if (validator.settings.debug) {
-                        // prevent form submit to be able to see console output
-                        event.preventDefault();
+/* http://bassistance.de/jquery-plugins/jquery-plugin-validation/ 1.11.1 */
+!function (l) {
+    l.extend(l.fn, {
+        validate: function (t) {
+            if (this.length) {
+                var i = l.data(this[0], "validator");
+                return i || (this.attr("novalidate", "novalidate"), i = new l.validator(t, this[0]), l.data(this[0], "validator", i), i.settings.onsubmit && (this.validateDelegate(":submit", "click", function (t) {
+                    i.settings.submitHandler && (i.submitButton = t.target), l(t.target).hasClass("cancel") && (i.cancelSubmit = !0), void 0 !== l(t.target).attr("formnovalidate") && (i.cancelSubmit = !0)
+                }), this.submit(function (e) {
+                    function t() {
+                        var t;
+                        return !i.settings.submitHandler || (i.submitButton && (t = l("<input type='hidden'/>").attr("name", i.submitButton.name).val(l(i.submitButton).val()).appendTo(i.currentForm)), i.settings.submitHandler.call(i, i.currentForm, e), i.submitButton && t.remove(), !1)
                     }
 
-                    function handle() {
-                        var hidden;
-                        if (validator.settings.submitHandler) {
-                            if (validator.submitButton) {
-                                // insert a hidden input as a replacement for the missing submit button
-                                hidden = $("<input type='hidden'/>").attr("name", validator.submitButton.name).val($(validator.submitButton).val()).appendTo(validator.currentForm);
-                            }
-                            validator.settings.submitHandler.call(validator, validator.currentForm, event);
-                            if (validator.submitButton) {
-                                // and clean up afterwards; thanks to no-block-scope, hidden can be referenced
-                                hidden.remove();
-                            }
-                            return false;
-                        }
-                        return true;
-                    }
-
-                    // prevent submit for invalid forms or custom submit handlers
-                    if (validator.cancelSubmit) {
-                        validator.cancelSubmit = false;
-                        return handle();
-                    }
-                    if (validator.form()) {
-                        if (validator.pendingRequest) {
-                            validator.formSubmitted = true;
-                            return false;
-                        }
-                        return handle();
-                    } else {
-                        validator.focusInvalid();
-                        return false;
-                    }
-                });
+                    return i.settings.debug && e.preventDefault(), i.cancelSubmit ? (i.cancelSubmit = !1, t()) : i.form() ? i.pendingRequest ? !(i.formSubmitted = !0) : t() : (i.focusInvalid(), !1)
+                })), i)
             }
-            return validator;
-        },
-        // http://docs.jquery.com/Plugins/Validation/valid
-        valid: function () {
-            if ($(this[0]).is("form")) {
-                return this.validate().form();
-            } else {
-                var valid = true;
-                var validator = $(this[0].form).validate();
-                this.each(function () {
-                    valid = valid && validator.element(this);
-                });
-                return valid;
-            }
-        },
-        // attributes: space seperated list of attributes to retrieve and remove
-        removeAttrs: function (attributes) {
-            var result = {},
-                $element = this;
-            $.each(attributes.split(/\s/), function (index, value) {
-                result[value] = $element.attr(value);
-                $element.removeAttr(value);
-            });
-            return result;
-        },
-        // http://docs.jquery.com/Plugins/Validation/rules
-        rules: function (command, argument) {
-            var element = this[0];
-            if (command) {
-                var settings = $.data(element.form, "validator").settings;
-                var staticRules = settings.rules;
-                var existingRules = $.validator.staticRules(element);
-                switch (command) {
-                    case "add":
-                        $.extend(existingRules, $.validator.normalizeRule(argument));
-                        // remove messages from rules, but allow them to be set separetely
-                        delete existingRules.messages;
-                        staticRules[element.name] = existingRules;
-                        if (argument.messages) {
-                            settings.messages[element.name] = $.extend(settings.messages[element.name], argument.messages);
-                        }
+            t && t.debug && window.console && console.warn("Nothing selected, can't validate, returning nothing.")
+        }, valid: function () {
+            if (l(this[0]).is("form")) return this.validate().form();
+            var t = !0, e = l(this[0].form).validate();
+            return this.each(function () {
+                t = t && e.element(this)
+            }), t
+        }, removeAttrs: function (t) {
+            var i = {}, s = this;
+            return l.each(t.split(/\s/), function (t, e) {
+                i[e] = s.attr(e), s.removeAttr(e)
+            }), i
+        }, rules: function (t, e) {
+            var i = this[0];
+            if (t) {
+                var s = l.data(i.form, "validator").settings, r = s.rules, n = l.validator.staticRules(i);
+                switch (t) {
+                    case"add":
+                        l.extend(n, l.validator.normalizeRule(e)), delete n.messages, r[i.name] = n, e.messages && (s.messages[i.name] = l.extend(s.messages[i.name], e.messages));
                         break;
-                    case "remove":
-                        if (!argument) {
-                            delete staticRules[element.name];
-                            return existingRules;
-                        }
-                        var filtered = {};
-                        $.each(argument.split(/\s/), function (index, method) {
-                            filtered[method] = existingRules[method];
-                            delete existingRules[method];
-                        });
-                        return filtered;
+                    case"remove":
+                        if (!e) return delete r[i.name], n;
+                        var a = {};
+                        return l.each(e.split(/\s/), function (t, e) {
+                            a[e] = n[e], delete n[e]
+                        }), a
                 }
             }
-            var data = $.validator.normalizeRules(
-                $.extend(
-                    {},
-                    $.validator.classRules(element),
-                    $.validator.attributeRules(element),
-                    $.validator.dataRules(element),
-                    $.validator.staticRules(element)
-                ), element);
-            // make sure required is at front
-            if (data.required) {
-                var param = data.required;
-                delete data.required;
-                data = $.extend({required: param}, data);
+            var u = l.validator.normalizeRules(l.extend({}, l.validator.classRules(i), l.validator.attributeRules(i), l.validator.dataRules(i), l.validator.staticRules(i)), i);
+            if (u.required) {
+                var o = u.required;
+                delete u.required, u = l.extend({required: o}, u)
             }
-            return data;
+            return u
         }
-    });
-// Custom selectors
-    $.extend($.expr[":"], {
-        // http://docs.jquery.com/Plugins/Validation/blank
-        blank: function (a) {
-            return !$.trim("" + $(a).val());
-        },
-        // http://docs.jquery.com/Plugins/Validation/filled
-        filled: function (a) {
-            return !!$.trim("" + $(a).val());
-        },
-        // http://docs.jquery.com/Plugins/Validation/unchecked
-        unchecked: function (a) {
-            return !$(a).prop("checked");
+    }), l.extend(l.expr[":"], {
+        blank: function (t) {
+            return !l.trim("" + l(t).val())
+        }, filled: function (t) {
+            return !!l.trim("" + l(t).val())
+        }, unchecked: function (t) {
+            return !l(t).prop("checked")
         }
-    });
-// constructor for validator
-    $.validator = function (options, form) {
-        this.settings = $.extend(true, {}, $.validator.defaults, options);
-        this.currentForm = form;
-        this.init();
-    };
-    $.validator.format = function (source, params) {
-        if (arguments.length === 1) {
-            return function () {
-                var args = $.makeArray(arguments);
-                args.unshift(source);
-                return $.validator.format.apply(this, args);
-            };
-        }
-        if (arguments.length > 2 && params.constructor !== Array) {
-            params = $.makeArray(arguments).slice(1);
-        }
-        if (params.constructor !== Array) {
-            params = [params];
-        }
-        $.each(params, function (i, n) {
-            source = source.replace(new RegExp("\\{" + i + "\\}", "g"), function () {
-                return n;
-            });
-        });
-        return source;
-    };
-    $.extend($.validator, {
+    }), l.validator = function (t, e) {
+        this.settings = l.extend(!0, {}, l.validator.defaults, t), this.currentForm = e, this.init()
+    }, l.validator.format = function (i, t) {
+        return 1 === arguments.length ? function () {
+            var t = l.makeArray(arguments);
+            return t.unshift(i), l.validator.format.apply(this, t)
+        } : (2 < arguments.length && t.constructor !== Array && (t = l.makeArray(arguments).slice(1)), t.constructor !== Array && (t = [t]), l.each(t, function (t, e) {
+            i = i.replace(new RegExp("\\{" + t + "\\}", "g"), function () {
+                return e
+            })
+        }), i)
+    }, l.extend(l.validator, {
         defaults: {
             messages: {},
             groups: {},
@@ -2555,62 +998,33 @@
             errorClass: "error",
             validClass: "valid",
             errorElement: "label",
-            focusInvalid: true,
-            errorContainer: $([]),
-            errorLabelContainer: $([]),
-            onsubmit: true,
+            focusInvalid: !0,
+            errorContainer: l([]),
+            errorLabelContainer: l([]),
+            onsubmit: !0,
             ignore: ":hidden",
-            ignoreTitle: false,
-            onfocusin: function (element, event) {
-                this.lastActive = element;
-                // hide error label and remove error class on focus if enabled
-                if (this.settings.focusCleanup && !this.blockFocusCleanup) {
-                    if (this.settings.unhighlight) {
-                        this.settings.unhighlight.call(this, element, this.settings.errorClass, this.settings.validClass);
-                    }
-                    this.addWrapper(this.errorsFor(element)).hide();
-                }
+            ignoreTitle: !1,
+            onfocusin: function (t, e) {
+                this.lastActive = t, this.settings.focusCleanup && !this.blockFocusCleanup && (this.settings.unhighlight && this.settings.unhighlight.call(this, t, this.settings.errorClass, this.settings.validClass), this.addWrapper(this.errorsFor(t)).hide())
             },
-            onfocusout: function (element, event) {
-                if (!this.checkable(element) && (element.name in this.submitted || !this.optional(element))) {
-                    this.element(element);
-                }
+            onfocusout: function (t, e) {
+                this.checkable(t) || !(t.name in this.submitted) && this.optional(t) || this.element(t)
             },
-            onkeyup: function (element, event) {
-                if (event.which === 9 && this.elementValue(element) === "") {
-
-                } else if (element.name in this.submitted || element === this.lastElement) {
-                    this.element(element);
-                }
+            onkeyup: function (t, e) {
+                9 === e.which && "" === this.elementValue(t) || (t.name in this.submitted || t === this.lastElement) && this.element(t)
             },
-            onclick: function (element, event) {
-                // click on selects, radiobuttons and checkboxes
-                if (element.name in this.submitted) {
-                    this.element(element);
-                }
-                // or option elements, check parent select in that case
-                else if (element.parentNode.name in this.submitted) {
-                    this.element(element.parentNode);
-                }
+            onclick: function (t, e) {
+                t.name in this.submitted ? this.element(t) : t.parentNode.name in this.submitted && this.element(t.parentNode)
             },
-            highlight: function (element, errorClass, validClass) {
-                if (element.type === "radio") {
-                    this.findByName(element.name).addClass(errorClass).removeClass(validClass);
-                } else {
-                    $(element).addClass(errorClass).removeClass(validClass);
-                }
+            highlight: function (t, e, i) {
+                "radio" === t.type ? this.findByName(t.name).addClass(e).removeClass(i) : l(t).addClass(e).removeClass(i)
             },
-            unhighlight: function (element, errorClass, validClass) {
-                if (element.type === "radio") {
-                    this.findByName(element.name).removeClass(errorClass).addClass(validClass);
-                } else {
-                    $(element).removeClass(errorClass).addClass(validClass);
-                }
+            unhighlight: function (t, e, i) {
+                "radio" === t.type ? this.findByName(t.name).removeClass(e).addClass(i) : l(t).removeClass(e).addClass(i)
             }
         },
-        // http://docs.jquery.com/Plugins/Validation/Validator/setDefaults
-        setDefaults: function (settings) {
-            $.extend($.validator.defaults, settings);
+        setDefaults: function (t) {
+            l.extend(l.validator.defaults, t)
         },
         messages: {
             required: "This field is required.",
@@ -2623,4469 +1037,1771 @@
             digits: "Please enter only digits.",
             creditcard: "Please enter a valid credit card number.",
             equalTo: "Please enter the same value again.",
-            maxlength: $.validator.format("Please enter no more than {0} characters."),
-            minlength: $.validator.format("Please enter at least {0} characters."),
-            rangelength: $.validator.format("Please enter a value between {0} and {1} characters long."),
-            range: $.validator.format("Please enter a value between {0} and {1}."),
-            max: $.validator.format("Please enter a value less than or equal to {0}."),
-            min: $.validator.format("Please enter a value greater than or equal to {0}.")
+            maxlength: l.validator.format("Please enter no more than {0} characters."),
+            minlength: l.validator.format("Please enter at least {0} characters."),
+            rangelength: l.validator.format("Please enter a value between {0} and {1} characters long."),
+            range: l.validator.format("Please enter a value between {0} and {1}."),
+            max: l.validator.format("Please enter a value less than or equal to {0}."),
+            min: l.validator.format("Please enter a value greater than or equal to {0}.")
         },
-        autoCreateRanges: false,
+        autoCreateRanges: !1,
         prototype: {
             init: function () {
-                this.labelContainer = $(this.settings.errorLabelContainer);
-                this.errorContext = this.labelContainer.length && this.labelContainer || $(this.currentForm);
-                this.containers = $(this.settings.errorContainer).add(this.settings.errorLabelContainer);
-                this.submitted = {};
-                this.valueCache = {};
-                this.pendingRequest = 0;
-                this.pending = {};
-                this.invalid = {};
-                this.reset();
-                var groups = (this.groups = {});
-                $.each(this.settings.groups, function (key, value) {
-                    if (typeof value === "string") {
-                        value = value.split(/\s/);
-                    }
-                    $.each(value, function (index, name) {
-                        groups[name] = key;
-                    });
+                this.labelContainer = l(this.settings.errorLabelContainer), this.errorContext = this.labelContainer.length && this.labelContainer || l(this.currentForm), this.containers = l(this.settings.errorContainer).add(this.settings.errorLabelContainer), this.submitted = {}, this.valueCache = {}, this.pendingRequest = 0, this.pending = {}, this.invalid = {}, this.reset();
+                var s = this.groups = {};
+                l.each(this.settings.groups, function (i, t) {
+                    "string" == typeof t && (t = t.split(/\s/)), l.each(t, function (t, e) {
+                        s[e] = i
+                    })
                 });
-                var rules = this.settings.rules;
-                $.each(rules, function (key, value) {
-                    rules[key] = $.validator.normalizeRule(value);
-                });
+                var i = this.settings.rules;
 
-                function delegate(event) {
-                    var validator = $.data(this[0].form, "validator"),
-                        eventType = "on" + event.type.replace(/^validate/, "");
-                    if (validator.settings[eventType]) {
-                        validator.settings[eventType].call(validator, this[0], event);
-                    }
+                function t(t) {
+                    var e = l.data(this[0].form, "validator"), i = "on" + t.type.replace(/^validate/, "");
+                    e.settings[i] && e.settings[i].call(e, this[0], t)
                 }
 
-                $(this.currentForm)
-                    .validateDelegate(":text, [type='password'], [type='file'], select, textarea, " +
-                        "[type='number'], [type='search'] ,[type='tel'], [type='url'], " +
-                        "[type='email'], [type='datetime'], [type='date'], [type='month'], " +
-                        "[type='week'], [type='time'], [type='datetime-local'], " +
-                        "[type='range'], [type='color'] ",
-                        "focusin focusout keyup", delegate)
-                    .validateDelegate("[type='radio'], [type='checkbox'], select, option", "click", delegate);
-                if (this.settings.invalidHandler) {
-                    $(this.currentForm).bind("invalid-form.validate", this.settings.invalidHandler);
-                }
-            },
-            // http://docs.jquery.com/Plugins/Validation/Validator/form
-            form: function () {
-                this.checkForm();
-                $.extend(this.submitted, this.errorMap);
-                this.invalid = $.extend({}, this.errorMap);
-                if (!this.valid()) {
-                    $(this.currentForm).triggerHandler("invalid-form", [this]);
-                }
-                this.showErrors();
-                return this.valid();
-            },
-            checkForm: function () {
+                l.each(i, function (t, e) {
+                    i[t] = l.validator.normalizeRule(e)
+                }), l(this.currentForm).validateDelegate(":text, [type='password'], [type='file'], select, textarea, [type='number'], [type='search'] ,[type='tel'], [type='url'], [type='email'], [type='datetime'], [type='date'], [type='month'], [type='week'], [type='time'], [type='datetime-local'], [type='range'], [type='color'] ", "focusin focusout keyup", t).validateDelegate("[type='radio'], [type='checkbox'], select, option", "click", t), this.settings.invalidHandler && l(this.currentForm).bind("invalid-form.validate", this.settings.invalidHandler)
+            }, form: function () {
+                return this.checkForm(), l.extend(this.submitted, this.errorMap), this.invalid = l.extend({}, this.errorMap), this.valid() || l(this.currentForm).triggerHandler("invalid-form", [this]), this.showErrors(), this.valid()
+            }, checkForm: function () {
                 this.prepareForm();
-                for (var i = 0, elements = (this.currentElements = this.elements()); elements[i]; i++) {
-                    this.check(elements[i]);
-                }
-                return this.valid();
-            },
-            // http://docs.jquery.com/Plugins/Validation/Validator/element
-            element: function (element) {
-                element = this.validationTargetFor(this.clean(element));
-                this.lastElement = element;
-                this.prepareElement(element);
-                this.currentElements = $(element);
-                var result = this.check(element) !== false;
-                if (result) {
-                    delete this.invalid[element.name];
-                } else {
-                    this.invalid[element.name] = true;
-                }
-                if (!this.numberOfInvalids()) {
-                    // Hide error containers on last error
-                    this.toHide = this.toHide.add(this.containers);
-                }
-                this.showErrors();
-                return result;
-            },
-            // http://docs.jquery.com/Plugins/Validation/Validator/showErrors
-            showErrors: function (errors) {
-                if (errors) {
-                    // add items to error list and map
-                    $.extend(this.errorMap, errors);
-                    this.errorList = [];
-                    for (var name in errors) {
-                        this.errorList.push({
-                            message: errors[name],
-                            element: this.findByName(name)[0]
-                        });
-                    }
-                    // remove items from success list
-                    this.successList = $.grep(this.successList, function (element) {
-                        return !(element.name in errors);
+                for (var t = 0, e = this.currentElements = this.elements(); e[t]; t++) this.check(e[t]);
+                return this.valid()
+            }, element: function (t) {
+                t = this.validationTargetFor(this.clean(t)), this.lastElement = t, this.prepareElement(t), this.currentElements = l(t);
+                var e = !1 !== this.check(t);
+                return e ? delete this.invalid[t.name] : this.invalid[t.name] = !0, this.numberOfInvalids() || (this.toHide = this.toHide.add(this.containers)), this.showErrors(), e
+            }, showErrors: function (e) {
+                if (e) {
+                    for (var t in l.extend(this.errorMap, e), this.errorList = [], e) this.errorList.push({
+                        message: e[t],
+                        element: this.findByName(t)[0]
                     });
+                    this.successList = l.grep(this.successList, function (t) {
+                        return !(t.name in e)
+                    })
                 }
-                if (this.settings.showErrors) {
-                    this.settings.showErrors.call(this, this.errorMap, this.errorList);
-                } else {
-                    this.defaultShowErrors();
+                this.settings.showErrors ? this.settings.showErrors.call(this, this.errorMap, this.errorList) : this.defaultShowErrors()
+            }, resetForm: function () {
+                l.fn.resetForm && l(this.currentForm).resetForm(), this.submitted = {}, this.lastElement = null, this.prepareForm(), this.hideErrors(), this.elements().removeClass(this.settings.errorClass).removeData("previousValue")
+            }, numberOfInvalids: function () {
+                return this.objectLength(this.invalid)
+            }, objectLength: function (t) {
+                var e = 0;
+                for (var i in t) e++;
+                return e
+            }, hideErrors: function () {
+                this.addWrapper(this.toHide).hide()
+            }, valid: function () {
+                return 0 === this.size()
+            }, size: function () {
+                return this.errorList.length
+            }, focusInvalid: function () {
+                if (this.settings.focusInvalid) try {
+                    l(this.findLastActive() || this.errorList.length && this.errorList[0].element || []).filter(":visible").focus().trigger("focusin")
+                } catch (t) {
                 }
-            },
-            // http://docs.jquery.com/Plugins/Validation/Validator/resetForm
-            resetForm: function () {
-                if ($.fn.resetForm) {
-                    $(this.currentForm).resetForm();
-                }
-                this.submitted = {};
-                this.lastElement = null;
-                this.prepareForm();
-                this.hideErrors();
-                this.elements().removeClass(this.settings.errorClass).removeData("previousValue");
-            },
-            numberOfInvalids: function () {
-                return this.objectLength(this.invalid);
-            },
-            objectLength: function (obj) {
-                var count = 0;
-                for (var i in obj) {
-                    count++;
-                }
-                return count;
-            },
-            hideErrors: function () {
-                this.addWrapper(this.toHide).hide();
-            },
-            valid: function () {
-                return this.size() === 0;
-            },
-            size: function () {
-                return this.errorList.length;
-            },
-            focusInvalid: function () {
-                if (this.settings.focusInvalid) {
+            }, findLastActive: function () {
+                var e = this.lastActive;
+                return e && 1 === l.grep(this.errorList, function (t) {
+                    return t.element.name === e.name
+                }).length && e
+            }, elements: function () {
+                var t = this, e = {};
+                return l(this.currentForm).find("input, select, textarea").not(":submit, :reset, :image, [disabled]").not(this.settings.ignore).filter(function () {
+                    return !this.name && t.settings.debug && window.console && console.error("%o has no name assigned", this), !(this.name in e || !t.objectLength(l(this).rules())) && (e[this.name] = !0)
+                })
+            }, clean: function (t) {
+                return l(t)[0]
+            }, errors: function () {
+                var t = this.settings.errorClass.replace(" ", ".");
+                return l(this.settings.errorElement + "." + t, this.errorContext)
+            }, reset: function () {
+                this.successList = [], this.errorList = [], this.errorMap = {}, this.toShow = l([]), this.toHide = l([]), this.currentElements = l([])
+            }, prepareForm: function () {
+                this.reset(), this.toHide = this.errors().add(this.containers)
+            }, prepareElement: function (t) {
+                this.reset(), this.toHide = this.errorsFor(t)
+            }, elementValue: function (t) {
+                var e = l(t).attr("type"), i = l(t).val();
+                return "radio" === e || "checkbox" === e ? l("input[name='" + l(t).attr("name") + "']:checked").val() : "string" == typeof i ? i.replace(/\r/g, "") : i
+            }, check: function (e) {
+                e = this.validationTargetFor(this.clean(e));
+                var t, i = l(e).rules(), s = !1, r = this.elementValue(e);
+                for (var n in i) {
+                    var a = {method: n, parameters: i[n]};
                     try {
-                        $(this.findLastActive() || this.errorList.length && this.errorList[0].element || [])
-                            .filter(":visible")
-                            .focus()
-                            // manually trigger focusin event; without it, focusin handler isn't called, findLastActive won't have anything to find
-                            .trigger("focusin");
-                    } catch (e) {
-                        // ignore IE throwing errors when focusing hidden elements
-                    }
-                }
-            },
-            findLastActive: function () {
-                var lastActive = this.lastActive;
-                return lastActive && $.grep(this.errorList, function (n) {
-                    return n.element.name === lastActive.name;
-                }).length === 1 && lastActive;
-            },
-            elements: function () {
-                var validator = this,
-                    rulesCache = {};
-                // select all valid inputs inside the form (no submit or reset buttons)
-                return $(this.currentForm)
-                    .find("input, select, textarea")
-                    .not(":submit, :reset, :image, [disabled]")
-                    .not(this.settings.ignore)
-                    .filter(function () {
-                        if (!this.name && validator.settings.debug && window.console) {
-                            console.error("%o has no name assigned", this);
+                        if ("dependency-mismatch" === (t = l.validator.methods[n].call(this, r, e, a.parameters))) {
+                            s = !0;
+                            continue
                         }
-                        // select only the first element for each name, and only those with rules specified
-                        if (this.name in rulesCache || !validator.objectLength($(this).rules())) {
-                            return false;
-                        }
-                        rulesCache[this.name] = true;
-                        return true;
-                    });
-            },
-            clean: function (selector) {
-                return $(selector)[0];
-            },
-            errors: function () {
-                var errorClass = this.settings.errorClass.replace(" ", ".");
-                return $(this.settings.errorElement + "." + errorClass, this.errorContext);
-            },
-            reset: function () {
-                this.successList = [];
-                this.errorList = [];
-                this.errorMap = {};
-                this.toShow = $([]);
-                this.toHide = $([]);
-                this.currentElements = $([]);
-            },
-            prepareForm: function () {
-                this.reset();
-                this.toHide = this.errors().add(this.containers);
-            },
-            prepareElement: function (element) {
-                this.reset();
-                this.toHide = this.errorsFor(element);
-            },
-            elementValue: function (element) {
-                var type = $(element).attr("type"),
-                    val = $(element).val();
-                if (type === "radio" || type === "checkbox") {
-                    return $("input[name='" + $(element).attr("name") + "']:checked").val();
-                }
-                if (typeof val === "string") {
-                    return val.replace(/\r/g, "");
-                }
-                return val;
-            },
-            check: function (element) {
-                element = this.validationTargetFor(this.clean(element));
-                var rules = $(element).rules();
-                var dependencyMismatch = false;
-                var val = this.elementValue(element);
-                var result;
-                for (var method in rules) {
-                    var rule = {method: method, parameters: rules[method]};
-                    try {
-                        result = $.validator.methods[method].call(this, val, element, rule.parameters);
-                        // if a method indicates that the field is optional and therefore valid,
-                        // don't mark it as valid when there are no other rules
-                        if (result === "dependency-mismatch") {
-                            dependencyMismatch = true;
-                            continue;
-                        }
-                        dependencyMismatch = false;
-                        if (result === "pending") {
-                            this.toHide = this.toHide.not(this.errorsFor(element));
-                            return;
-                        }
-                        if (!result) {
-                            this.formatAndAdd(element, rule);
-                            return false;
-                        }
-                    } catch (e) {
-                        if (this.settings.debug && window.console) {
-                            console.log("Exception occurred when checking element " + element.id + ", check the '" + rule.method + "' method.", e);
-                        }
-                        throw e;
+                        if (s = !1, "pending" === t) return void(this.toHide = this.toHide.not(this.errorsFor(e)));
+                        if (!t) return this.formatAndAdd(e, a), !1
+                    } catch (t) {
+                        throw this.settings.debug && window.console && console.log("Exception occurred when checking element " + e.id + ", check the '" + a.method + "' method.", t), t
                     }
                 }
-                if (dependencyMismatch) {
-                    return;
+                if (!s) return this.objectLength(i) && this.successList.push(e), !0
+            }, customDataMessage: function (t, e) {
+                return l(t).data("msg-" + e.toLowerCase()) || t.attributes && l(t).attr("data-msg-" + e.toLowerCase())
+            }, customMessage: function (t, e) {
+                var i = this.settings.messages[t];
+                return i && (i.constructor === String ? i : i[e])
+            }, findDefined: function () {
+                for (var t = 0; t < arguments.length; t++) if (void 0 !== arguments[t]) return arguments[t]
+            }, defaultMessage: function (t, e) {
+                return this.findDefined(this.customMessage(t.name, e), this.customDataMessage(t, e), !this.settings.ignoreTitle && t.title || void 0, l.validator.messages[e], "<strong>Warning: No message defined for " + t.name + "</strong>")
+            }, formatAndAdd: function (t, e) {
+                var i = this.defaultMessage(t, e.method), s = /\$?\{(\d+)\}/g;
+                "function" == typeof i ? i = i.call(this, e.parameters, t) : s.test(i) && (i = l.validator.format(i.replace(s, "{$1}"), e.parameters)), this.errorList.push({
+                    message: i,
+                    element: t
+                }), this.errorMap[t.name] = i, this.submitted[t.name] = i
+            }, addWrapper: function (t) {
+                return this.settings.wrapper && (t = t.add(t.parent(this.settings.wrapper))), t
+            }, defaultShowErrors: function () {
+                var t, e;
+                for (t = 0; this.errorList[t]; t++) {
+                    var i = this.errorList[t];
+                    this.settings.highlight && this.settings.highlight.call(this, i.element, this.settings.errorClass, this.settings.validClass), this.showLabel(i.element, i.message)
                 }
-                if (this.objectLength(rules)) {
-                    this.successList.push(element);
-                }
-                return true;
-            },
-            // return the custom message for the given element and validation method
-            // specified in the element's HTML5 data attribute
-            customDataMessage: function (element, method) {
-                return $(element).data("msg-" + method.toLowerCase()) || (element.attributes && $(element).attr("data-msg-" + method.toLowerCase()));
-            },
-            // return the custom message for the given element name and validation method
-            customMessage: function (name, method) {
-                var m = this.settings.messages[name];
-                return m && (m.constructor === String ? m : m[method]);
-            },
-            // return the first defined argument, allowing empty strings
-            findDefined: function () {
-                for (var i = 0; i < arguments.length; i++) {
-                    if (arguments[i] !== undefined) {
-                        return arguments[i];
-                    }
-                }
-                return undefined;
-            },
-            defaultMessage: function (element, method) {
-                return this.findDefined(
-                    this.customMessage(element.name, method),
-                    this.customDataMessage(element, method),
-                    // title is never undefined, so handle empty string as undefined
-                    !this.settings.ignoreTitle && element.title || undefined,
-                    $.validator.messages[method],
-                    "<strong>Warning: No message defined for " + element.name + "</strong>"
-                );
-            },
-            formatAndAdd: function (element, rule) {
-                var message = this.defaultMessage(element, rule.method),
-                    theregex = /\$?\{(\d+)\}/g;
-                if (typeof message === "function") {
-                    message = message.call(this, rule.parameters, element);
-                } else if (theregex.test(message)) {
-                    message = $.validator.format(message.replace(theregex, "{$1}"), rule.parameters);
-                }
-                this.errorList.push({
-                    message: message,
-                    element: element
-                });
-                this.errorMap[element.name] = message;
-                this.submitted[element.name] = message;
-            },
-            addWrapper: function (toToggle) {
-                if (this.settings.wrapper) {
-                    toToggle = toToggle.add(toToggle.parent(this.settings.wrapper));
-                }
-                return toToggle;
-            },
-            defaultShowErrors: function () {
-                var i, elements;
-                for (i = 0; this.errorList[i]; i++) {
-                    var error = this.errorList[i];
-                    if (this.settings.highlight) {
-                        this.settings.highlight.call(this, error.element, this.settings.errorClass, this.settings.validClass);
-                    }
-                    this.showLabel(error.element, error.message);
-                }
-                if (this.errorList.length) {
-                    this.toShow = this.toShow.add(this.containers);
-                }
-                if (this.settings.success) {
-                    for (i = 0; this.successList[i]; i++) {
-                        this.showLabel(this.successList[i]);
-                    }
-                }
-                if (this.settings.unhighlight) {
-                    for (i = 0, elements = this.validElements(); elements[i]; i++) {
-                        this.settings.unhighlight.call(this, elements[i], this.settings.errorClass, this.settings.validClass);
-                    }
-                }
-                this.toHide = this.toHide.not(this.toShow);
-                this.hideErrors();
-                this.addWrapper(this.toShow).show();
-            },
-            validElements: function () {
-                return this.currentElements.not(this.invalidElements());
-            },
-            invalidElements: function () {
-                return $(this.errorList).map(function () {
-                    return this.element;
-                });
-            },
-            showLabel: function (element, message) {
-                var label = this.errorsFor(element);
-                if (label.length) {
-                    // refresh error/success class
-                    label.removeClass(this.settings.validClass).addClass(this.settings.errorClass);
-                    // replace message on existing label
-                    label.html(message);
-                } else {
-                    // create label
-                    label = $("<" + this.settings.errorElement + ">")
-                        .attr("for", this.idOrName(element))
-                        .addClass(this.settings.errorClass)
-                        .html(message || "");
-                    if (this.settings.wrapper) {
-                        // make sure the element is visible, even in IE
-                        // actually showing the wrapped element is handled elsewhere
-                        label = label.hide().show().wrap("<" + this.settings.wrapper + "/>").parent();
-                    }
-                    if (!this.labelContainer.append(label).length) {
-                        if (this.settings.errorPlacement) {
-                            this.settings.errorPlacement(label, $(element));
-                        } else {
-                            label.insertAfter(element);
-                        }
-                    }
-                }
-                if (!message && this.settings.success) {
-                    label.text("");
-                    if (typeof this.settings.success === "string") {
-                        label.addClass(this.settings.success);
-                    } else {
-                        this.settings.success(label, element);
-                    }
-                }
-                this.toShow = this.toShow.add(label);
-            },
-            errorsFor: function (element) {
-                var name = this.idOrName(element);
+                if (this.errorList.length && (this.toShow = this.toShow.add(this.containers)), this.settings.success) for (t = 0; this.successList[t]; t++) this.showLabel(this.successList[t]);
+                if (this.settings.unhighlight) for (t = 0, e = this.validElements(); e[t]; t++) this.settings.unhighlight.call(this, e[t], this.settings.errorClass, this.settings.validClass);
+                this.toHide = this.toHide.not(this.toShow), this.hideErrors(), this.addWrapper(this.toShow).show()
+            }, validElements: function () {
+                return this.currentElements.not(this.invalidElements())
+            }, invalidElements: function () {
+                return l(this.errorList).map(function () {
+                    return this.element
+                })
+            }, showLabel: function (t, e) {
+                var i = this.errorsFor(t);
+                i.length ? (i.removeClass(this.settings.validClass).addClass(this.settings.errorClass), i.html(e)) : (i = l("<" + this.settings.errorElement + ">").attr("for", this.idOrName(t)).addClass(this.settings.errorClass).html(e || ""), this.settings.wrapper && (i = i.hide().show().wrap("<" + this.settings.wrapper + "/>").parent()), this.labelContainer.append(i).length || (this.settings.errorPlacement ? this.settings.errorPlacement(i, l(t)) : i.insertAfter(t))), !e && this.settings.success && (i.text(""), "string" == typeof this.settings.success ? i.addClass(this.settings.success) : this.settings.success(i, t)), this.toShow = this.toShow.add(i)
+            }, errorsFor: function (t) {
+                var e = this.idOrName(t);
                 return this.errors().filter(function () {
-                    return $(this).attr("for") === name;
-                });
-            },
-            idOrName: function (element) {
-                return this.groups[element.name] || (this.checkable(element) ? element.name : element.id || element.name);
-            },
-            validationTargetFor: function (element) {
-                // if radio/checkbox, validate first element in group instead
-                if (this.checkable(element)) {
-                    element = this.findByName(element.name).not(this.settings.ignore)[0];
+                    return l(this).attr("for") === e
+                })
+            }, idOrName: function (t) {
+                return this.groups[t.name] || (this.checkable(t) ? t.name : t.id || t.name)
+            }, validationTargetFor: function (t) {
+                return this.checkable(t) && (t = this.findByName(t.name).not(this.settings.ignore)[0]), t
+            }, checkable: function (t) {
+                return /radio|checkbox/i.test(t.type)
+            }, findByName: function (t) {
+                return l(this.currentForm).find("[name='" + t + "']")
+            }, getLength: function (t, e) {
+                switch (e.nodeName.toLowerCase()) {
+                    case"select":
+                        return l("option:selected", e).length;
+                    case"input":
+                        if (this.checkable(e)) return this.findByName(e.name).filter(":checked").length
                 }
-                return element;
-            },
-            checkable: function (element) {
-                return (/radio|checkbox/i).test(element.type);
-            },
-            findByName: function (name) {
-                return $(this.currentForm).find("[name='" + name + "']");
-            },
-            getLength: function (value, element) {
-                switch (element.nodeName.toLowerCase()) {
-                    case "select":
-                        return $("option:selected", element).length;
-                    case "input":
-                        if (this.checkable(element)) {
-                            return this.findByName(element.name).filter(":checked").length;
-                        }
+                return t.length
+            }, depend: function (t, e) {
+                return !this.dependTypes[typeof t] || this.dependTypes[typeof t](t, e)
+            }, dependTypes: {
+                boolean: function (t, e) {
+                    return t
+                }, string: function (t, e) {
+                    return !!l(t, e.form).length
+                }, function: function (t, e) {
+                    return t(e)
                 }
-                return value.length;
-            },
-            depend: function (param, element) {
-                return this.dependTypes[typeof param] ? this.dependTypes[typeof param](param, element) : true;
-            },
-            dependTypes: {
-                "boolean": function (param, element) {
-                    return param;
-                },
-                "string": function (param, element) {
-                    return !!$(param, element.form).length;
-                },
-                "function": function (param, element) {
-                    return param(element);
-                }
-            },
-            optional: function (element) {
-                var val = this.elementValue(element);
-                return !$.validator.methods.required.call(this, val, element) && "dependency-mismatch";
-            },
-            startRequest: function (element) {
-                if (!this.pending[element.name]) {
-                    this.pendingRequest++;
-                    this.pending[element.name] = true;
-                }
-            },
-            stopRequest: function (element, valid) {
-                this.pendingRequest--;
-                // sometimes synchronization fails, make sure pendingRequest is never < 0
-                if (this.pendingRequest < 0) {
-                    this.pendingRequest = 0;
-                }
-                delete this.pending[element.name];
-                if (valid && this.pendingRequest === 0 && this.formSubmitted && this.form()) {
-                    $(this.currentForm).submit();
-                    this.formSubmitted = false;
-                } else if (!valid && this.pendingRequest === 0 && this.formSubmitted) {
-                    $(this.currentForm).triggerHandler("invalid-form", [this]);
-                    this.formSubmitted = false;
-                }
-            },
-            previousValue: function (element) {
-                return $.data(element, "previousValue") || $.data(element, "previousValue", {
+            }, optional: function (t) {
+                var e = this.elementValue(t);
+                return !l.validator.methods.required.call(this, e, t) && "dependency-mismatch"
+            }, startRequest: function (t) {
+                this.pending[t.name] || (this.pendingRequest++, this.pending[t.name] = !0)
+            }, stopRequest: function (t, e) {
+                this.pendingRequest--, this.pendingRequest < 0 && (this.pendingRequest = 0), delete this.pending[t.name], e && 0 === this.pendingRequest && this.formSubmitted && this.form() ? (l(this.currentForm).submit(), this.formSubmitted = !1) : !e && 0 === this.pendingRequest && this.formSubmitted && (l(this.currentForm).triggerHandler("invalid-form", [this]), this.formSubmitted = !1)
+            }, previousValue: function (t) {
+                return l.data(t, "previousValue") || l.data(t, "previousValue", {
                     old: null,
-                    valid: true,
-                    message: this.defaultMessage(element, "remote")
-                });
+                    valid: !0,
+                    message: this.defaultMessage(t, "remote")
+                })
             }
         },
         classRuleSettings: {
-            required: {required: true},
-            email: {email: true},
-            url: {url: true},
-            date: {date: true},
-            dateISO: {dateISO: true},
-            number: {number: true},
-            digits: {digits: true},
-            creditcard: {creditcard: true}
+            required: {required: !0},
+            email: {email: !0},
+            url: {url: !0},
+            date: {date: !0},
+            dateISO: {dateISO: !0},
+            number: {number: !0},
+            digits: {digits: !0},
+            creditcard: {creditcard: !0}
         },
-        addClassRules: function (className, rules) {
-            if (className.constructor === String) {
-                this.classRuleSettings[className] = rules;
-            } else {
-                $.extend(this.classRuleSettings, className);
+        addClassRules: function (t, e) {
+            t.constructor === String ? this.classRuleSettings[t] = e : l.extend(this.classRuleSettings, t)
+        },
+        classRules: function (t) {
+            var e = {}, i = l(t).attr("class");
+            return i && l.each(i.split(" "), function () {
+                this in l.validator.classRuleSettings && l.extend(e, l.validator.classRuleSettings[this])
+            }), e
+        },
+        attributeRules: function (t) {
+            var e = {}, i = l(t), s = i[0].getAttribute("type");
+            for (var r in l.validator.methods) {
+                var n;
+                n = "required" === r ? ("" === (n = i.get(0).getAttribute(r)) && (n = !0), !!n) : i.attr(r), /min|max/.test(r) && (null === s || /number|range|text/.test(s)) && (n = Number(n)), n ? e[r] = n : s === r && "range" !== s && (e[r] = !0)
             }
+            return e.maxlength && /-1|2147483647|524288/.test(e.maxlength) && delete e.maxlength, e
         },
-        classRules: function (element) {
-            var rules = {};
-            var classes = $(element).attr("class");
-            if (classes) {
-                $.each(classes.split(" "), function () {
-                    if (this in $.validator.classRuleSettings) {
-                        $.extend(rules, $.validator.classRuleSettings[this]);
+        dataRules: function (t) {
+            var e, i, s = {}, r = l(t);
+            for (e in l.validator.methods) void 0 !== (i = r.data("rule-" + e.toLowerCase())) && (s[e] = i);
+            return s
+        },
+        staticRules: function (t) {
+            var e = {}, i = l.data(t.form, "validator");
+            return i.settings.rules && (e = l.validator.normalizeRule(i.settings.rules[t.name]) || {}), e
+        },
+        normalizeRules: function (s, r) {
+            return l.each(s, function (t, e) {
+                if (!1 !== e) {
+                    if (e.param || e.depends) {
+                        var i = !0;
+                        switch (typeof e.depends) {
+                            case"string":
+                                i = !!l(e.depends, r.form).length;
+                                break;
+                            case"function":
+                                i = e.depends.call(r, r)
+                        }
+                        i ? s[t] = void 0 === e.param || e.param : delete s[t]
                     }
-                });
-            }
-            return rules;
+                } else delete s[t]
+            }), l.each(s, function (t, e) {
+                s[t] = l.isFunction(e) ? e(r) : e
+            }), l.each(["minlength", "maxlength"], function () {
+                s[this] && (s[this] = Number(s[this]))
+            }), l.each(["rangelength", "range"], function () {
+                var t;
+                s[this] && (l.isArray(s[this]) ? s[this] = [Number(s[this][0]), Number(s[this][1])] : "string" == typeof s[this] && (t = s[this].split(/[\s,]+/), s[this] = [Number(t[0]), Number(t[1])]))
+            }), l.validator.autoCreateRanges && (s.min && s.max && (s.range = [s.min, s.max], delete s.min, delete s.max), s.minlength && s.maxlength && (s.rangelength = [s.minlength, s.maxlength], delete s.minlength, delete s.maxlength)), s
         },
-        attributeRules: function (element) {
-            var rules = {};
-            var $element = $(element);
-            var type = $element[0].getAttribute("type");
-            for (var method in $.validator.methods) {
-                var value;
-                // support for <input required> in both html5 and older browsers
-                if (method === "required") {
-                    value = $element.get(0).getAttribute(method);
-                    // Some browsers return an empty string for the required attribute
-                    // and non-HTML5 browsers might have required="" markup
-                    if (value === "") {
-                        value = true;
-                    }
-                    // force non-HTML5 browsers to return bool
-                    value = !!value;
-                } else {
-                    value = $element.attr(method);
-                }
-                // convert the value to a number for number inputs, and for text for backwards compability
-                // allows type="date" and others to be compared as strings
-                if (/min|max/.test(method) && (type === null || /number|range|text/.test(type))) {
-                    value = Number(value);
-                }
-                if (value) {
-                    rules[method] = value;
-                } else if (type === method && type !== 'range') {
-                    // exception: the jquery validate 'range' method
-                    // does not test for the html5 'range' type
-                    rules[method] = true;
-                }
+        normalizeRule: function (t) {
+            if ("string" == typeof t) {
+                var e = {};
+                l.each(t.split(/\s/), function () {
+                    e[this] = !0
+                }), t = e
             }
-            // maxlength may be returned as -1, 2147483647 (IE) and 524288 (safari) for text inputs
-            if (rules.maxlength && /-1|2147483647|524288/.test(rules.maxlength)) {
-                delete rules.maxlength;
-            }
-            return rules;
+            return t
         },
-        dataRules: function (element) {
-            var method, value,
-                rules = {}, $element = $(element);
-            for (method in $.validator.methods) {
-                value = $element.data("rule-" + method.toLowerCase());
-                if (value !== undefined) {
-                    rules[method] = value;
-                }
-            }
-            return rules;
-        },
-        staticRules: function (element) {
-            var rules = {};
-            var validator = $.data(element.form, "validator");
-            if (validator.settings.rules) {
-                rules = $.validator.normalizeRule(validator.settings.rules[element.name]) || {};
-            }
-            return rules;
-        },
-        normalizeRules: function (rules, element) {
-            // handle dependency check
-            $.each(rules, function (prop, val) {
-                // ignore rule when param is explicitly false, eg. required:false
-                if (val === false) {
-                    delete rules[prop];
-                    return;
-                }
-                if (val.param || val.depends) {
-                    var keepRule = true;
-                    switch (typeof val.depends) {
-                        case "string":
-                            keepRule = !!$(val.depends, element.form).length;
-                            break;
-                        case "function":
-                            keepRule = val.depends.call(element, element);
-                            break;
-                    }
-                    if (keepRule) {
-                        rules[prop] = val.param !== undefined ? val.param : true;
-                    } else {
-                        delete rules[prop];
-                    }
-                }
-            });
-            // evaluate parameters
-            $.each(rules, function (rule, parameter) {
-                rules[rule] = $.isFunction(parameter) ? parameter(element) : parameter;
-            });
-            // clean number parameters
-            $.each(['minlength', 'maxlength'], function () {
-                if (rules[this]) {
-                    rules[this] = Number(rules[this]);
-                }
-            });
-            $.each(['rangelength', 'range'], function () {
-                var parts;
-                if (rules[this]) {
-                    if ($.isArray(rules[this])) {
-                        rules[this] = [Number(rules[this][0]), Number(rules[this][1])];
-                    } else if (typeof rules[this] === "string") {
-                        parts = rules[this].split(/[\s,]+/);
-                        rules[this] = [Number(parts[0]), Number(parts[1])];
-                    }
-                }
-            });
-            if ($.validator.autoCreateRanges) {
-                // auto-create ranges
-                if (rules.min && rules.max) {
-                    rules.range = [rules.min, rules.max];
-                    delete rules.min;
-                    delete rules.max;
-                }
-                if (rules.minlength && rules.maxlength) {
-                    rules.rangelength = [rules.minlength, rules.maxlength];
-                    delete rules.minlength;
-                    delete rules.maxlength;
-                }
-            }
-            return rules;
-        },
-        // Converts a simple string to a {string: true} rule, e.g., "required" to {required:true}
-        normalizeRule: function (data) {
-            if (typeof data === "string") {
-                var transformed = {};
-                $.each(data.split(/\s/), function () {
-                    transformed[this] = true;
-                });
-                data = transformed;
-            }
-            return data;
-        },
-        // http://docs.jquery.com/Plugins/Validation/Validator/addMethod
-        addMethod: function (name, method, message) {
-            $.validator.methods[name] = method;
-            $.validator.messages[name] = message !== undefined ? message : $.validator.messages[name];
-            if (method.length < 3) {
-                $.validator.addClassRules(name, $.validator.normalizeRule(name));
-            }
+        addMethod: function (t, e, i) {
+            l.validator.methods[t] = e, l.validator.messages[t] = void 0 !== i ? i : l.validator.messages[t], e.length < 3 && l.validator.addClassRules(t, l.validator.normalizeRule(t))
         },
         methods: {
-            // http://docs.jquery.com/Plugins/Validation/Methods/required
-            required: function (value, element, param) {
-                // check if dependency is met
-                if (!this.depend(param, element)) {
-                    return "dependency-mismatch";
+            required: function (t, e, i) {
+                if (!this.depend(i, e)) return "dependency-mismatch";
+                if ("select" !== e.nodeName.toLowerCase()) return this.checkable(e) ? 0 < this.getLength(t, e) : 0 < l.trim(t).length;
+                var s = l(e).val();
+                return s && 0 < s.length
+            }, email: function (t, e) {
+                return this.optional(e) || /^((([a-z]|\d|[!#\$%&'\*\+\-\/=\?\^_`{\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+(\.([a-z]|\d|[!#\$%&'\*\+\-\/=\?\^_`{\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+)*)|((\x22)((((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(([\x01-\x08\x0b\x0c\x0e-\x1f\x7f]|\x21|[\x23-\x5b]|[\x5d-\x7e]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(\\([\x01-\x09\x0b\x0c\x0d-\x7f]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]))))*(((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(\x22)))@((([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.)+(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))$/i.test(t)
+            }, url: function (t, e) {
+                return this.optional(e) || /^(https?|s?ftp):\/\/(((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:)*@)?(((\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5]))|((([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.)+(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.?)(:\d*)?)(\/((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)+(\/(([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)*)*)?)?(\?((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)|[\uE000-\uF8FF]|\/|\?)*)?(#((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)|\/|\?)*)?$/i.test(t)
+            }, date: function (t, e) {
+                return this.optional(e) || !/Invalid|NaN/.test(new Date(t).toString())
+            }, dateISO: function (t, e) {
+                return this.optional(e) || /^\d{4}[\/\-]\d{1,2}[\/\-]\d{1,2}$/.test(t)
+            }, number: function (t, e) {
+                return this.optional(e) || /^-?(?:\d+|\d{1,3}(?:,\d{3})+)?(?:\.\d+)?$/.test(t)
+            }, digits: function (t, e) {
+                return this.optional(e) || /^\d+$/.test(t)
+            }, creditcard: function (t, e) {
+                if (this.optional(e)) return "dependency-mismatch";
+                if (/[^0-9 \-]+/.test(t)) return !1;
+                for (var i = 0, s = 0, r = !1, n = (t = t.replace(/\D/g, "")).length - 1; 0 <= n; n--) {
+                    var a = t.charAt(n);
+                    s = parseInt(a, 10), r && 9 < (s *= 2) && (s -= 9), i += s, r = !r
                 }
-                if (element.nodeName.toLowerCase() === "select") {
-                    // could be an array for select-multiple or a string, both are fine this way
-                    var val = $(element).val();
-                    return val && val.length > 0;
-                }
-                if (this.checkable(element)) {
-                    return this.getLength(value, element) > 0;
-                }
-                return $.trim(value).length > 0;
-            },
-            // http://docs.jquery.com/Plugins/Validation/Methods/email
-            email: function (value, element) {
-                // contributed by Scott Gonzalez: http://projects.scottsplayground.com/email_address_validation/
-                return this.optional(element) || /^((([a-z]|\d|[!#\$%&'\*\+\-\/=\?\^_`{\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+(\.([a-z]|\d|[!#\$%&'\*\+\-\/=\?\^_`{\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+)*)|((\x22)((((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(([\x01-\x08\x0b\x0c\x0e-\x1f\x7f]|\x21|[\x23-\x5b]|[\x5d-\x7e]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(\\([\x01-\x09\x0b\x0c\x0d-\x7f]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]))))*(((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(\x22)))@((([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.)+(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))$/i.test(value);
-            },
-            // http://docs.jquery.com/Plugins/Validation/Methods/url
-            url: function (value, element) {
-                // contributed by Scott Gonzalez: http://projects.scottsplayground.com/iri/
-                return this.optional(element) || /^(https?|s?ftp):\/\/(((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:)*@)?(((\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5]))|((([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.)+(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.?)(:\d*)?)(\/((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)+(\/(([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)*)*)?)?(\?((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)|[\uE000-\uF8FF]|\/|\?)*)?(#((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)|\/|\?)*)?$/i.test(value);
-            },
-            // http://docs.jquery.com/Plugins/Validation/Methods/date
-            date: function (value, element) {
-                return this.optional(element) || !/Invalid|NaN/.test(new Date(value).toString());
-            },
-            // http://docs.jquery.com/Plugins/Validation/Methods/dateISO
-            dateISO: function (value, element) {
-                return this.optional(element) || /^\d{4}[\/\-]\d{1,2}[\/\-]\d{1,2}$/.test(value);
-            },
-            // http://docs.jquery.com/Plugins/Validation/Methods/number
-            number: function (value, element) {
-                return this.optional(element) || /^-?(?:\d+|\d{1,3}(?:,\d{3})+)?(?:\.\d+)?$/.test(value);
-            },
-            // http://docs.jquery.com/Plugins/Validation/Methods/digits
-            digits: function (value, element) {
-                return this.optional(element) || /^\d+$/.test(value);
-            },
-            // http://docs.jquery.com/Plugins/Validation/Methods/creditcard
-            // based on http://en.wikipedia.org/wiki/Luhn
-            creditcard: function (value, element) {
-                if (this.optional(element)) {
-                    return "dependency-mismatch";
-                }
-                // accept only spaces, digits and dashes
-                if (/[^0-9 \-]+/.test(value)) {
-                    return false;
-                }
-                var nCheck = 0,
-                    nDigit = 0,
-                    bEven = false;
-                value = value.replace(/\D/g, "");
-                for (var n = value.length - 1; n >= 0; n--) {
-                    var cDigit = value.charAt(n);
-                    nDigit = parseInt(cDigit, 10);
-                    if (bEven) {
-                        if ((nDigit *= 2) > 9) {
-                            nDigit -= 9;
-                        }
-                    }
-                    nCheck += nDigit;
-                    bEven = !bEven;
-                }
-                return (nCheck % 10) === 0;
-            },
-            // http://docs.jquery.com/Plugins/Validation/Methods/minlength
-            minlength: function (value, element, param) {
-                var length = $.isArray(value) ? value.length : this.getLength($.trim(value), element);
-                return this.optional(element) || length >= param;
-            },
-            // http://docs.jquery.com/Plugins/Validation/Methods/maxlength
-            maxlength: function (value, element, param) {
-                var length = $.isArray(value) ? value.length : this.getLength($.trim(value), element);
-                return this.optional(element) || length <= param;
-            },
-            // http://docs.jquery.com/Plugins/Validation/Methods/rangelength
-            rangelength: function (value, element, param) {
-                var length = $.isArray(value) ? value.length : this.getLength($.trim(value), element);
-                return this.optional(element) || (length >= param[0] && length <= param[1]);
-            },
-            // http://docs.jquery.com/Plugins/Validation/Methods/min
-            min: function (value, element, param) {
-                return this.optional(element) || value >= param;
-            },
-            // http://docs.jquery.com/Plugins/Validation/Methods/max
-            max: function (value, element, param) {
-                return this.optional(element) || value <= param;
-            },
-            // http://docs.jquery.com/Plugins/Validation/Methods/range
-            range: function (value, element, param) {
-                return this.optional(element) || (value >= param[0] && value <= param[1]);
-            },
-            // http://docs.jquery.com/Plugins/Validation/Methods/equalTo
-            equalTo: function (value, element, param) {
-                // bind to the blur event of the target in order to revalidate whenever the target field is updated
-                // TODO find a way to bind the event just once, avoiding the unbind-rebind overhead
-                var target = $(param);
-                if (this.settings.onfocusout) {
-                    target.unbind(".validate-equalTo").bind("blur.validate-equalTo", function () {
-                        $(element).valid();
-                    });
-                }
-                return value === target.val();
-            },
-            // http://docs.jquery.com/Plugins/Validation/Methods/remote
-            remote: function (value, element, param) {
-                if (this.optional(element)) {
-                    return "dependency-mismatch";
-                }
-                var previous = this.previousValue(element);
-                if (!this.settings.messages[element.name]) {
-                    this.settings.messages[element.name] = {};
-                }
-                previous.originalMessage = this.settings.messages[element.name].remote;
-                this.settings.messages[element.name].remote = previous.message;
-                param = typeof param === "string" && {url: param} || param;
-                if (previous.old === value) {
-                    return previous.valid;
-                }
-                previous.old = value;
-                var validator = this;
-                this.startRequest(element);
-                var data = {};
-                data[element.name] = value;
-                $.ajax($.extend(true, {
-                    url: param,
+                return i % 10 == 0
+            }, minlength: function (t, e, i) {
+                var s = l.isArray(t) ? t.length : this.getLength(l.trim(t), e);
+                return this.optional(e) || i <= s
+            }, maxlength: function (t, e, i) {
+                var s = l.isArray(t) ? t.length : this.getLength(l.trim(t), e);
+                return this.optional(e) || s <= i
+            }, rangelength: function (t, e, i) {
+                var s = l.isArray(t) ? t.length : this.getLength(l.trim(t), e);
+                return this.optional(e) || s >= i[0] && s <= i[1]
+            }, min: function (t, e, i) {
+                return this.optional(e) || i <= t
+            }, max: function (t, e, i) {
+                return this.optional(e) || t <= i
+            }, range: function (t, e, i) {
+                return this.optional(e) || t >= i[0] && t <= i[1]
+            }, equalTo: function (t, e, i) {
+                var s = l(i);
+                return this.settings.onfocusout && s.unbind(".validate-equalTo").bind("blur.validate-equalTo", function () {
+                    l(e).valid()
+                }), t === s.val()
+            }, remote: function (n, a, t) {
+                if (this.optional(a)) return "dependency-mismatch";
+                var u = this.previousValue(a);
+                if (this.settings.messages[a.name] || (this.settings.messages[a.name] = {}), u.originalMessage = this.settings.messages[a.name].remote, this.settings.messages[a.name].remote = u.message, t = "string" == typeof t && {url: t} || t, u.old === n) return u.valid;
+                u.old = n;
+                var o = this;
+                this.startRequest(a);
+                var e = {};
+                return e[a.name] = n, l.ajax(l.extend(!0, {
+                    url: t,
                     mode: "abort",
-                    port: "validate" + element.name,
+                    port: "validate" + a.name,
                     dataType: "json",
-                    data: data,
-                    success: function (response) {
-                        validator.settings.messages[element.name].remote = previous.originalMessage;
-                        var valid = response === true || response === "true";
-                        if (valid) {
-                            var submitted = validator.formSubmitted;
-                            validator.prepareElement(element);
-                            validator.formSubmitted = submitted;
-                            validator.successList.push(element);
-                            delete validator.invalid[element.name];
-                            validator.showErrors();
+                    data: e,
+                    success: function (t) {
+                        o.settings.messages[a.name].remote = u.originalMessage;
+                        var e = !0 === t || "true" === t;
+                        if (e) {
+                            var i = o.formSubmitted;
+                            o.prepareElement(a), o.formSubmitted = i, o.successList.push(a), delete o.invalid[a.name], o.showErrors()
                         } else {
-                            var errors = {};
-                            var message = response || validator.defaultMessage(element, "remote");
-                            errors[element.name] = previous.message = $.isFunction(message) ? message(value) : message;
-                            validator.invalid[element.name] = true;
-                            validator.showErrors(errors);
+                            var s = {}, r = t || o.defaultMessage(a, "remote");
+                            s[a.name] = u.message = l.isFunction(r) ? r(n) : r, o.invalid[a.name] = !0, o.showErrors(s)
                         }
-                        previous.valid = valid;
-                        validator.stopRequest(element, valid);
+                        u.valid = e, o.stopRequest(a, e)
                     }
-                }, param));
-                return "pending";
+                }, t)), "pending"
             }
         }
-    });
-// deprecated, use $.validator.format instead
-    $.format = $.validator.format;
-}(jQuery));
-
-// ajax mode: abort
-// usage: $.ajax({ mode: "abort"[, port: "uniqueport"]});
-// if mode:"abort" is used, the previous request on that port (port can be undefined) is aborted via XMLHttpRequest.abort()
-(function ($) {
-    var pendingRequests = {};
-    // Use a prefilter if available (1.5+)
-    if ($.ajaxPrefilter) {
-        $.ajaxPrefilter(function (settings, _, xhr) {
-            var port = settings.port;
-            if (settings.mode === "abort") {
-                if (pendingRequests[port]) {
-                    pendingRequests[port].abort();
-                }
-                pendingRequests[port] = xhr;
-            }
-        });
-    } else {
-        // Proxy ajax
-        var ajax = $.ajax;
-        $.ajax = function (settings) {
-            var mode = ("mode" in settings ? settings : $.ajaxSettings).mode,
-                port = ("port" in settings ? settings : $.ajaxSettings).port;
-            if (mode === "abort") {
-                if (pendingRequests[port]) {
-                    pendingRequests[port].abort();
-                }
-                pendingRequests[port] = ajax.apply(this, arguments);
-                return pendingRequests[port];
-            }
-            return ajax.apply(this, arguments);
-        };
+    }), l.format = l.validator.format
+}(jQuery), function (s) {
+    var r = {};
+    if (s.ajaxPrefilter) s.ajaxPrefilter(function (t, e, i) {
+        var s = t.port;
+        "abort" === t.mode && (r[s] && r[s].abort(), r[s] = i)
+    }); else {
+        var n = s.ajax;
+        s.ajax = function (t) {
+            var e = ("mode" in t ? t : s.ajaxSettings).mode, i = ("port" in t ? t : s.ajaxSettings).port;
+            return "abort" === e ? (r[i] && r[i].abort(), r[i] = n.apply(this, arguments), r[i]) : n.apply(this, arguments)
+        }
     }
-}(jQuery));
-
-// provides delegate(type: String, delegate: Selector, handler: Callback) plugin for easier event delegation
-// handler is only called when $(event.target).is(delegate), in the scope of the jquery-object for event.target
-(function ($) {
-    $.extend($.fn, {
-        validateDelegate: function (delegate, type, handler) {
-            return this.bind(type, function (event) {
-                var target = $(event.target);
-                if (target.is(delegate)) {
-                    return handler.apply(target, arguments);
-                }
-            });
+}(jQuery), function (r) {
+    r.extend(r.fn, {
+        validateDelegate: function (i, t, s) {
+            return this.bind(t, function (t) {
+                var e = r(t.target);
+                if (e.is(i)) return s.apply(e, arguments)
+            })
         }
-    });
-}(jQuery));
+    })
+}(jQuery);
 
-/**
- * scriptjava.js
- * save time
- * scriptjava.ru
- * scriptjava.net
- * scriptjava.org
- */
+/*------*/
 var _$$ = {
-    version: 20120603,
-    $: function () {
-        var obj;
-        switch (arguments.length) {
-            case 0:
-                return document;
-                break;
-            case 2:
-                _$$.$(arguments[0]).innerHTML = arguments[1];
-                break;
-            case 3:
-                _$$.$(arguments[0]).style[arguments[1]] = arguments[2];
-                break;
-        }
-        if (arguments.length > 0) {
-            if (typeof arguments[0] == 'string') {
-                obj = _$$.$().getElementById(arguments[0]);
-            }
-            else {
-                obj = arguments[0];
-            }
-        }
-        if (obj == null) {
-            return false;
-        }
-        obj.$$ = function () {
+        version: 20120603, $: function () {
+            var e;
             switch (arguments.length) {
                 case 0:
-                    this.$$ = function () {
-                        return _$$.$.apply(null, arguments);
-                    };
-                    break;
-                case 1:
-                    obj.innerHTML = arguments[0];
-                    break;
+                    return document;
                 case 2:
-                    obj.style[arguments[0]] = arguments[1];
+                    _$$.$(arguments[0]).innerHTML = arguments[1];
                     break;
+                case 3:
+                    _$$.$(arguments[0]).style[arguments[1]] = arguments[2]
             }
-            return obj;
-        };
-        obj.$$after = function (el) {
-            var elm = this;
-            var th = _$$.$(el);
-            do {
-                th = th.nextSibling;
-            } while (th && th.nodeType != 1);
-            if (th != null) {
-                if (th != elm) {
-                    th.parentNode.insertBefore(elm, th);
+            return 0 < arguments.length && (e = "string" == typeof arguments[0] ? _$$.$().getElementById(arguments[0]) : arguments[0]), null != e && (e.$$ = function () {
+                switch (arguments.length) {
+                    case 0:
+                        this.$$ = function () {
+                            return _$$.$.apply(null, arguments)
+                        };
+                        break;
+                    case 1:
+                        e.innerHTML = arguments[0];
+                        break;
+                    case 2:
+                        e.style[arguments[0]] = arguments[1]
                 }
-            }
-            else {
-                if (el != elm) {
-                    el.parentNode.appendChild(elm);
-                }
-            }
-            return _$$.$(elm);
-        };
-        obj.$$before = function (el) {
-            var elm = this;
-            var th = _$$.$(el);
-            do {
-                th = th.previousSibling;
-            } while (th && th.nodeType != 1);
-            var nth = th;
-            if (nth != null) {
-                do {
-                    nth = nth.nextSibling;
-                } while (nth && nth.nodeType != 1);
-                if (th != elm) {
-                    th.parentNode.insertBefore(elm, nth);
-                }
-            }
-            else {
-                if (el != elm) {
-                    el.parentNode.insertBefore(elm, el);
-                }
-            }
-            return _$$.$(elm);
-        };
-        obj.$$prev = function () {
-            var elm = this;
-            do {
-                elm = elm.previousSibling;
-            } while (elm && elm.nodeType != 1);
-            if (elm != null) {
-                return _$$.$(elm);
-            }
-            else {
-                return elm;
-            }
-        };
-        obj.$$next = function () {
-            var elm = this;
-            do {
-                elm = elm.nextSibling;
-            } while (elm && elm.nodeType != 1);
-            if (elm != null) {
-                return _$$.$(elm);
-            }
-            else {
-                return elm;
-            }
-        };
-        obj.$$first = function () {
-            var elm = this;
-            elm = elm.firstChild;
-            elm = elm && elm.nodeType != 1 ? elm.nextSibling : elm;
-            if (elm != null) {
-                return _$$.$(elm);
-            }
-            else {
-                return elm;
-            }
-        };
-        obj.$$last = function () {
-            var elm = this;
-            elm = elm.lastChild;
-            elm = elm && elm.nodeType != 1 ? elm.previousSibling : elm;
-            if (elm != null) {
-                return _$$.$(elm);
-            }
-            else {
-                return elm;
-            }
-        };
-        obj.$$parent = function (num) {
-            var elm = this;
-            num = num || 1;
-            for (var i = 0; i < num; i++)
-                if (elm != null) elm = elm.parentNode;
-            if (elm != null) {
-                return _$$.$(elm);
-            }
-            else {
-                return elm;
-            }
-        };
-        obj.$$html = function () {
-            var elm = this;
-            return _$$.$(elm).innerHTML;
-        };
-        return obj;
-    },
-    $a: function (arg) {
-        arg = arg || {};
-        var default_arg = {
-            type: 'get',
-            url: '',
-            data: {},
-            response: 'text',
-            header: {
-                'Content-Type': 'application/x-www-form-urlencoded; charset=windows-1251',
-                'Referer': location.href
-            },
-            async: true,
-            username: '',
-            password: '',
-            errrep: false,
-            error: function (num) {
-                var arr = ['Your browser does not support Ajax',
-                    'Request failed',
-                    'Address does not exist',
-                    'The waiting time left'];
-                alert(arr[num]);
-            },
-            status: function (number) {
-            },
-            endstatus: function (number) {
-            },
-            success: function (data) {
-            },
-            timeout: 0
-        };
-        for (var index in default_arg) {
-            if (typeof arg[index] == "undefined") arg[index] = default_arg[index];
-        }
-        var type = arg['type'];
-        var url = arg['url'];
-        var data = arg['data'];
-        var response = arg['response'];
-        var header = arg['header'];
-        var async = arg['async'];
-        var username = arg['username'];
-        var password = arg['password'];
-        var errrep = arg['errrep'];
-        var error = arg['error'];
-        var status = arg['status'];
-        var endstatus = arg['endstatus'];
-        var success = arg['success'];
-        var timeout = arg['timeout'];
-        var obj = function () {
-            var req = null;
-            if (window.XMLHttpRequest) {
-                try {
-                    req = new XMLHttpRequest();
-                }
-                catch (e) {
-                }
-            }
-            else if (window.ActiveXObject) {
-                try {
-                    req = new ActiveXObject('Msxml2.XMLHTTP');
-                }
-                catch (e) {
-                    try {
-                        req = new ActiveXObject('Microsoft.XMLHTTP');
-                    }
-                    catch (e) {
-                    }
-                }
-            }
-            return req;
-        };
-        var encurl = function (d) {
-            var query = [];
-            if (d instanceof Object) {
-                for (var k in d) {
-                    query.push(encodeURIComponent(k) + '=' + encodeURIComponent(d[k]));
-                }
-                return query.join('&');
-            }
-            else {
-                return encodeURIComponent(d);
-            }
-        };
-        var parsehead = function (headertxt) {
-            var headers = {};
-            var ls = /^\s*/;
-            var ts = /\s*$/;
-            var lines = headertxt.split("\n");
-            for (var i = 0; i < lines.length; i++) {
-                var line = lines[i];
-                if (line.length == 0) continue;
-                var pos = line.indexOf(':');
-                var name = line.substring(0, pos).replace(ls, "").replace(ts, "");
-                var value = line.substring(pos + 1).replace(ls, "").replace(ts, "");
-                headers[name] = value;
-            }
-            return headers;
-        };
-        var req = obj();
-        if (req !== null) {
-            var fullurl = url + '?' + encurl(data);
-            if (type == 'get') {
-                (username == '' && password == '') ? req.open("GET", fullurl, async) : req.open("GET", fullurl, async, username, password);
-            }
-            else if (type == 'post') {
-                (username == '' && password == '') ? req.open("POST", url, async) : req.open("POST", url, async, username, password);
-            }
-            else if (type == 'head') {
-                (username == '' && password == '') ? req.open("HEAD", fullurl, async) : req.open("HEAD", fullurl, async, username, password);
-            }
-            if (header instanceof Object) {
-                for (var key in header) {
-                    req.setRequestHeader(key, header[key]);
-                }
-            }
-            if (!async) {
-                if (type == 'get' || type == 'head') {
-                    req.send(null);
-                }
-                else if (type == 'post') {
-                    req.send(encurl(data));
-                }
-                endstatus(req.status);
-                if (req.status == 200) {
-                    if (type == 'get' || type == 'post') {
-                        if (response == 'text') {
-                            success(req.responseText);
-                        }
-                        else if (response == 'xml') {
-                            success(req.responseXML);
-                        }
-                    }
-                    else if (type == 'head') {
-                        success(parsehead(req.getAllResponseHeaders()));
-                    }
-                }
-                else if (req.status == 404) {
-                    if (errrep) {
-                        error(2);
-                    }
-                }
-                else {
-                    if (errrep) {
-                        error(1);
-                    }
-                }
-            }
-            else {
-                req.onreadystatechange = function () {
-                    status(req.readyState);
-                    if (req.readyState == 4) {
-                        if (reqtime) {
-                            clearTimeout(reqtime);
-                        }
-                        endstatus(req.status);
-                        if (req.status == 200) {
-                            if (type == 'get' || type == 'post') {
-                                if (response == 'text') {
-                                    success(req.responseText);
-                                }
-                                else if (response == 'xml') {
-                                    success(req.responseXML);
-                                }
-                            }
-                            else if (type == 'head') {
-                                success(parsehead(req.getAllResponseHeaders()));
-                            }
-                        }
-                        else if (req.status == 404) {
-                            if (errrep) {
-                                error(2);
-                            }
-                        }
-                        else {
-                            if (errrep) {
-                                error(1);
-                            }
-                        }
-                    }
-                };
-                if (type == 'get' || type == 'head') {
-                    req.send(null);
-                }
-                else if (type == 'post') {
-                    req.send(encurl(data));
-                }
-                if (timeout > 0) {
-                    var reqtime = setTimeout(function () {
-                        if (req.readyState != 4) {
-                            req.abort();
-                            if (errrep) {
-                                error(3);
-                            }
-                        }
-                    }, timeout);
-                }
-            }
-        }
-        else {
-            if (errrep) {
-                error(0);
-            }
-        }
-    },
-    $c: {
-        set: function (cookie_name, cookie_value, cookie_expires, cookie_path, cookie_domain, cookie_secure) {
-            if (cookie_name !== undefined) {
-                cookie_expires = cookie_expires || 0;
-                var expire_date = new Date;
-                expire_date.setTime(expire_date.getTime() + (cookie_expires * 1000));
-                _$$.$().cookie = cookie_name + "=" + encodeURIComponent(cookie_value) + '; ' +
-                    ((cookie_expires === undefined) ? '' : 'expires=' + expire_date.toGMTString() + '; ') +
-                    ((cookie_path === undefined) ? 'path=/;' : 'path=' + cookie_path + '; ') +
-                    ((cookie_domain === undefined) ? '' : 'domain=' + cookie_domain + '; ') +
-                    ((cookie_secure === true) ? 'secure; ' : '');
-            }
-        },
-        get: function (cookie_name) {
-            var cookie = _$$.$().cookie, length = cookie.length;
-            if (length) {
-                var cookie_start = cookie.indexOf(cookie_name + '=');
-                if (cookie_start != -1) {
-                    var cookie_end = cookie.indexOf(';', cookie_start);
-                    if (cookie_end == -1) {
-                        cookie_end = length;
-                    }
-                    cookie_start += cookie_name.length + 1;
-                    return decodeURIComponent(cookie.substring(cookie_start, cookie_end));
-                }
-            }
-        },
-        erase: function (cookie_name) {
-            this.set(cookie_name, '', -1);
-        },
-        test: function () {
-            this.set('test_cookie', 'test', 10);
-            var work = (this.get('test_cookie') === 'test') ? true : false;
-            this.erase('test_cookie');
-            return work;
-        }
-    },
-    $e: {
-        add: function (elem, type, handler) {
-            if (elem.event_list == undefined) elem.event_list = {};
-            if (elem.event_list[type] == undefined) {
-                elem.event_list[type] = [];
-                var func = function (event) {
-                    var event = event || window.event;
-                    var list = elem.event_list[type];
-                    for (var i in list) {
-                        list[i](event);
-                    }
-                };
-                if (elem.addEventListener) {
-                    elem.addEventListener(type, func, false);
-                }
-                else if (elem.attachEvent) {
-                    elem.attachEvent('on' + type, func);
-                }
-                else {
-                    elem['on' + type] = func;
-                }
-            }
-            var list = elem.event_list[type];
-            var exist = false;
-            for (var i in list) {
-                if (list[i] == handler) exist = true;
-            }
-            if (!exist) {
-                elem.event_list[type].push(handler);
-            }
-        },
-        remove: function (elem, type, handler) {
-            if (elem.event_list == undefined) return false;
-            if (elem.event_list[type] == undefined) return false;
-            var list = elem.event_list[type];
-            for (var i in list) {
-                if (list[i] == handler) {
-                    list = list.splice(i, 1);
-                    return true;
-                }
-            }
-            return false;
-        }
-    },
-    $f: function (arg) {
-        arg = arg || {};
-        var default_arg = {
-            formid: '',
-            url: '',
-            onstart: function () {
-            },
-            onsend: function () {
-            }
-        };
-        for (var index in default_arg) {
-            if (typeof arg[index] == "undefined") arg[index] = default_arg[index];
-        }
-        var formid = arg['formid'];
-        var url = arg['url'];
-        var onsend = arg['onsend'];
-        var onstart = arg['onstart'];
-        var id = 'f' + _$$.$s.randnum(0, 1000000);
-        var div = _$$.$i({
-            create: 'div',
-            attribute: {},
-            insert: _$$.$().body
-        });
-        div.innerHTML = '<iframe style="width:250px;height:200px;" src="about:blank" id="' + id + '" name="' + id + '" onload="if(this.onsendcomplete) {if(this.contentDocument) {var d = this.contentDocument;}else if(this.contentWindow) {var d = this.contentWindow.document;}else {var d = window.frames[this.id].document;}if(d.location.href != \'about:blank\') {this.onsendcomplete();}}"></iframe>';
-        div.style.display = 'none';
-        _$$.$(id).onsendcomplete = function () {
-            setTimeout(function () {
-                _$$.$().body.removeChild(div);
-            }, 60000);
-            onsend();
-        };
-        _$$.$(formid).setAttribute('target', id);
-        _$$.$(formid).setAttribute('action', url);
-        _$$.$(formid).submit();
-        onstart();
-        return div;
-    },
-    $i: function (arg) {
-        arg = arg || {};
-        var default_arg = {
-            create: 'script',
-            attribute: {
-                'type': 'text/javascript'
-            },
-            insert: _$$.$().body,
-            onready: function () {
-            }
-        };
-        for (var index in default_arg) {
-            if (typeof arg[index] == "undefined") arg[index] = default_arg[index];
-        }
-        var create = arg['create'];
-        var attribute = arg['attribute'];
-        var insert = arg['insert'];
-        var onready = arg['onready'];
-        var s = _$$.$().createElement(create);
-        for (var key in attribute) {
-            s.setAttribute(key, attribute[key]);
-        }
-        if (create == 'script' && (typeof attribute.src != "undefined")) {
-            if (s.readyState) {
-                s.onreadystatechange = function () {
-                    if (s.readyState == "loaded" || s.readyState == "complete") {
-                        s.onreadystatechange = null;
-                        onready();
-                    }
-                }
-            }
-            else {
-                s.onload = function () {
-                    onready();
-                }
-            }
-        }
-        insert.appendChild(s);
-        if (create == 'script' && (typeof attribute.src == "undefined")) {
-            s.$$ = function () {
-                s.text = arguments[0];
-            }
-        }
-        else if (create == 'style') {
-            s.$$ = function () {
-                if (s.styleSheet) {
-                    s.styleSheet.cssText = _$$.$().createTextNode(arguments[0]).nodeValue;
-                }
-                else {
-                    s.appendChild(_$$.$().createTextNode(arguments[0]));
-                }
-            }
-        }
-        else {
-            return _$$.$(s);
-        }
-        return s;
-    },
-    $r: {
-        rl: [],
-        or: function (handler) {
-            if (!_$$.$r.rl.length) {
-                _$$.$r.br(function () {
-                    for (var i = 0; i < _$$.$r.rl.length; i++) {
-                        _$$.$r.rl[i]();
-                    }
-                });
-            }
-            _$$.$r.rl.push(handler);
-        },
-        br: function (handler) {
-            var called = false;
-            var ready = function () {
-                if (called) return;
-                called = true;
-                handler();
+                return e
+            }, e.$$after = function (e) {
+                for (var t = this, n = _$$.$(e); (n = n.nextSibling) && 1 != n.nodeType;) ;
+                return null != n ? n != t && n.parentNode.insertBefore(t, n) : e != t && e.parentNode.appendChild(t), _$$.$(t)
+            }, e.$$before = function (e) {
+                for (var t = this, n = _$$.$(e); (n = n.previousSibling) && 1 != n.nodeType;) ;
+                var o = n;
+                if (null != o) {
+                    for (; (o = o.nextSibling) && 1 != o.nodeType;) ;
+                    n != t && n.parentNode.insertBefore(t, o)
+                } else e != t && e.parentNode.insertBefore(t, e);
+                return _$$.$(t)
+            }, e.$$prev = function () {
+                for (var e = this; (e = e.previousSibling) && 1 != e.nodeType;) ;
+                return null != e ? _$$.$(e) : e
+            }, e.$$next = function () {
+                for (var e = this; (e = e.nextSibling) && 1 != e.nodeType;) ;
+                return null != e ? _$$.$(e) : e
+            }, e.$$first = function () {
+                var e = this;
+                return null != (e = (e = e.firstChild) && 1 != e.nodeType ? e.nextSibling : e) ? _$$.$(e) : e
+            }, e.$$last = function () {
+                var e = this;
+                return null != (e = (e = e.lastChild) && 1 != e.nodeType ? e.previousSibling : e) ? _$$.$(e) : e
+            }, e.$$parent = function (e) {
+                var t = this;
+                e = e || 1;
+                for (var n = 0; n < e; n++) null != t && (t = t.parentNode);
+                return null != t ? _$$.$(t) : t
+            }, e.$$html = function () {
+                return _$$.$(this).innerHTML
+            }, e)
+        }, $a: function (e) {
+            e = e || {};
+            var t = {
+                type: "get",
+                url: "",
+                data: {},
+                response: "text",
+                header: {"Content-Type": "application/x-www-form-urlencoded; charset=windows-1251", Referer: location.href},
+                async: !0,
+                username: "",
+                password: "",
+                errrep: !1,
+                error: function (e) {
+                    alert(["Your browser does not support Ajax", "Request failed", "Address does not exist", "The waiting time left"][e])
+                },
+                status: function (e) {
+                },
+                endstatus: function (e) {
+                },
+                success: function (e) {
+                },
+                timeout: 0
             };
-            if (document.addEventListener) {
-                document.addEventListener("DOMContentLoaded", function () {
-                    document.removeEventListener("DOMContentLoaded", arguments.callee, false);
-                    ready();
-                }, false);
-            }
-            else if (document.attachEvent) {
-                if (document.documentElement.doScroll && window == window.top) {
-                    var tryScroll = function () {
-                        if (called) {
-                            return;
-                        }
-                        try {
-                            document.documentElement.doScroll("left");
-                            ready();
-                        }
-                        catch (e) {
-                            setTimeout(tryScroll, 10);
-                        }
-                    };
-                    tryScroll();
-                }
-                document.attachEvent("onreadystatechange", function () {
-                    if (document.readyState === "complete") {
-                        document.detachEvent("onreadystatechange", arguments.callee);
-                        ready();
+            for (var n in t) void 0 === e[n] && (e[n] = t[n]);
+            var o = e.type, r = e.url, i = e.data, s = e.response, $ = e.header, a = e.async, l = e.username,
+                c = e.password, d = e.errrep, u = e.error, f = e.status, h = e.endstatus, p = e.success, m = e.timeout,
+                v = function (e) {
+                    var t = [];
+                    if (e instanceof Object) {
+                        for (var n in e) t.push(encodeURIComponent(n) + "=" + encodeURIComponent(e[n]));
+                        return t.join("&")
                     }
-                });
+                    return encodeURIComponent(e)
+                }, w = function (e) {
+                    for (var t = {}, n = /^\s*/, o = /\s*$/, r = e.split("\n"), i = 0; i < r.length; i++) {
+                        var s = r[i];
+                        if (0 != s.length) {
+                            var $ = s.indexOf(":"), a = s.substring(0, $).replace(n, "").replace(o, ""),
+                                l = s.substring($ + 1).replace(n, "").replace(o, "");
+                            t[a] = l
+                        }
+                    }
+                    return t
+                }, _ = function () {
+                    var t = null;
+                    if (window.XMLHttpRequest) try {
+                        t = new XMLHttpRequest
+                    } catch (e) {
+                    } else if (window.ActiveXObject) try {
+                        t = new ActiveXObject("Msxml2.XMLHTTP")
+                    } catch (e) {
+                        try {
+                            t = new ActiveXObject("Microsoft.XMLHTTP")
+                        } catch (e) {
+                        }
+                    }
+                    return t
+                }();
+            if (null !== _) {
+                var g = r + "?" + v(i);
+                if ("get" == o ? "" == l && "" == c ? _.open("GET", g, a) : _.open("GET", g, a, l, c) : "post" == o ? "" == l && "" == c ? _.open("POST", r, a) : _.open("POST", r, a, l, c) : "head" == o && ("" == l && "" == c ? _.open("HEAD", g, a) : _.open("HEAD", g, a, l, c)), $ instanceof Object) for (var y in $) _.setRequestHeader(y, $[y]);
+                if (a) {
+                    if (_.onreadystatechange = function () {
+                        f(_.readyState), 4 == _.readyState && (b && clearTimeout(b), h(_.status), 200 == _.status ? "get" == o || "post" == o ? "text" == s ? p(_.responseText) : "xml" == s && p(_.responseXML) : "head" == o && p(w(_.getAllResponseHeaders())) : 404 == _.status ? d && u(2) : d && u(1))
+                    }, "get" == o || "head" == o ? _.send(null) : "post" == o && _.send(v(i)), 0 < m) var b = setTimeout(function () {
+                        4 != _.readyState && (_.abort(), d && u(3))
+                    }, m)
+                } else "get" == o || "head" == o ? _.send(null) : "post" == o && _.send(v(i)), h(_.status), 200 == _.status ? "get" == o || "post" == o ? "text" == s ? p(_.responseText) : "xml" == s && p(_.responseXML) : "head" == o && p(w(_.getAllResponseHeaders())) : 404 == _.status ? d && u(2) : d && u(1)
+            } else d && u(0)
+        }, $c: {
+            set: function (e, t, n, o, r, i) {
+                if (void 0 !== e) {
+                    n = n || 0;
+                    var s = new Date;
+                    s.setTime(s.getTime() + 1e3 * n), _$$.$().cookie = e + "=" + encodeURIComponent(t) + "; " + (void 0 === n ? "" : "expires=" + s.toGMTString() + "; ") + (void 0 === o ? "path=/;" : "path=" + o + "; ") + (void 0 === r ? "" : "domain=" + r + "; ") + (!0 === i ? "secure; " : "")
+                }
+            }, get: function (e) {
+                var t = _$$.$().cookie, n = t.length;
+                if (n) {
+                    var o = t.indexOf(e + "=");
+                    if (-1 != o) {
+                        var r = t.indexOf(";", o);
+                        return -1 == r && (r = n), o += e.length + 1, decodeURIComponent(t.substring(o, r))
+                    }
+                }
+            }, erase: function (e) {
+                this.set(e, "", -1)
+            }, test: function () {
+                this.set("test_cookie", "test", 10);
+                var e = "test" === this.get("test_cookie");
+                return this.erase("test_cookie"), e
             }
-            if (window.addEventListener) {
-                window.addEventListener('load', ready, false);
+        }, $e: {
+            add: function (o, r, e) {
+                if (null == o.event_list && (o.event_list = {}), null == o.event_list[r]) {
+                    o.event_list[r] = [];
+                    var t = function (e) {
+                        e = e || window.event;
+                        var t = o.event_list[r];
+                        for (var n in t) t[n](e)
+                    };
+                    o.addEventListener ? o.addEventListener(r, t, !1) : o.attachEvent ? o.attachEvent("on" + r, t) : o["on" + r] = t
+                }
+                var n = o.event_list[r], i = !1;
+                for (var s in n) n[s] == e && (i = !0);
+                i || o.event_list[r].push(e)
+            }, remove: function (e, t, n) {
+                if (null == e.event_list) return !1;
+                if (null == e.event_list[t]) return !1;
+                var o = e.event_list[t];
+                for (var r in o) if (o[r] == n) return o = o.splice(r, 1), !0;
+                return !1
             }
-            else if (window.attachEvent) {
-                window.attachEvent('onload', ready);
+        }, $f: function (e) {
+            e = e || {};
+            var t = {
+                formid: "", url: "", onstart: function () {
+                }, onsend: function () {
+                }
+            };
+            for (var n in t) void 0 === e[n] && (e[n] = t[n]);
+            var o = e.formid, r = e.url, i = e.onsend, s = e.onstart, $ = "f" + _$$.$s.randnum(0, 1e6),
+                a = _$$.$i({create: "div", attribute: {}, insert: _$$.$().body});
+            return a.innerHTML = '<iframe style="width:250px;height:200px;" src="about:blank" id="' + $ + '" name="' + $ + '" onload="if(this.onsendcomplete) {if(this.contentDocument) {var d = this.contentDocument;}else if(this.contentWindow) {var d = this.contentWindow.document;}else {var d = window.frames[this.id].document;}if(d.location.href != \'about:blank\') {this.onsendcomplete();}}"></iframe>', a.style.display = "none", _$$.$($).onsendcomplete = function () {
+                setTimeout(function () {
+                    _$$.$().body.removeChild(a)
+                }, 6e4), i()
+            }, _$$.$(o).setAttribute("target", $), _$$.$(o).setAttribute("action", r), _$$.$(o).submit(), s(), a
+        }, $i: function (e) {
+            e = e || {};
+            var t = {
+                create: "script", attribute: {type: "text/javascript"}, insert: _$$.$().body, onready: function () {
+                }
+            };
+            for (var n in t) void 0 === e[n] && (e[n] = t[n]);
+            var o = e.create, r = e.attribute, i = e.insert, s = e.onready, $ = _$$.$().createElement(o);
+            for (var a in r) $.setAttribute(a, r[a]);
+            if ("script" == o && void 0 !== r.src && ($.readyState ? $.onreadystatechange = function () {
+                "loaded" != $.readyState && "complete" != $.readyState || ($.onreadystatechange = null, s())
+            } : $.onload = function () {
+                s()
+            }), i.appendChild($), "script" == o && void 0 === r.src) $.$$ = function () {
+                $.text = arguments[0]
+            }; else {
+                if ("style" != o) return _$$.$($);
+                $.$$ = function () {
+                    $.styleSheet ? $.styleSheet.cssText = _$$.$().createTextNode(arguments[0]).nodeValue : $.appendChild(_$$.$().createTextNode(arguments[0]))
+                }
             }
-            else {
-                window.onload = ready;
+            return $
+        }, $r: {
+            rl: [], or: function (e) {
+                _$$.$r.rl.length || _$$.$r.br(function () {
+                    for (var e = 0; e < _$$.$r.rl.length; e++) _$$.$r.rl[e]()
+                }), _$$.$r.rl.push(e)
+            }, br: function (e) {
+                var t = !1, n = function () {
+                    t || (t = !0, e())
+                };
+                if (document.addEventListener) document.addEventListener("DOMContentLoaded", function () {
+                    document.removeEventListener("DOMContentLoaded", arguments.callee, !1), n()
+                }, !1); else if (document.attachEvent) {
+                    if (document.documentElement.doScroll && window == window.top) {
+                        var o = function () {
+                            if (!t) try {
+                                document.documentElement.doScroll("left"), n()
+                            } catch (e) {
+                                setTimeout(o, 10)
+                            }
+                        };
+                        o()
+                    }
+                    document.attachEvent("onreadystatechange", function () {
+                        "complete" === document.readyState && (document.detachEvent("onreadystatechange", arguments.callee), n())
+                    })
+                }
+                window.addEventListener ? window.addEventListener("load", n, !1) : window.attachEvent ? window.attachEvent("onload", n) : window.onload = n
+            }
+        }, $s: {
+            screensize: function () {
+                return {w: screen.width, h: screen.height}
+            }, windowpos: function () {
+                return window.screenLeft || window.screenTop ? {
+                    l: window.screenLeft,
+                    t: window.screenTop
+                } : window.screenX || window.screenY ? {l: window.screenX, t: window.screenY} : {l: 0, t: 0}
+            }, clientsize: function () {
+                return window.innerWidth || window.innerHeight ? {
+                    w: window.innerWidth,
+                    h: window.innerHeight
+                } : _$$.$().documentElement && (_$$.$().documentElement.clientWidth || _$$.$().documentElement.clientHeight) ? {
+                    w: _$$.$().documentElement.clientWidth,
+                    h: _$$.$().documentElement.clientHeight
+                } : _$$.$().body.clientWidth || _$$.$().body.clientHeight ? {
+                    w: _$$.$().body.clientWidth,
+                    h: _$$.$().body.clientHeight
+                } : {w: 0, h: 0}
+            }, scrollpos: function () {
+                return window.innerWidth || window.innerHeight ? {
+                    l: window.pageXOffset,
+                    t: window.pageYOffset
+                } : _$$.$().documentElement && (_$$.$().documentElement.clientWidth || _$$.$().documentElement.clientHeight) ? {
+                    l: _$$.$().documentElement.scrollLeft,
+                    t: _$$.$().documentElement.scrollTop
+                } : _$$.$().body.clientWidth || _$$.$().body.clientHeight ? {
+                    l: _$$.$().body.scrollLeft,
+                    t: _$$.$().body.scrollTop
+                } : {l: 0, t: 0}
+            }, scrollsize: function () {
+                return _$$.$().documentElement && (_$$.$().documentElement.scrollWidth || _$$.$().documentElement.scrollHeight) ? {
+                    w: _$$.$().documentElement.scrollWidth,
+                    h: _$$.$().documentElement.scrollHeight
+                } : _$$.$().body.scrollWidth || _$$.$().body.scrollHeight ? {
+                    w: _$$.$().body.scrollWidth,
+                    h: _$$.$().body.scrollHeight
+                } : {w: 0, h: 0}
+            }, mousepos: function (e) {
+                var t = 0, n = 0;
+                return e || (e = window.event), e.pageX || e.pageY ? (t = e.pageX, n = e.pageY) : (e.clientX || e.clientY) && (t = e.clientX + this.scrollpos().l - _$$.$().documentElement.clientLeft, n = e.clientY + this.scrollpos().t - _$$.$().documentElement.clientTop), {
+                    x: t,
+                    y: n
+                }
+            }, mouseelpos: function (e) {
+                var t = 0, n = 0;
+                return e || (e = window.event), e.layerX || e.layerY ? (t = e.layerX, n = e.layerY) : (e.offsetX || e.offsetY) && (t = e.offsetX, n = e.offsetY), {
+                    x: t,
+                    y: n
+                }
+            }, elementpos: function (e) {
+                for (var t = 0, n = 0; e;) t += e.offsetLeft, n += e.offsetTop, e = e.offsetParent;
+                return {l: t, t: n}
+            }, getelbyclass: function (e, t, n) {
+                t = t || "*";
+                var o, r = [];
+                o = (n = n || _$$.$()).getElementsByTagName(t);
+                for (var i = 0; i < o.length; i++) o[i].className == e && r.push(o[i]);
+                return r
+            }, getelbytag: function (e, t) {
+                e = e || "*";
+                var n, o = [];
+                n = (t = t || _$$.$()).getElementsByTagName(e);
+                for (var r = 0; r < n.length; r++) o.push(n[r]);
+                return o
+            }, getelbyname: function (e, t, n) {
+                t = t || "*";
+                var o = [], r = [];
+                o = (n = n || _$$.$()).getElementsByTagName(t);
+                for (var i = 0; i < o.length; i++) o[i].getAttribute("name") == e && r.push(o[i]);
+                return r
+            }, geteventtype: function (e) {
+                return e || (e = window.event), e.type
+            }, mousebutton: function (e) {
+                return null == e.which ? e.button < 2 ? "left" : 4 == e.button ? "middle" : "right" : e.which < 2 ? "left" : 2 == e.which ? "middle" : "right"
+            }, randnum: function (e, t) {
+                return Math.floor(Math.random() * (t - e + 1)) + e
+            }, browsername: function () {
+                var e, t = navigator.userAgent;
+                return -1 != t.indexOf("MSIE") ? e = "MSIE" : -1 != t.indexOf("Safari") ? e = -1 != t.indexOf("Chrome") ? "Chrome" : "Safari" : -1 != t.indexOf("Gecko") ? e = -1 != t.indexOf("Chrome") ? "Chrome" : "Mozilla" : -1 != t.indexOf("Mozilla") ? e = "Old Netscape or Mozilla" : -1 != t.indexOf("Opera") && (e = "Opera"), e
             }
         }
-    },
-    $s: {
-        screensize: function () {
-            return {"w": screen.width, "h": screen.height};
-        },
-        windowpos: function () {
-            if (window.screenLeft || window.screenTop) {
-                return {"l": window.screenLeft, "t": window.screenTop};
-            }
-            else if (window.screenX || window.screenY) {
-                return {"l": window.screenX, "t": window.screenY};
-            }
-            else {
-                return {"l": 0, "t": 0};
-            }
-        },
-        clientsize: function () {
-            if (window.innerWidth || window.innerHeight) {
-                return {"w": window.innerWidth, "h": window.innerHeight};
-            }
-            else if (_$$.$().documentElement && (_$$.$().documentElement.clientWidth || _$$.$().documentElement.clientHeight)) {
-                return {"w": _$$.$().documentElement.clientWidth, "h": _$$.$().documentElement.clientHeight};
-            }
-            else if (_$$.$().body.clientWidth || _$$.$().body.clientHeight) {
-                return {"w": _$$.$().body.clientWidth, "h": _$$.$().body.clientHeight};
-            }
-            else {
-                return {"w": 0, "h": 0};
-            }
-        },
-        scrollpos: function () {
-            if (window.innerWidth || window.innerHeight) {
-                return {"l": window.pageXOffset, "t": window.pageYOffset};
-            }
-            else if (_$$.$().documentElement && (_$$.$().documentElement.clientWidth || _$$.$().documentElement.clientHeight)) {
-                return {"l": _$$.$().documentElement.scrollLeft, "t": _$$.$().documentElement.scrollTop};
-            }
-            else if (_$$.$().body.clientWidth || _$$.$().body.clientHeight) {
-                return {"l": _$$.$().body.scrollLeft, "t": _$$.$().body.scrollTop};
-            }
-            else {
-                return {"l": 0, "t": 0};
-            }
-        },
-        scrollsize: function () {
-            if (_$$.$().documentElement && (_$$.$().documentElement.scrollWidth || _$$.$().documentElement.scrollHeight)) {
-                return {"w": _$$.$().documentElement.scrollWidth, "h": _$$.$().documentElement.scrollHeight};
-            }
-            else if (_$$.$().body.scrollWidth || _$$.$().body.scrollHeight) {
-                return {"w": _$$.$().body.scrollWidth, "h": _$$.$().body.scrollHeight};
-            }
-            else {
-                return {"w": 0, "h": 0};
-            }
-        },
-        mousepos: function (e) {
-            var x = 0, y = 0;
-            if (!e) e = window.event;
-            if (e.pageX || e.pageY) {
-                x = e.pageX;
-                y = e.pageY;
-            }
-            else if (e.clientX || e.clientY) {
-                x = e.clientX + this.scrollpos().l - _$$.$().documentElement.clientLeft;
-                y = e.clientY + this.scrollpos().t - _$$.$().documentElement.clientTop;
-            }
-            return {"x": x, "y": y};
-        },
-        mouseelpos: function (e) {
-            var x = 0, y = 0;
-            if (!e) e = window.event;
-            if (e.layerX || e.layerY) {
-                x = e.layerX;
-                y = e.layerY;
-            }
-            else if (e.offsetX || e.offsetY) {
-                x = e.offsetX;
-                y = e.offsetY;
-            }
-            return {"x": x, "y": y};
-        },
-        elementpos: function (el) {
-            var l = 0, t = 0;
-            while (el) {
-                l += el.offsetLeft;
-                t += el.offsetTop;
-                el = el.offsetParent;
-            }
-            return {"l": l, "t": t};
-        },
-        getelbyclass: function (n, t, el) {
-            t = t || '*';
-            el = el || _$$.$();
-            var elms = [], relm = [];
-            elms = el.getElementsByTagName(t);
-            for (var i = 0; i < elms.length; i++) {
-                if (elms[i].className == n) {
-                    relm.push(elms[i]);
-                }
-            }
-            return relm;
-        },
-        getelbytag: function (t, el) {
-            t = t || '*';
-            el = el || _$$.$();
-            var elms = [], relm = [];
-            elms = el.getElementsByTagName(t);
-            for (var i = 0; i < elms.length; i++) {
-                relm.push(elms[i]);
-            }
-            return relm;
-        },
-        getelbyname: function (n, t, el) {
-            t = t || '*';
-            el = el || _$$.$();
-            var elms = [], relm = [];
-            elms = el.getElementsByTagName(t);
-            for (var i = 0; i < elms.length; i++) {
-                if (elms[i].getAttribute('name') == n) {
-                    relm.push(elms[i]);
-                }
-            }
-            return relm;
-        },
-        geteventtype: function (e) {
-            if (!e) e = window.event;
-            return e.type;
-        },
-        mousebutton: function (e) {
-            if (e.which == null) {
-                return (e.button < 2) ? "left" : ((e.button == 4) ? "middle" : "right");
-            }
-            else {
-                return (e.which < 2) ? "left" : ((e.which == 2) ? "middle" : "right");
-            }
-        },
-        randnum: function (rmin, rmax) {
-            return Math.floor(Math.random() * (rmax - rmin + 1)) + rmin;
-        },
-        browsername: function () {
-            var useragent = navigator.userAgent;
-            var navigatorname;
-            if (useragent.indexOf('MSIE') != -1) {
-                navigatorname = "MSIE";
-            }
-            else if (useragent.indexOf('Safari') != -1) {
-                if (useragent.indexOf('Chrome') != -1) {
-                    navigatorname = "Chrome";
-                }
-                else {
-                    navigatorname = "Safari";
-                }
-            }
-            else if (useragent.indexOf('Gecko') != -1) {
-                if (useragent.indexOf('Chrome') != -1) {
-                    navigatorname = "Chrome";
-                }
-                else {
-                    navigatorname = "Mozilla";
-                }
-            }
-            else if (useragent.indexOf('Mozilla') != -1) {
-                navigatorname = "Old Netscape or Mozilla";
-            }
-            else if (useragent.indexOf('Opera') != -1) {
-                navigatorname = "Opera";
-            }
-            return navigatorname;
-        }
-    }
-};
-var $ver = _$$.version;
-var $$ = _$$.$;
-var $$a = _$$.$a;
-var $$c = _$$.$c;
-var $$e = _$$.$e;
-var $$f = _$$.$f;
-var $$i = _$$.$i;
-var $$r = _$$.$r.or;
-var $$s = _$$.$s;
+    }, $ver = _$$.version, $$ = _$$.$, $$a = _$$.$a, $$c = _$$.$c, $$e = _$$.$e, $$f = _$$.$f, $$i = _$$.$i,
+    $$r = _$$.$r.or, $$s = _$$.$s;
 
-/**
- * ezMark (Minified) - A Simple Checkbox and Radio button Styling plugin. This plugin allows you to use a custom Image for
- * Checkbox or Radio button. Its very simple, small and easy to use.
- *
- * Copyright (c) Abdullah Rubiyath <http://www.itsalif.info/>.
- * Released under MIT License
- *
- * @author Abdullah Rubiyath
- * @version 1.0
- * @date June 27, 2010
- */
-(function ($) {
-    $.fn.ezMark = function (options) {
-        options = options || {};
-        var defaultOpt = {
-            checkboxCls: options.checkboxCls || 'ez-checkbox',
-            radioCls: options.radioCls || 'ez-radio',
-            checkedCls: options.checkedCls || 'ez-checked',
-            selectedCls: options.selectedCls || 'ez-selected',
-            hideCls: 'ez-hide'
+/* ezMark 1.0 */
+!function (a) {
+    a.fn.ezMark = function (e) {
+        var c = {
+            checkboxCls: (e = e || {}).checkboxCls || "ez-checkbox",
+            radioCls: e.radioCls || "ez-radio",
+            checkedCls: e.checkedCls || "ez-checked",
+            selectedCls: e.selectedCls || "ez-selected",
+            hideCls: "ez-hide"
         };
         return this.each(function () {
-            var $this = $(this);
-            var wrapTag = $this.attr('type') == 'checkbox' ? '<div class="' + defaultOpt.checkboxCls + '">' : '<div class="' + defaultOpt.radioCls + '">';
-            if ($this.attr('type') == 'checkbox') {
-                $this.addClass(defaultOpt.hideCls).wrap(wrapTag).change(function () {
-                    if ($(this).is(':checked')) {
-                        $(this).parent().addClass(defaultOpt.checkedCls);
-                    }
-                    else {
-                        $(this).parent().removeClass(defaultOpt.checkedCls);
-                    }
-                });
-                if ($this.is(':checked')) {
-                    $this.parent().addClass(defaultOpt.checkedCls);
-                }
-            }
-            else if ($this.attr('type') == 'radio') {
-                $this.addClass(defaultOpt.hideCls).wrap(wrapTag).change(function () {
-                    $('input[name="' + $(this).attr('name') + '"]').each(function () {
-                        if ($(this).is(':checked')) {
-                            $(this).parent().addClass(defaultOpt.selectedCls);
-                        } else {
-                            $(this).parent().removeClass(defaultOpt.selectedCls);
-                        }
-                    });
-                });
-                if ($this.is(':checked')) {
-                    $this.parent().addClass(defaultOpt.selectedCls);
-                }
-            }
-        });
+            var e = a(this),
+                s = "checkbox" == e.attr("type") ? '<div class="' + c.checkboxCls + '">' : '<div class="' + c.radioCls + '">';
+            "checkbox" == e.attr("type") ? (e.addClass(c.hideCls).wrap(s).change(function () {
+                a(this).is(":checked") ? a(this).parent().addClass(c.checkedCls) : a(this).parent().removeClass(c.checkedCls)
+            }), e.is(":checked") && e.parent().addClass(c.checkedCls)) : "radio" == e.attr("type") && (e.addClass(c.hideCls).wrap(s).change(function () {
+                a('input[name="' + a(this).attr("name") + '"]').each(function () {
+                    a(this).is(":checked") ? a(this).parent().addClass(c.selectedCls) : a(this).parent().removeClass(c.selectedCls)
+                })
+            }), e.is(":checked") && e.parent().addClass(c.selectedCls))
+        })
     }
-})(jQuery);
+}(jQuery);
 
-/*
- * jQuery selectBox - A cosmetic, styleable replacement for SELECT elements
- *
- * Licensed under the MIT license: http://opensource.org/licenses/MIT
- *
- * v1.2.0
- *
- * https://github.com/marcj/jquery-selectBox
- */
-(function ($) {
-    /**
-     * SelectBox class.
-     *
-     * @param {HTMLElement|jQuery} select If it's a jQuery object, we use the first element.
-     * @param {Object} options
-     * @constructor
-     */
-    var SelectBox = this.SelectBox = function (select, options) {
-        if (select instanceof jQuery) {
-            if (select.length > 0) {
-                select = select[0];
-            } else {
-                return;
-            }
+/* https://github.com/marcj/jquery-selectBox 1.2.0 */
+!function (w) {
+    var o = this.SelectBox = function (e, t) {
+        if (e instanceof jQuery) {
+            if (!(0 < e.length)) return;
+            e = e[0]
         }
-        this.typeTimer = null;
-        this.typeSearch = '';
-        this.isMac = navigator.platform.match(/mac/i);
-        options = 'object' === typeof options ? options : {};
-        this.selectElement = select;
-        // Disable for iOS devices (their native controls are more suitable for a touch device)
-        if (!options.mobile && navigator.userAgent.match(/iPad|iPhone|Android|IEMobile|BlackBerry/i)) {
-            return false;
-        }
-        // Element must be a select control
-        if ('select' !== select.tagName.toLowerCase()) {
-            return false;
-        }
-        this.init(options);
+        return this.typeTimer = null, this.typeSearch = "", this.isMac = navigator.platform.match(/mac/i), t = "object" == typeof t ? t : {}, this.selectElement = e, !(!t.mobile && navigator.userAgent.match(/iPad|iPhone|Android|IEMobile|BlackBerry/i)) && ("select" === e.tagName.toLowerCase() && void this.init(t))
     };
-    /**
-     * @type {String}
-     */
-    SelectBox.prototype.version = '1.2.0';
-    /**
-     * @param {Object} options
-     *
-     * @returns {Boolean}
-     */
-    SelectBox.prototype.init = function (options) {
-        var select = $(this.selectElement);
-        if (select.data('selectBox-control')) {
-            return false;
-        }
-        var control = $('<a class="selectBox" />')
-            , inline = select.attr('multiple') || parseInt(select.attr('size')) > 1
-            , settings = options || {}
-            , tabIndex = parseInt(select.prop('tabindex')) || 0
-            , self = this;
-        control
-            .width(select.outerWidth())
-            .addClass(select.attr('class'))
-            .attr('title', select.attr('title') || '')
-            .attr('tabindex', tabIndex)
-            .css('display', 'inline-block')
-            .bind('focus.selectBox', function () {
-                if (this !== document.activeElement && document.body !== document.activeElement) {
-                    $(document.activeElement).blur();
-                }
-                if (control.hasClass('selectBox-active')) {
-                    return;
-                }
-                control.addClass('selectBox-active');
-                select.trigger('focus');
-            })
-            .bind('blur.selectBox', function () {
-                if (!control.hasClass('selectBox-active')) {
-                    return;
-                }
-                control.removeClass('selectBox-active');
-                select.trigger('blur');
-            });
-        if (!$(window).data('selectBox-bindings')) {
-            $(window)
-                .data('selectBox-bindings', true)
-                .bind('scroll.selectBox', (settings.hideOnWindowScroll) ? this.hideMenus : $.noop)
-                .bind('resize.selectBox', this.hideMenus);
-        }
-        if (select.attr('disabled')) {
-            control.addClass('selectBox-disabled');
-        }
-        // Focus on control when label is clicked
-        select.bind('click.selectBox', function (event) {
-            control.focus();
-            event.preventDefault();
-        });
-        // Generate control
-        if (inline) {
-            // Inline controls
-            options = this.getOptions('inline');
-            control
-                .append(options)
-                .data('selectBox-options', options).addClass('selectBox-inline selectBox-menuShowing')
-                .bind('keydown.selectBox', function (event) {
-                    self.handleKeyDown(event);
-                })
-                .bind('keypress.selectBox', function (event) {
-                    self.handleKeyPress(event);
-                })
-                .bind('mousedown.selectBox', function (event) {
-                    if (1 !== event.which) {
-                        return;
-                    }
-                    if ($(event.target).is('A.selectBox-inline')) {
-                        event.preventDefault();
-                    }
-                    if (!control.hasClass('selectBox-focus')) {
-                        control.focus();
-                    }
-                })
-                .insertAfter(select);
-            // Auto-height based on size attribute
-            if (!select[0].style.height) {
-                var size = select.attr('size') ? parseInt(select.attr('size')) : 5;
-                // Draw a dummy control off-screen, measure, and remove it
-                var tmp = control
-                    .clone()
-                    .removeAttr('id')
-                    .css({
-                        position: 'absolute',
-                        top: '-9999em'
-                    })
-                    .show()
-                    .appendTo('body');
-                tmp.find('.selectBox-options').html('<li><a>\u00A0</a></li>');
-                var optionHeight = parseInt(tmp.find('.selectBox-options A:first').html('&nbsp;').outerHeight());
-                tmp.remove();
-                control.height(optionHeight * size);
+    o.prototype.version = "1.2.0", o.prototype.init = function (t) {
+        var e = w(this.selectElement);
+        if (e.data("selectBox-control")) return !1;
+        var s = w('<a class="selectBox" />'), o = e.attr("multiple") || 1 < parseInt(e.attr("size")), a = t || {},
+            n = parseInt(e.prop("tabindex")) || 0, l = this;
+        if (s.width(e.outerWidth()).addClass(e.attr("class")).attr("title", e.attr("title") || "").attr("tabindex", n).css("display", "inline-block").bind("focus.selectBox", function () {
+            this !== document.activeElement && document.body !== document.activeElement && w(document.activeElement).blur(), s.hasClass("selectBox-active") || (s.addClass("selectBox-active"), e.trigger("focus"))
+        }).bind("blur.selectBox", function () {
+            s.hasClass("selectBox-active") && (s.removeClass("selectBox-active"), e.trigger("blur"))
+        }), w(window).data("selectBox-bindings") || w(window).data("selectBox-bindings", !0).bind("scroll.selectBox", a.hideOnWindowScroll ? this.hideMenus : w.noop).bind("resize.selectBox", this.hideMenus), e.attr("disabled") && s.addClass("selectBox-disabled"), e.bind("click.selectBox", function (e) {
+            s.focus(), e.preventDefault()
+        }), o) {
+            if (t = this.getOptions("inline"), s.append(t).data("selectBox-options", t).addClass("selectBox-inline selectBox-menuShowing").bind("keydown.selectBox", function (e) {
+                l.handleKeyDown(e)
+            }).bind("keypress.selectBox", function (e) {
+                l.handleKeyPress(e)
+            }).bind("mousedown.selectBox", function (e) {
+                1 === e.which && (w(e.target).is("A.selectBox-inline") && e.preventDefault(), s.hasClass("selectBox-focus") || s.focus())
+            }).insertAfter(e), !e[0].style.height) {
+                var i = e.attr("size") ? parseInt(e.attr("size")) : 5,
+                    c = s.clone().removeAttr("id").css({position: "absolute", top: "-9999em"}).show().appendTo("body");
+                c.find(".selectBox-options").html("<li><a> </a></li>");
+                var r = parseInt(c.find(".selectBox-options A:first").html("&nbsp;").outerHeight());
+                c.remove(), s.height(r * i)
             }
-            this.disableSelection(control);
+            this.disableSelection(s)
         } else {
-            // Dropdown controls
-            var label = $('<span class="selectBox-label" />'),
-                arrow = $('<span class="selectBox-arrow" />');
-            // Update label
-            label.attr('class', this.getLabelClass()).text(this.getLabelText());
-            options = this.getOptions('dropdown');
-            options.appendTo('BODY');
-            control
-                .data('selectBox-options', options)
-                .addClass('selectBox-dropdown')
-                .append(label)
-                .append(arrow)
-                .bind('mousedown.selectBox', function (event) {
-                    if (1 === event.which) {
-                        if (control.hasClass('selectBox-menuShowing')) {
-                            self.hideMenus();
-                        } else {
-                            event.stopPropagation();
-                            // Webkit fix to prevent premature selection of options
-                            options
-                                .data('selectBox-down-at-x', event.screenX)
-                                .data('selectBox-down-at-y', event.screenY);
-                            self.showMenu();
-                        }
-                    }
-                })
-                .bind('keydown.selectBox', function (event) {
-                    self.handleKeyDown(event);
-                })
-                .bind('keypress.selectBox', function (event) {
-                    self.handleKeyPress(event);
-                })
-                .bind('open.selectBox', function (event, triggerData) {
-                    if (triggerData && triggerData._selectBox === true) {
-                        return;
-                    }
-                    self.showMenu();
-                })
-                .bind('close.selectBox', function (event, triggerData) {
-                    if (triggerData && triggerData._selectBox === true) {
-                        return;
-                    }
-                    self.hideMenus();
-                })
-                .insertAfter(select);
-            // Set label width
-            var labelWidth =
-                control.width()
-                - arrow.outerWidth()
-                - (parseInt(label.css('paddingLeft')) || 0)
-                - (parseInt(label.css('paddingRight')) || 0);
-            label.width(labelWidth);
-            this.disableSelection(control);
+            var d = w('<span class="selectBox-label" />'), h = w('<span class="selectBox-arrow" />');
+            d.attr("class", this.getLabelClass()).text(this.getLabelText()), (t = this.getOptions("dropdown")).appendTo("BODY"), s.data("selectBox-options", t).addClass("selectBox-dropdown").append(d).append(h).bind("mousedown.selectBox", function (e) {
+                1 === e.which && (s.hasClass("selectBox-menuShowing") ? l.hideMenus() : (e.stopPropagation(), t.data("selectBox-down-at-x", e.screenX).data("selectBox-down-at-y", e.screenY), l.showMenu()))
+            }).bind("keydown.selectBox", function (e) {
+                l.handleKeyDown(e)
+            }).bind("keypress.selectBox", function (e) {
+                l.handleKeyPress(e)
+            }).bind("open.selectBox", function (e, t) {
+                t && !0 === t._selectBox || l.showMenu()
+            }).bind("close.selectBox", function (e, t) {
+                t && !0 === t._selectBox || l.hideMenus()
+            }).insertAfter(e);
+            var p = s.width() - h.outerWidth() - (parseInt(d.css("paddingLeft")) || 0) - (parseInt(d.css("paddingRight")) || 0);
+            d.width(p), this.disableSelection(s)
         }
-        // Store data for later use and show the control
-        select
-            .addClass('selectBox')
-            .data('selectBox-control', control)
-            .data('selectBox-settings', settings)
-            .hide();
-    };
-    /**
-     * @param {String} type 'inline'|'dropdown'
-     * @returns {jQuery}
-     */
-    SelectBox.prototype.getOptions = function (type) {
-        var options;
-        var select = $(this.selectElement);
-        var self = this;
-        // Private function to handle recursion in the getOptions function.
-        var _getOptions = function (select, options) {
-            // Loop through the set in order of element children.
-            select.children('OPTION, OPTGROUP').each(function () {
-                // If the element is an option, add it to the list.
-                if ($(this).is('OPTION')) {
-                    // Check for a value in the option found.
-                    if ($(this).length > 0) {
-                        // Create an option form the found element.
-                        self.generateOptions($(this), options);
-                    } else {
-                        // No option information found, so add an empty.
-                        options.append('<li>\u00A0</li>');
-                    }
-                } else {
-                    // If the element is an option group, add the group and call this function on it.
-                    var optgroup = $('<li class="selectBox-optgroup" />');
-                    optgroup.text($(this).attr('label'));
-                    options.append(optgroup);
-                    options = _getOptions($(this), options);
+        e.addClass("selectBox").data("selectBox-control", s).data("selectBox-settings", a).hide()
+    }, o.prototype.getOptions = function (e) {
+        var t, s = w(this.selectElement), o = this, a = function (e, t) {
+            return e.children("OPTION, OPTGROUP").each(function () {
+                if (w(this).is("OPTION")) 0 < w(this).length ? o.generateOptions(w(this), t) : t.append("<li> </li>"); else {
+                    var e = w('<li class="selectBox-optgroup" />');
+                    e.text(w(this).attr("label")), t.append(e), t = a(w(this), t)
                 }
-            });
-            // Return the built strin
-            return options;
+            }), t
         };
-        switch (type) {
-            case 'inline':
-                options = $('<ul class="selectBox-options" />');
-                options = _getOptions(select, options);
-                options
-                    .find('A')
-                    .bind('mouseover.selectBox', function (event) {
-                        self.addHover($(this).parent());
-                    })
-                    .bind('mouseout.selectBox', function (event) {
-                        self.removeHover($(this).parent());
-                    })
-                    .bind('mousedown.selectBox', function (event) {
-                        if (1 !== event.which) {
-                            return
-                        }
-                        event.preventDefault(); // Prevent options from being "dragged"
-                        if (!select.selectBox('control').hasClass('selectBox-active')) {
-                            select.selectBox('control').focus();
-                        }
-                    })
-                    .bind('mouseup.selectBox', function (event) {
-                        if (1 !== event.which) {
-                            return;
-                        }
-                        self.hideMenus();
-                        self.selectOption($(this).parent(), event);
-                    });
-                this.disableSelection(options);
-                return options;
-            case 'dropdown':
-                options = $('<ul class="selectBox-dropdown-menu selectBox-options" />');
-                options = _getOptions(select, options);
-                options
-                    .data('selectBox-select', select)
-                    .css('display', 'none')
-                    .appendTo('BODY')
-                    .find('A')
-                    .bind('mousedown.selectBox', function (event) {
-                        if (event.which === 1) {
-                            event.preventDefault(); // Prevent options from being "dragged"
-                            if (event.screenX === options.data('selectBox-down-at-x') &&
-                                event.screenY === options.data('selectBox-down-at-y')) {
-                                options.removeData('selectBox-down-at-x').removeData('selectBox-down-at-y');
-                                if (/android/i.test(navigator.userAgent.toLowerCase()) &&
-                                    /chrome/i.test(navigator.userAgent.toLowerCase())) {
-                                    self.selectOption($(this).parent());
-                                }
-                                self.hideMenus();
-                            }
-                        }
-                    })
-                    .bind('mouseup.selectBox', function (event) {
-                        if (1 !== event.which) {
-                            return;
-                        }
-                        if (event.screenX === options.data('selectBox-down-at-x') &&
-                            event.screenY === options.data('selectBox-down-at-y')) {
-                            return;
-                        } else {
-                            options.removeData('selectBox-down-at-x').removeData('selectBox-down-at-y');
-                        }
-                        self.selectOption($(this).parent());
-                        self.hideMenus();
-                    })
-                    .bind('mouseover.selectBox', function (event) {
-                        self.addHover($(this).parent());
-                    })
-                    .bind('mouseout.selectBox', function (event) {
-                        self.removeHover($(this).parent());
-                    });
-                // Inherit classes for dropdown menu
-                var classes = select.attr('class') || '';
-                if ('' !== classes) {
-                    classes = classes.split(' ');
-                    for (var i = 0; i < classes.length; i++) {
-                        options.addClass(classes[i] + '-selectBox-dropdown-menu');
-                    }
+        switch (e) {
+            case"inline":
+                return t = w('<ul class="selectBox-options" />'), (t = a(s, t)).find("A").bind("mouseover.selectBox", function (e) {
+                    o.addHover(w(this).parent())
+                }).bind("mouseout.selectBox", function (e) {
+                    o.removeHover(w(this).parent())
+                }).bind("mousedown.selectBox", function (e) {
+                    1 === e.which && (e.preventDefault(), s.selectBox("control").hasClass("selectBox-active") || s.selectBox("control").focus())
+                }).bind("mouseup.selectBox", function (e) {
+                    1 === e.which && (o.hideMenus(), o.selectOption(w(this).parent(), e))
+                }), this.disableSelection(t), t;
+            case"dropdown":
+                t = w('<ul class="selectBox-dropdown-menu selectBox-options" />'), (t = a(s, t)).data("selectBox-select", s).css("display", "none").appendTo("BODY").find("A").bind("mousedown.selectBox", function (e) {
+                    1 === e.which && (e.preventDefault(), e.screenX === t.data("selectBox-down-at-x") && e.screenY === t.data("selectBox-down-at-y") && (t.removeData("selectBox-down-at-x").removeData("selectBox-down-at-y"), /android/i.test(navigator.userAgent.toLowerCase()) && /chrome/i.test(navigator.userAgent.toLowerCase()) && o.selectOption(w(this).parent()), o.hideMenus()))
+                }).bind("mouseup.selectBox", function (e) {
+                    1 === e.which && (e.screenX === t.data("selectBox-down-at-x") && e.screenY === t.data("selectBox-down-at-y") || (t.removeData("selectBox-down-at-x").removeData("selectBox-down-at-y"), o.selectOption(w(this).parent()), o.hideMenus()))
+                }).bind("mouseover.selectBox", function (e) {
+                    o.addHover(w(this).parent())
+                }).bind("mouseout.selectBox", function (e) {
+                    o.removeHover(w(this).parent())
+                });
+                var n = s.attr("class") || "";
+                if ("" !== n) {
+                    n = n.split(" ");
+                    for (var l = 0; l < n.length; l++) t.addClass(n[l] + "-selectBox-dropdown-menu")
                 }
-                this.disableSelection(options);
-                return options;
+                return this.disableSelection(t), t
         }
-    };
-    /**
-     * Returns the current class of the selected option.
-     *
-     * @returns {String}
-     */
-    SelectBox.prototype.getLabelClass = function () {
-        var selected = $(this.selectElement).find('OPTION:selected');
-        return ('selectBox-label ' + (selected.attr('class') || '')).replace(/\s+$/, '');
-    };
-    /**
-     * Returns the current label of the selected option.
-     *
-     * @returns {String}
-     */
-    SelectBox.prototype.getLabelText = function () {
-        var selected = $(this.selectElement).find('OPTION:selected');
-        return selected.text() || '\u00A0';
-    };
-    /**
-     * Sets the label.
-     * This method uses the getLabelClass() and getLabelText() methods.
-     */
-    SelectBox.prototype.setLabel = function () {
-        var select = $(this.selectElement);
-        var control = select.data('selectBox-control');
-        if (!control) {
-            return;
-        }
-        control
-            .find('.selectBox-label')
-            .attr('class', this.getLabelClass())
-            .text(this.getLabelText());
-    };
-    /**
-     * Destroys the SelectBox instance and shows the origin select element.
-     *
-     */
-    SelectBox.prototype.destroy = function () {
-        var select = $(this.selectElement);
-        var control = select.data('selectBox-control');
-        if (!control) {
-            return;
-        }
-        var options = control.data('selectBox-options');
-        options.remove();
-        control.remove();
-        select
-            .removeClass('selectBox')
-            .removeData('selectBox-control')
-            .data('selectBox-control', null)
-            .removeData('selectBox-settings')
-            .data('selectBox-settings', null)
-            .show();
-    };
-    /**
-     * Refreshes the option elements.
-     */
-    SelectBox.prototype.refresh = function () {
-        var select = $(this.selectElement)
-            , control = select.data('selectBox-control')
-            , type = control.hasClass('selectBox-dropdown') ? 'dropdown' : 'inline'
-            , options;
-        // Remove old options
-        control.data('selectBox-options').remove();
-        // Generate new options
-        options = this.getOptions(type);
-        control.data('selectBox-options', options);
-        switch (type) {
-            case 'inline':
-                control.append(options);
+    }, o.prototype.getLabelClass = function () {
+        return ("selectBox-label " + (w(this.selectElement).find("OPTION:selected").attr("class") || "")).replace(/\s+$/, "")
+    }, o.prototype.getLabelText = function () {
+        return w(this.selectElement).find("OPTION:selected").text() || " "
+    }, o.prototype.setLabel = function () {
+        var e = w(this.selectElement).data("selectBox-control");
+        e && e.find(".selectBox-label").attr("class", this.getLabelClass()).text(this.getLabelText())
+    }, o.prototype.destroy = function () {
+        var e = w(this.selectElement), t = e.data("selectBox-control");
+        t && (t.data("selectBox-options").remove(), t.remove(), e.removeClass("selectBox").removeData("selectBox-control").data("selectBox-control", null).removeData("selectBox-settings").data("selectBox-settings", null).show())
+    }, o.prototype.refresh = function () {
+        var e, t = w(this.selectElement).data("selectBox-control"),
+            s = t.hasClass("selectBox-dropdown") ? "dropdown" : "inline";
+        switch (t.data("selectBox-options").remove(), e = this.getOptions(s), t.data("selectBox-options", e), s) {
+            case"inline":
+                t.append(e);
                 break;
-            case 'dropdown':
-                // Update label
-                this.setLabel();
-                $("BODY").append(options);
-                break;
+            case"dropdown":
+                this.setLabel(), w("BODY").append(e)
         }
-        // Restore opened dropdown state (original menu was trashed)
-        if ('dropdown' === type && control.hasClass('selectBox-menuShowing')) {
-            this.showMenu();
-        }
-    };
-    /**
-     * Shows the dropdown menu.
-     */
-    SelectBox.prototype.showMenu = function () {
-        var self = this
-            , select = $(this.selectElement)
-            , control = select.data('selectBox-control')
-            , settings = select.data('selectBox-settings')
-            , options = control.data('selectBox-options');
-        if (control.hasClass('selectBox-disabled')) {
-            return false;
-        }
+        "dropdown" === s && t.hasClass("selectBox-menuShowing") && this.showMenu()
+    }, o.prototype.showMenu = function () {
+        var t = this, e = w(this.selectElement), s = e.data("selectBox-control"), o = e.data("selectBox-settings"),
+            a = s.data("selectBox-options");
+        if (s.hasClass("selectBox-disabled")) return !1;
         this.hideMenus();
-        // Get top and bottom width of selectBox
-        var borderBottomWidth = parseInt(control.css('borderBottomWidth')) || 0;
-        var borderTopWidth = parseInt(control.css('borderTopWidth')) || 0;
-        // Get proper variables for keeping options in viewport
-        var pos = control.offset()
-            , topPositionCorrelation = (settings.topPositionCorrelation) ? settings.topPositionCorrelation : 0
-            , bottomPositionCorrelation = (settings.bottomPositionCorrelation) ? settings.bottomPositionCorrelation : 0
-            , optionsHeight = options.outerHeight()
-            , controlHeight = control.outerHeight()
-            , maxHeight = parseInt(options.css('max-height'))
-            , scrollPos = $(window).scrollTop()
-            , heightToTop = pos.top - scrollPos
-            , heightToBottom = $(window).height() - (heightToTop + controlHeight)
-            ,
-            posTop = (heightToTop > heightToBottom) && (settings.keepInViewport == null ? true : settings.keepInViewport)
-            , top = posTop
-            ? pos.top - optionsHeight + borderTopWidth + topPositionCorrelation
-            : pos.top + controlHeight - borderBottomWidth - bottomPositionCorrelation;
-        // If the height to top and height to bottom are less than the max-height
-        if (heightToTop < maxHeight && heightToBottom < maxHeight) {
-            // Set max-height and top
-            if (posTop) {
-                var maxHeightDiff = maxHeight - (heightToTop - 5);
-                options.css({'max-height': maxHeight - maxHeightDiff + 'px'});
-                top = top + maxHeightDiff;
-            } else {
-                var maxHeightDiff = maxHeight - (heightToBottom - 5);
-                options.css({'max-height': maxHeight - maxHeightDiff + 'px'});
-            }
+        var n = parseInt(s.css("borderBottomWidth")) || 0, l = parseInt(s.css("borderTopWidth")) || 0, i = s.offset(),
+            c = o.topPositionCorrelation ? o.topPositionCorrelation : 0,
+            r = o.bottomPositionCorrelation ? o.bottomPositionCorrelation : 0, d = a.outerHeight(), h = s.outerHeight(),
+            p = parseInt(a.css("max-height")), x = w(window).scrollTop(), u = i.top - x,
+            B = w(window).height() - (u + h), f = B < u && (null == o.keepInViewport || o.keepInViewport),
+            v = f ? i.top - d + l + c : i.top + h - n - r;
+        if (u < p && B < p) if (f) {
+            var m = p - (u - 5);
+            a.css({"max-height": p - m + "px"}), v += m
+        } else {
+            m = p - (B - 5);
+            a.css({"max-height": p - m + "px"})
         }
-        // Save if position is top to options data
-        options.data('posTop', posTop);
-        // Menu position
-        options
-            .width(control.innerWidth())
-            .css({
-                top: top,
-                left: control.offset().left
-            })
-            // Add Top and Bottom class based on position
-            .addClass('selectBox-options selectBox-options-' + (posTop ? 'top' : 'bottom'));
-        if (select.triggerHandler('beforeopen')) {
-            return false;
-        }
-        var dispatchOpenEvent = function () {
-            select.triggerHandler('open', {
-                _selectBox: true
-            });
+        if (a.data("posTop", f), a.width(s.innerWidth()).css({
+            top: v,
+            left: s.offset().left
+        }).addClass("selectBox-options selectBox-options-" + (f ? "top" : "bottom")), e.triggerHandler("beforeopen")) return !1;
+        var b = function () {
+            e.triggerHandler("open", {_selectBox: !0})
         };
-        // Show menu
-        switch (settings.menuTransition) {
-            case 'fade':
-                options.fadeIn(settings.menuSpeed, dispatchOpenEvent);
+        switch (o.menuTransition) {
+            case"fade":
+                a.fadeIn(o.menuSpeed, b);
                 break;
-            case 'slide':
-                options.slideDown(settings.menuSpeed, dispatchOpenEvent);
+            case"slide":
+                a.slideDown(o.menuSpeed, b);
                 break;
             default:
-                options.show(settings.menuSpeed, dispatchOpenEvent);
-                break;
+                a.show(o.menuSpeed, b)
         }
-        if (!settings.menuSpeed) {
-            dispatchOpenEvent();
-        }
-        // Center on selected option
-        var li = options.find('.selectBox-selected:first');
-        this.keepOptionInView(li, true);
-        this.addHover(li);
-        control.addClass('selectBox-menuShowing selectBox-menuShowing-' + (posTop ? 'top' : 'bottom'));
-        $(document).bind('mousedown.selectBox', function (event) {
-            if (1 === event.which) {
-                if ($(event.target).parents().andSelf().hasClass('selectBox-options')) {
-                    return;
-                }
-                self.hideMenus();
+        o.menuSpeed || b();
+        var g = a.find(".selectBox-selected:first");
+        this.keepOptionInView(g, !0), this.addHover(g), s.addClass("selectBox-menuShowing selectBox-menuShowing-" + (f ? "top" : "bottom")), w(document).bind("mousedown.selectBox", function (e) {
+            if (1 === e.which) {
+                if (w(e.target).parents().andSelf().hasClass("selectBox-options")) return;
+                t.hideMenus()
             }
-        });
-    };
-    /**
-     * Hides the menu of all instances.
-     */
-    SelectBox.prototype.hideMenus = function () {
-        if ($(".selectBox-dropdown-menu:visible").length === 0) {
-            return;
-        }
-        $(document).unbind('mousedown.selectBox');
-        $(".selectBox-dropdown-menu").each(function () {
-            var options = $(this)
-                , select = options.data('selectBox-select')
-                , control = select.data('selectBox-control')
-                , settings = select.data('selectBox-settings')
-                , posTop = options.data('posTop');
-            if (select.triggerHandler('beforeclose')) {
-                return false;
-            }
-            var dispatchCloseEvent = function () {
-                select.triggerHandler('close', {
-                    _selectBox: true
-                });
+        })
+    }, o.prototype.hideMenus = function () {
+        0 !== w(".selectBox-dropdown-menu:visible").length && (w(document).unbind("mousedown.selectBox"), w(".selectBox-dropdown-menu").each(function () {
+            var e = w(this), t = e.data("selectBox-select"), s = t.data("selectBox-control"),
+                o = t.data("selectBox-settings"), a = e.data("posTop");
+            if (t.triggerHandler("beforeclose")) return !1;
+            var n = function () {
+                t.triggerHandler("close", {_selectBox: !0})
             };
-            if (settings) {
-                switch (settings.menuTransition) {
-                    case 'fade':
-                        options.fadeOut(settings.menuSpeed, dispatchCloseEvent);
+            if (o) {
+                switch (o.menuTransition) {
+                    case"fade":
+                        e.fadeOut(o.menuSpeed, n);
                         break;
-                    case 'slide':
-                        options.slideUp(settings.menuSpeed, dispatchCloseEvent);
+                    case"slide":
+                        e.slideUp(o.menuSpeed, n);
                         break;
                     default:
-                        options.hide(settings.menuSpeed, dispatchCloseEvent);
-                        break;
+                        e.hide(o.menuSpeed, n)
                 }
-                if (!settings.menuSpeed) {
-                    dispatchCloseEvent();
-                }
-                control.removeClass('selectBox-menuShowing selectBox-menuShowing-' + (posTop ? 'top' : 'bottom'));
-            } else {
-                $(this).hide();
-                $(this).triggerHandler('close', {
-                    _selectBox: true
-                });
-                $(this).removeClass('selectBox-menuShowing selectBox-menuShowing-' + (posTop ? 'top' : 'bottom'));
-            }
-            options.css('max-height', '');
-            //Remove Top or Bottom class based on position
-            options.removeClass('selectBox-options-' + (posTop ? 'top' : 'bottom'));
-            options.data('posTop', false);
-        });
-    };
-    /**
-     * Selects an option.
-     *
-     * @param {HTMLElement} li
-     * @param {DOMEvent}    event
-     * @returns {Boolean}
-     */
-    SelectBox.prototype.selectOption = function (li, event) {
-        var select = $(this.selectElement);
-        li = $(li);
-        var control = select.data('selectBox-control')
-            , settings = select.data('selectBox-settings');
-        if (control.hasClass('selectBox-disabled')) {
-            return false;
+                o.menuSpeed || n(), s.removeClass("selectBox-menuShowing selectBox-menuShowing-" + (a ? "top" : "bottom"))
+            } else w(this).hide(), w(this).triggerHandler("close", {_selectBox: !0}), w(this).removeClass("selectBox-menuShowing selectBox-menuShowing-" + (a ? "top" : "bottom"));
+            e.css("max-height", ""), e.removeClass("selectBox-options-" + (a ? "top" : "bottom")), e.data("posTop", !1)
+        }))
+    }, o.prototype.selectOption = function (e, t) {
+        var s = w(this.selectElement);
+        e = w(e);
+        var o, a = s.data("selectBox-control");
+        s.data("selectBox-settings");
+        if (a.hasClass("selectBox-disabled")) return !1;
+        if (0 === e.length || e.hasClass("selectBox-disabled")) return !1;
+        s.attr("multiple") ? t.shiftKey && a.data("selectBox-last-selected") ? (e.toggleClass("selectBox-selected"), o = (o = e.index() > a.data("selectBox-last-selected").index() ? e.siblings().slice(a.data("selectBox-last-selected").index(), e.index()) : e.siblings().slice(e.index(), a.data("selectBox-last-selected").index())).not(".selectBox-optgroup, .selectBox-disabled"), e.hasClass("selectBox-selected") ? o.addClass("selectBox-selected") : o.removeClass("selectBox-selected")) : this.isMac && t.metaKey || !this.isMac && t.ctrlKey ? e.toggleClass("selectBox-selected") : (e.siblings().removeClass("selectBox-selected"), e.addClass("selectBox-selected")) : (e.siblings().removeClass("selectBox-selected"), e.addClass("selectBox-selected"));
+        a.hasClass("selectBox-dropdown") && a.find(".selectBox-label").text(e.text());
+        var n = 0, l = [];
+        return s.attr("multiple") ? a.find(".selectBox-selected A").each(function () {
+            l[n++] = w(this).attr("rel")
+        }) : l = e.find("A").attr("rel"), a.data("selectBox-last-selected", e), s.val() !== l && (s.val(l), this.setLabel(), s.trigger("change")), !0
+    }, o.prototype.addHover = function (e) {
+        e = w(e), w(this.selectElement).data("selectBox-control").data("selectBox-options").find(".selectBox-hover").removeClass("selectBox-hover"), e.addClass("selectBox-hover")
+    }, o.prototype.getSelectElement = function () {
+        return this.selectElement
+    }, o.prototype.removeHover = function (e) {
+        e = w(e), w(this.selectElement).data("selectBox-control").data("selectBox-options").find(".selectBox-hover").removeClass("selectBox-hover")
+    }, o.prototype.keepOptionInView = function (e, t) {
+        if (e && 0 !== e.length) {
+            var s = w(this.selectElement).data("selectBox-control"), o = s.data("selectBox-options"),
+                a = s.hasClass("selectBox-dropdown") ? o : o.parent(), n = parseInt(e.offset().top - a.position().top),
+                l = parseInt(n + e.outerHeight());
+            t ? a.scrollTop(e.offset().top - a.offset().top + a.scrollTop() - a.height() / 2) : (n < 0 && a.scrollTop(e.offset().top - a.offset().top + a.scrollTop()), l > a.height() && a.scrollTop(e.offset().top + e.outerHeight() - a.offset().top + a.scrollTop() - a.height()))
         }
-        if (0 === li.length || li.hasClass('selectBox-disabled')) {
-            return false;
-        }
-        if (select.attr('multiple')) {
-            // If event.shiftKey is true, this will select all options between li and the last li selected
-            if (event.shiftKey && control.data('selectBox-last-selected')) {
-                li.toggleClass('selectBox-selected');
-                var affectedOptions;
-                if (li.index() > control.data('selectBox-last-selected').index()) {
-                    affectedOptions = li
-                        .siblings()
-                        .slice(control.data('selectBox-last-selected').index(), li.index());
-                } else {
-                    affectedOptions = li
-                        .siblings()
-                        .slice(li.index(), control.data('selectBox-last-selected').index());
-                }
-                affectedOptions = affectedOptions.not('.selectBox-optgroup, .selectBox-disabled');
-                if (li.hasClass('selectBox-selected')) {
-                    affectedOptions.addClass('selectBox-selected');
-                } else {
-                    affectedOptions.removeClass('selectBox-selected');
-                }
-            } else if ((this.isMac && event.metaKey) || (!this.isMac && event.ctrlKey)) {
-                li.toggleClass('selectBox-selected');
-            } else {
-                li.siblings().removeClass('selectBox-selected');
-                li.addClass('selectBox-selected');
-            }
-        } else {
-            li.siblings().removeClass('selectBox-selected');
-            li.addClass('selectBox-selected');
-        }
-        if (control.hasClass('selectBox-dropdown')) {
-            control.find('.selectBox-label').text(li.text());
-        }
-        // Update original control's value
-        var i = 0, selection = [];
-        if (select.attr('multiple')) {
-            control.find('.selectBox-selected A').each(function () {
-                selection[i++] = $(this).attr('rel');
-            });
-        } else {
-            selection = li.find('A').attr('rel');
-        }
-        // Remember most recently selected item
-        control.data('selectBox-last-selected', li);
-        // Change callback
-        if (select.val() !== selection) {
-            select.val(selection);
-            this.setLabel();
-            select.trigger('change');
-        }
-        return true;
-    };
-    /**
-     * Adds the hover class.
-     *
-     * @param {HTMLElement} li
-     */
-    SelectBox.prototype.addHover = function (li) {
-        li = $(li);
-        var select = $(this.selectElement)
-            , control = select.data('selectBox-control')
-            , options = control.data('selectBox-options');
-        options.find('.selectBox-hover').removeClass('selectBox-hover');
-        li.addClass('selectBox-hover');
-    };
-    /**
-     * Returns the original HTML select element.
-     *
-     * @returns {HTMLElement}
-     */
-    SelectBox.prototype.getSelectElement = function () {
-        return this.selectElement;
-    };
-    /**
-     * Remove the hover class.
-     *
-     * @param {HTMLElement} li
-     */
-    SelectBox.prototype.removeHover = function (li) {
-        li = $(li);
-        var select = $(this.selectElement)
-            , control = select.data('selectBox-control')
-            , options = control.data('selectBox-options');
-        options.find('.selectBox-hover').removeClass('selectBox-hover');
-    };
-    /**
-     * Checks if the widget is in the view.
-     *
-     * @param {jQuery}      li
-     * @param {Boolean}     center
-     */
-    SelectBox.prototype.keepOptionInView = function (li, center) {
-        if (!li || li.length === 0) {
-            return;
-        }
-        var select = $(this.selectElement)
-            , control = select.data('selectBox-control')
-            , options = control.data('selectBox-options')
-            , scrollBox = control.hasClass('selectBox-dropdown') ? options : options.parent()
-            , top = parseInt(li.offset().top - scrollBox.position().top)
-            , bottom = parseInt(top + li.outerHeight());
-        if (center) {
-            scrollBox.scrollTop(li.offset().top - scrollBox.offset().top + scrollBox.scrollTop() -
-                (scrollBox.height() / 2));
-        } else {
-            if (top < 0) {
-                scrollBox.scrollTop(li.offset().top - scrollBox.offset().top + scrollBox.scrollTop());
-            }
-            if (bottom > scrollBox.height()) {
-                scrollBox.scrollTop((li.offset().top + li.outerHeight()) - scrollBox.offset().top +
-                    scrollBox.scrollTop() - scrollBox.height());
-            }
-        }
-    };
-    /**
-     * Handles the keyDown event.
-     * Handles open/close and arrow key functionality
-     *
-     * @param {DOMEvent}    event
-     */
-    SelectBox.prototype.handleKeyDown = function (event) {
-        var select = $(this.selectElement)
-            , control = select.data('selectBox-control')
-            , options = control.data('selectBox-options')
-            , settings = select.data('selectBox-settings')
-            , totalOptions = 0, i = 0;
-        if (control.hasClass('selectBox-disabled')) {
-            return;
-        }
-        switch (event.keyCode) {
+    }, o.prototype.handleKeyDown = function (e) {
+        var t = w(this.selectElement), s = t.data("selectBox-control"), o = s.data("selectBox-options"),
+            a = t.data("selectBox-settings"), n = 0, l = 0;
+        if (!s.hasClass("selectBox-disabled")) switch (e.keyCode) {
             case 8:
-                // backspace
-                event.preventDefault();
-                this.typeSearch = '';
+                e.preventDefault(), this.typeSearch = "";
                 break;
             case 9:
-            // tab
             case 27:
-                // esc
-                this.hideMenus();
-                this.removeHover();
+                this.hideMenus(), this.removeHover();
                 break;
             case 13:
-                // enter
-                if (control.hasClass('selectBox-menuShowing')) {
-                    this.selectOption(options.find('LI.selectBox-hover:first'), event);
-                    if (control.hasClass('selectBox-dropdown')) {
-                        this.hideMenus();
-                    }
-                } else {
-                    this.showMenu();
-                }
+                s.hasClass("selectBox-menuShowing") ? (this.selectOption(o.find("LI.selectBox-hover:first"), e), s.hasClass("selectBox-dropdown") && this.hideMenus()) : this.showMenu();
                 break;
             case 38:
-            // up
             case 37:
-                // left
-                event.preventDefault();
-                if (control.hasClass('selectBox-menuShowing')) {
-                    var prev = options.find('.selectBox-hover').prev('LI');
-                    totalOptions = options.find('LI:not(.selectBox-optgroup)').length;
-                    i = 0;
-                    while (prev.length === 0 || prev.hasClass('selectBox-disabled') ||
-                    prev.hasClass('selectBox-optgroup')) {
-                        prev = prev.prev('LI');
-                        if (prev.length === 0) {
-                            if (settings.loopOptions) {
-                                prev = options.find('LI:last');
-                            } else {
-                                prev = options.find('LI:first');
-                            }
-                        }
-                        if (++i >= totalOptions) {
-                            break;
-                        }
-                    }
-                    this.addHover(prev);
-                    this.selectOption(prev, event);
-                    this.keepOptionInView(prev);
-                } else {
-                    this.showMenu();
-                }
+                if (e.preventDefault(), s.hasClass("selectBox-menuShowing")) {
+                    var i = o.find(".selectBox-hover").prev("LI");
+                    for (n = o.find("LI:not(.selectBox-optgroup)").length, l = 0; (0 === i.length || i.hasClass("selectBox-disabled") || i.hasClass("selectBox-optgroup")) && (0 === (i = i.prev("LI")).length && (i = a.loopOptions ? o.find("LI:last") : o.find("LI:first")), !(++l >= n));) ;
+                    this.addHover(i), this.selectOption(i, e), this.keepOptionInView(i)
+                } else this.showMenu();
                 break;
             case 40:
-            // down
             case 39:
-                // right
-                event.preventDefault();
-                if (control.hasClass('selectBox-menuShowing')) {
-                    var next = options.find('.selectBox-hover').next('LI');
-                    totalOptions = options.find('LI:not(.selectBox-optgroup)').length;
-                    i = 0;
-                    while (0 === next.length || next.hasClass('selectBox-disabled') ||
-                    next.hasClass('selectBox-optgroup')) {
-                        next = next.next('LI');
-                        if (next.length === 0) {
-                            if (settings.loopOptions) {
-                                next = options.find('LI:first');
-                            } else {
-                                next = options.find('LI:last');
-                            }
-                        }
-                        if (++i >= totalOptions) {
-                            break;
-                        }
-                    }
-                    this.addHover(next);
-                    this.selectOption(next, event);
-                    this.keepOptionInView(next);
-                } else {
-                    this.showMenu();
-                }
-                break;
+                if (e.preventDefault(), s.hasClass("selectBox-menuShowing")) {
+                    var c = o.find(".selectBox-hover").next("LI");
+                    for (n = o.find("LI:not(.selectBox-optgroup)").length, l = 0; (0 === c.length || c.hasClass("selectBox-disabled") || c.hasClass("selectBox-optgroup")) && (0 === (c = c.next("LI")).length && (c = a.loopOptions ? o.find("LI:first") : o.find("LI:last")), !(++l >= n));) ;
+                    this.addHover(c), this.selectOption(c, e), this.keepOptionInView(c)
+                } else this.showMenu()
         }
-    };
-    /**
-     * Handles the keyPress event.
-     * Handles type-to-find functionality
-     *
-     * @param {DOMEvent}    event
-     */
-    SelectBox.prototype.handleKeyPress = function (event) {
-        var select = $(this.selectElement)
-            , control = select.data('selectBox-control')
-            , options = control.data('selectBox-options')
-            , self = this;
-        if (control.hasClass('selectBox-disabled')) {
-            return;
-        }
-        switch (event.keyCode) {
+    }, o.prototype.handleKeyPress = function (e) {
+        var t = w(this.selectElement).data("selectBox-control"), s = t.data("selectBox-options"), o = this;
+        if (!t.hasClass("selectBox-disabled")) switch (e.keyCode) {
             case 9:
-            // tab
             case 27:
-            // esc
             case 13:
-            // enter
             case 38:
-            // up
             case 37:
-            // left
             case 40:
-            // down
             case 39:
-                // right
-                // Don't interfere with the keydown event!
                 break;
             default:
-                // Type to find
-                if (!control.hasClass('selectBox-menuShowing')) {
-                    this.showMenu();
-                }
-                event.preventDefault();
-                clearTimeout(this.typeTimer);
-                this.typeSearch += String.fromCharCode(event.charCode || event.keyCode);
-                options.find('A').each(function () {
-                    if ($(this).text().substr(0, self.typeSearch.length).toLowerCase() === self.typeSearch.toLowerCase()) {
-                        self.addHover($(this).parent());
-                        self.selectOption($(this).parent(), event);
-                        self.keepOptionInView($(this).parent());
-                        return false;
-                    }
-                });
-                // Clear after a brief pause
-                this.typeTimer = setTimeout(function () {
-                    self.typeSearch = '';
-                }, 1000);
+                t.hasClass("selectBox-menuShowing") || this.showMenu(), e.preventDefault(), clearTimeout(this.typeTimer), this.typeSearch += String.fromCharCode(e.charCode || e.keyCode), s.find("A").each(function () {
+                    if (w(this).text().substr(0, o.typeSearch.length).toLowerCase() === o.typeSearch.toLowerCase()) return o.addHover(w(this).parent()), o.selectOption(w(this).parent(), e), o.keepOptionInView(w(this).parent()), !1
+                }), this.typeTimer = setTimeout(function () {
+                    o.typeSearch = ""
+                }, 1e3)
+        }
+    }, o.prototype.enable = function () {
+        var e = w(this.selectElement);
+        e.prop("disabled", !1);
+        var t = e.data("selectBox-control");
+        t && t.removeClass("selectBox-disabled")
+    }, o.prototype.disable = function () {
+        var e = w(this.selectElement);
+        e.prop("disabled", !0);
+        var t = e.data("selectBox-control");
+        t && t.addClass("selectBox-disabled")
+    }, o.prototype.setValue = function (t) {
+        var e = w(this.selectElement);
+        e.val(t), null === (t = e.val()) && (t = e.children().first().val(), e.val(t));
+        var s = e.data("selectBox-control");
+        if (s) {
+            var o = e.data("selectBox-settings"), a = s.data("selectBox-options");
+            this.setLabel(), a.find(".selectBox-selected").removeClass("selectBox-selected"), a.find("A").each(function () {
+                if ("object" == typeof t) for (var e = 0; e < t.length; e++) w(this).attr("rel") == t[e] && w(this).parent().addClass("selectBox-selected"); else w(this).attr("rel") == t && w(this).parent().addClass("selectBox-selected")
+            }), o.change && o.change.call(e)
+        }
+    }, o.prototype.setOptions = function (e) {
+        var t = w(this.selectElement), s = t.data("selectBox-control");
+        switch (typeof e) {
+            case"string":
+                t.html(e);
                 break;
-        }
-    };
-    /**
-     * Enables the selectBox.
-     */
-    SelectBox.prototype.enable = function () {
-        var select = $(this.selectElement);
-        select.prop('disabled', false);
-        var control = select.data('selectBox-control');
-        if (!control) {
-            return;
-        }
-        control.removeClass('selectBox-disabled');
-    };
-    /**
-     * Disables the selectBox.
-     */
-    SelectBox.prototype.disable = function () {
-        var select = $(this.selectElement);
-        select.prop('disabled', true);
-        var control = select.data('selectBox-control');
-        if (!control) {
-            return;
-        }
-        control.addClass('selectBox-disabled');
-    };
-    /**
-     * Sets the current value.
-     *
-     * @param {String}      value
-     */
-    SelectBox.prototype.setValue = function (value) {
-        var select = $(this.selectElement);
-        select.val(value);
-        value = select.val(); // IE9's select would be null if it was set with a non-exist options value
-        if (null === value) { // So check it here and set it with the first option's value if possible
-            value = select.children().first().val();
-            select.val(value);
-        }
-        var control = select.data('selectBox-control');
-        if (!control) {
-            return;
-        }
-        var settings = select.data('selectBox-settings')
-            , options = control.data('selectBox-options');
-        // Update label
-        this.setLabel();
-        // Update control values
-        options.find('.selectBox-selected').removeClass('selectBox-selected');
-        options.find('A').each(function () {
-            if (typeof(value) === 'object') {
-                for (var i = 0; i < value.length; i++) {
-                    if ($(this).attr('rel') == value[i]) {
-                        $(this).parent().addClass('selectBox-selected');
-                    }
-                }
-            } else {
-                if ($(this).attr('rel') == value) {
-                    $(this).parent().addClass('selectBox-selected');
-                }
-            }
-        });
-        if (settings.change) {
-            settings.change.call(select);
-        }
-    };
-    /**
-     * Sets the option elements.
-     *
-     * @param {String|Object} options
-     */
-    SelectBox.prototype.setOptions = function (options) {
-        var select = $(this.selectElement)
-            , control = select.data('selectBox-control');
-        switch (typeof(options)) {
-            case 'string':
-                select.html(options);
-                break;
-            case 'object':
-                select.html('');
-                for (var i in options) {
-                    if (options[i] === null) {
-                        continue;
-                    }
-                    if (typeof(options[i]) === 'object') {
-                        var optgroup = $('<optgroup label="' + i + '" />');
-                        for (var j in options[i]) {
-                            optgroup.append('<option value="' + j + '">' + options[i][j] + '</option>');
-                        }
-                        select.append(optgroup);
-                    } else {
-                        var option = $('<option value="' + i + '">' + options[i] + '</option>');
-                        select.append(option);
-                    }
-                }
-                break;
-        }
-        if (control) {
-            // Refresh the control
-            this.refresh();
-        }
-    };
-    /**
-     * Disables the selection.
-     *
-     * @param {*} selector
-     */
-    SelectBox.prototype.disableSelection = function (selector) {
-        $(selector).css('MozUserSelect', 'none').bind('selectstart', function (event) {
-            event.preventDefault();
-        });
-    };
-    /**
-     * Generates the options.
-     *
-     * @param {jQuery} self
-     * @param {jQuery} options
-     */
-    SelectBox.prototype.generateOptions = function (self, options) {
-        var li = $('<li />'), a = $('<a />');
-        li.addClass(self.attr('class'));
-        li.data(self.data());
-        a.attr('rel', self.val()).text(self.text());
-        li.append(a);
-        if (self.attr('disabled')) {
-            li.addClass('selectBox-disabled');
-        }
-        if (self.attr('selected')) {
-            li.addClass('selectBox-selected');
-        }
-        options.append(li);
-    };
-    /**
-     * Extends the jQuery.fn object.
-     */
-    $.extend($.fn, {
-        selectBox: function (method, options) {
-            var selectBox;
-            switch (method) {
-                case 'control':
-                    return $(this).data('selectBox-control');
-                case 'settings':
-                    if (!options) {
-                        return $(this).data('selectBox-settings');
-                    }
-                    $(this).each(function () {
-                        $(this).data('selectBox-settings', $.extend(true, $(this).data('selectBox-settings'), options));
-                    });
-                    break;
-                case 'options':
-                    // Getter
-                    if (undefined === options) {
-                        return $(this).data('selectBox-control').data('selectBox-options');
-                    }
-                    // Setter
-                    $(this).each(function () {
-                        if (selectBox = $(this).data('selectBox')) {
-                            selectBox.setOptions(options);
-                        }
-                    });
-                    break;
-                case 'value':
-                    // Empty string is a valid value
-                    if (undefined === options) {
-                        return $(this).val();
-                    }
-                    $(this).each(function () {
-                        if (selectBox = $(this).data('selectBox')) {
-                            selectBox.setValue(options);
-                        }
-                    });
-                    break;
-                case 'refresh':
-                    $(this).each(function () {
-                        if (selectBox = $(this).data('selectBox')) {
-                            selectBox.refresh();
-                        }
-                    });
-                    break;
-                case 'enable':
-                    $(this).each(function () {
-                        if (selectBox = $(this).data('selectBox')) {
-                            selectBox.enable(this);
-                        }
-                    });
-                    break;
-                case 'disable':
-                    $(this).each(function () {
-                        if (selectBox = $(this).data('selectBox')) {
-                            selectBox.disable();
-                        }
-                    });
-                    break;
-                case 'destroy':
-                    $(this).each(function () {
-                        if (selectBox = $(this).data('selectBox')) {
-                            selectBox.destroy();
-                            $(this).data('selectBox', null);
-                        }
-                    });
-                    break;
-                case 'instance':
-                    return $(this).data('selectBox');
-                default:
-                    $(this).each(function (idx, select) {
-                        if (!$(select).data('selectBox')) {
-                            $(select).data('selectBox', new SelectBox(select, method));
-                        }
-                    });
-                    break;
-            }
-            return $(this);
-        }
-    });
-})(jQuery);
-
-/*
-	Masked Input plugin for jQuery
-	Copyright (c) 2007-2013 Josh Bush (digitalbush.com)
-	Licensed under the MIT license (http://digitalbush.com/projects/masked-input-plugin/#license)
-	Version: 1.3.1
-*/
-(function ($) {
-    function getPasteEvent() {
-        var el = document.createElement('input'),
-            name = 'onpaste';
-        el.setAttribute(name, '');
-        return (typeof el[name] === 'function') ? 'paste' : 'input';
-    }
-
-    var pasteEventName = getPasteEvent() + ".mask",
-        ua = navigator.userAgent,
-        iPhone = /iphone/i.test(ua),
-        android = /android/i.test(ua),
-        caretTimeoutId;
-    $.mask = {
-        //Predefined character definitions
-        definitions: {
-            '9': "[0-9]",
-            'a': "[A-Za-z]",
-            '*': "[A-Za-z0-9]"
-        },
-        dataName: "rawMaskFn",
-        placeholder: '_',
-    };
-    $.fn.extend({
-        //Helper Function for Caret positioning
-        caret: function (begin, end) {
-            var range;
-            if (this.length === 0 || this.is(":hidden")) {
-                return;
-            }
-            if (typeof begin == 'number') {
-                end = (typeof end === 'number') ? end : begin;
-                return this.each(function () {
-                    if (this.setSelectionRange) {
-                        this.setSelectionRange(begin, end);
-                    } else if (this.createTextRange) {
-                        range = this.createTextRange();
-                        range.collapse(true);
-                        range.moveEnd('character', end);
-                        range.moveStart('character', begin);
-                        range.select();
-                    }
-                });
-            } else {
-                if (this[0].setSelectionRange) {
-                    begin = this[0].selectionStart;
-                    end = this[0].selectionEnd;
-                } else if (document.selection && document.selection.createRange) {
-                    range = document.selection.createRange();
-                    begin = 0 - range.duplicate().moveStart('character', -100000);
-                    end = begin + range.text.length;
-                }
-                return {begin: begin, end: end};
-            }
-        },
-        unmask: function () {
-            return this.trigger("unmask");
-        },
-        mask: function (mask, settings) {
-            var input,
-                defs,
-                tests,
-                partialPosition,
-                firstNonMaskPos,
-                len;
-            if (!mask && this.length > 0) {
-                input = $(this[0]);
-                return input.data($.mask.dataName)();
-            }
-            settings = $.extend({
-                placeholder: $.mask.placeholder, // Load default placeholder
-                completed: null
-            }, settings);
-            defs = $.mask.definitions;
-            tests = [];
-            partialPosition = len = mask.length;
-            firstNonMaskPos = null;
-            $.each(mask.split(""), function (i, c) {
-                if (c == '?') {
-                    len--;
-                    partialPosition = i;
-                } else if (defs[c]) {
-                    tests.push(new RegExp(defs[c]));
-                    if (firstNonMaskPos === null) {
-                        firstNonMaskPos = tests.length - 1;
-                    }
+            case"object":
+                for (var o in t.html(""), e) if (null !== e[o]) if ("object" == typeof e[o]) {
+                    var a = w('<optgroup label="' + o + '" />');
+                    for (var n in e[o]) a.append('<option value="' + n + '">' + e[o][n] + "</option>");
+                    t.append(a)
                 } else {
-                    tests.push(null);
+                    var l = w('<option value="' + o + '">' + e[o] + "</option>");
+                    t.append(l)
                 }
-            });
-            return this.trigger("unmask").each(function () {
-                var input = $(this),
-                    buffer = $.map(
-                        mask.split(""),
-                        function (c, i) {
-                            if (c != '?') {
-                                return defs[c] ? settings.placeholder : c;
-                            }
-                        }),
-                    focusText = input.val();
-
-                function seekNext(pos) {
-                    while (++pos < len && !tests[pos]) ;
-                    return pos;
-                }
-
-                function seekPrev(pos) {
-                    while (--pos >= 0 && !tests[pos]) ;
-                    return pos;
-                }
-
-                function shiftL(begin, end) {
-                    var i,
-                        j;
-                    if (begin < 0) {
-                        return;
-                    }
-                    for (i = begin, j = seekNext(end); i < len; i++) {
-                        if (tests[i]) {
-                            if (j < len && tests[i].test(buffer[j])) {
-                                buffer[i] = buffer[j];
-                                buffer[j] = settings.placeholder;
-                            } else {
-                                break;
-                            }
-                            j = seekNext(j);
-                        }
-                    }
-                    writeBuffer();
-                    input.caret(Math.max(firstNonMaskPos, begin));
-                }
-
-                function shiftR(pos) {
-                    var i,
-                        c,
-                        j,
-                        t;
-                    for (i = pos, c = settings.placeholder; i < len; i++) {
-                        if (tests[i]) {
-                            j = seekNext(i);
-                            t = buffer[i];
-                            buffer[i] = c;
-                            if (j < len && tests[j].test(t)) {
-                                c = t;
-                            } else {
-                                break;
-                            }
-                        }
-                    }
-                }
-
-                function keydownEvent(e) {
-                    var k = e.which,
-                        pos,
-                        begin,
-                        end;
-                    //backspace, delete, and escape get special treatment
-                    if (k === 8 || k === 46 || (iPhone && k === 127)) {
-                        pos = input.caret();
-                        begin = pos.begin;
-                        end = pos.end;
-                        if (end - begin === 0) {
-                            begin = k !== 46 ? seekPrev(begin) : (end = seekNext(begin - 1));
-                            end = k === 46 ? seekNext(end) : end;
-                        }
-                        clearBuffer(begin, end);
-                        shiftL(begin, end - 1);
-                        e.preventDefault();
-                    } else if (k == 27) {//escape
-                        input.val(focusText);
-                        input.caret(0, checkVal());
-                        e.preventDefault();
-                    }
-                }
-
-                function keypressEvent(e) {
-                    var k = e.which,
-                        pos = input.caret(),
-                        p,
-                        c,
-                        next;
-                    if (e.ctrlKey || e.altKey || e.metaKey || k < 32) {//Ignore
-
-                    } else if (k) {
-                        if (pos.end - pos.begin !== 0) {
-                            clearBuffer(pos.begin, pos.end);
-                            shiftL(pos.begin, pos.end - 1);
-                        }
-                        p = seekNext(pos.begin - 1);
-                        if (p < len) {
-                            c = String.fromCharCode(k);
-                            if (tests[p].test(c)) {
-                                shiftR(p);
-                                buffer[p] = c;
-                                writeBuffer();
-                                next = seekNext(p);
-                                if (android) {
-                                    setTimeout($.proxy($.fn.caret, input, next), 0);
-                                } else {
-                                    input.caret(next);
-                                }
-                                if (settings.completed && next >= len) {
-                                    settings.completed.call(input);
-                                }
-                            }
-                        }
-                        e.preventDefault();
-                    }
-                }
-
-                function clearBuffer(start, end) {
-                    var i;
-                    for (i = start; i < end && i < len; i++) {
-                        if (tests[i]) {
-                            buffer[i] = settings.placeholder;
-                        }
-                    }
-                }
-
-                function writeBuffer() {
-                    input.val(buffer.join(''));
-                }
-
-                function checkVal(allow) {
-                    //try to place characters where they belong
-                    var test = input.val(),
-                        lastMatch = -1,
-                        i,
-                        c;
-                    for (i = 0, pos = 0; i < len; i++) {
-                        if (tests[i]) {
-                            buffer[i] = settings.placeholder;
-                            while (pos++ < test.length) {
-                                c = test.charAt(pos - 1);
-                                if (tests[i].test(c)) {
-                                    buffer[i] = c;
-                                    lastMatch = i;
-                                    break;
-                                }
-                            }
-                            if (pos > test.length) {
-                                break;
-                            }
-                        } else if (buffer[i] === test.charAt(pos) && i !== partialPosition) {
-                            pos++;
-                            lastMatch = i;
-                        }
-                    }
-                    if (allow) {
-                        writeBuffer();
-                    } else if (lastMatch + 1 < partialPosition) {
-                        input.val("");
-                        clearBuffer(0, len);
-                    } else {
-                        writeBuffer();
-                        input.val(input.val().substring(0, lastMatch + 1));
-                    }
-                    return (partialPosition ? i : firstNonMaskPos);
-                }
-
-                input.data($.mask.dataName, function () {
-                    return $.map(buffer, function (c, i) {
-                        return tests[i] && c != settings.placeholder ? c : null;
-                    }).join('');
-                });
-                if (!input.attr("readonly"))
-                    input
-                        .one("unmask", function () {
-                            input
-                                .unbind(".mask")
-                                .removeData($.mask.dataName);
-                        })
-                        .bind("focus.mask", function () {
-                            clearTimeout(caretTimeoutId);
-                            var pos,
-                                moveCaret;
-                            focusText = input.val();
-                            pos = checkVal();
-                            caretTimeoutId = setTimeout(function () {
-                                writeBuffer();
-                                if (pos == mask.length) {
-                                    input.caret(0, pos);
-                                } else {
-                                    input.caret(pos);
-                                }
-                            }, 10);
-                        })
-                        .bind("blur.mask", function () {
-                            checkVal();
-                            if (input.val() != focusText)
-                                input.change();
-                        })
-                        .bind("keydown.mask", keydownEvent)
-                        .bind("keypress.mask", keypressEvent)
-                        .bind(pasteEventName, function () {
-                            setTimeout(function () {
-                                var pos = checkVal(true);
-                                input.caret(pos);
-                                if (settings.completed && pos == input.val().length)
-                                    settings.completed.call(input);
-                            }, 0);
-                        });
-                checkVal(); //Perform initial check for existing values
-            });
         }
-    });
-})(jQuery);
+        s && this.refresh()
+    }, o.prototype.disableSelection = function (e) {
+        w(e).css("MozUserSelect", "none").bind("selectstart", function (e) {
+            e.preventDefault()
+        })
+    }, o.prototype.generateOptions = function (e, t) {
+        var s = w("<li />"), o = w("<a />");
+        s.addClass(e.attr("class")), s.data(e.data()), o.attr("rel", e.val()).text(e.text()), s.append(o), e.attr("disabled") && s.addClass("selectBox-disabled"), e.attr("selected") && s.addClass("selectBox-selected"), t.append(s)
+    }, w.extend(w.fn, {
+        selectBox: function (s, e) {
+            var t;
+            switch (s) {
+                case"control":
+                    return w(this).data("selectBox-control");
+                case"settings":
+                    if (!e) return w(this).data("selectBox-settings");
+                    w(this).each(function () {
+                        w(this).data("selectBox-settings", w.extend(!0, w(this).data("selectBox-settings"), e))
+                    });
+                    break;
+                case"options":
+                    if (void 0 === e) return w(this).data("selectBox-control").data("selectBox-options");
+                    w(this).each(function () {
+                        (t = w(this).data("selectBox")) && t.setOptions(e)
+                    });
+                    break;
+                case"value":
+                    if (void 0 === e) return w(this).val();
+                    w(this).each(function () {
+                        (t = w(this).data("selectBox")) && t.setValue(e)
+                    });
+                    break;
+                case"refresh":
+                    w(this).each(function () {
+                        (t = w(this).data("selectBox")) && t.refresh()
+                    });
+                    break;
+                case"enable":
+                    w(this).each(function () {
+                        (t = w(this).data("selectBox")) && t.enable(this)
+                    });
+                    break;
+                case"disable":
+                    w(this).each(function () {
+                        (t = w(this).data("selectBox")) && t.disable()
+                    });
+                    break;
+                case"destroy":
+                    w(this).each(function () {
+                        (t = w(this).data("selectBox")) && (t.destroy(), w(this).data("selectBox", null))
+                    });
+                    break;
+                case"instance":
+                    return w(this).data("selectBox");
+                default:
+                    w(this).each(function (e, t) {
+                        w(t).data("selectBox") || w(t).data("selectBox", new o(t, s))
+                    })
+            }
+            return w(this)
+        }
+    })
+}(jQuery);
 
-/*-----*/
-(function ($) {
-    $.fn.customScrollbar = function (options, args) {
-        var defaultOptions = {
-            skin: undefined,
-            hScroll: true,
-            vScroll: true,
-            updateOnWindowResize: false,
+/* http://digitalbush.com/projects/masked-input-plugin/ 1.3.1 */
+!function (k) {
+    var a, e, t,
+        r = (e = document.createElement("input"), t = "onpaste", e.setAttribute(t, ""), ("function" == typeof e[t] ? "paste" : "input") + ".mask"),
+        n = navigator.userAgent, b = /iphone/i.test(n), y = /android/i.test(n);
+    k.mask = {
+        definitions: {9: "[0-9]", a: "[A-Za-z]", "*": "[A-Za-z0-9]"},
+        dataName: "rawMaskFn",
+        placeholder: "_"
+    }, k.fn.extend({
+        caret: function (e, t) {
+            var n;
+            if (0 !== this.length && !this.is(":hidden")) return "number" == typeof e ? (t = "number" == typeof t ? t : e, this.each(function () {
+                this.setSelectionRange ? this.setSelectionRange(e, t) : this.createTextRange && ((n = this.createTextRange()).collapse(!0), n.moveEnd("character", t), n.moveStart("character", e), n.select())
+            })) : (this[0].setSelectionRange ? (e = this[0].selectionStart, t = this[0].selectionEnd) : document.selection && document.selection.createRange && (n = document.selection.createRange(), e = 0 - n.duplicate().moveStart("character", -1e5), t = e + n.text.length), {
+                begin: e,
+                end: t
+            })
+        }, unmask: function () {
+            return this.trigger("unmask")
+        }, mask: function (t, d) {
+            var n, m, p, g, v;
+            return !t && 0 < this.length ? k(this[0]).data(k.mask.dataName)() : (d = k.extend({
+                placeholder: k.mask.placeholder,
+                completed: null
+            }, d), n = k.mask.definitions, m = [], p = v = t.length, g = null, k.each(t.split(""), function (e, t) {
+                "?" == t ? (v--, p = e) : n[t] ? (m.push(new RegExp(n[t])), null === g && (g = m.length - 1)) : m.push(null)
+            }), this.trigger("unmask").each(function () {
+                var o = k(this), c = k.map(t.split(""), function (e, t) {
+                    if ("?" != e) return n[e] ? d.placeholder : e
+                }), i = o.val();
+
+                function l(e) {
+                    for (; ++e < v && !m[e];) ;
+                    return e
+                }
+
+                function s(e, t) {
+                    var n, a;
+                    if (!(e < 0)) {
+                        for (n = e, a = l(t); n < v; n++) if (m[n]) {
+                            if (!(a < v && m[n].test(c[a]))) break;
+                            c[n] = c[a], c[a] = d.placeholder, a = l(a)
+                        }
+                        f(), o.caret(Math.max(g, e))
+                    }
+                }
+
+                function u(e, t) {
+                    var n;
+                    for (n = e; n < t && n < v; n++) m[n] && (c[n] = d.placeholder)
+                }
+
+                function f() {
+                    o.val(c.join(""))
+                }
+
+                function h(e) {
+                    var t, n, a = o.val(), r = -1;
+                    for (t = 0, pos = 0; t < v; t++) if (m[t]) {
+                        for (c[t] = d.placeholder; pos++ < a.length;) if (n = a.charAt(pos - 1), m[t].test(n)) {
+                            c[t] = n, r = t;
+                            break
+                        }
+                        if (pos > a.length) break
+                    } else c[t] === a.charAt(pos) && t !== p && (pos++, r = t);
+                    return e ? f() : r + 1 < p ? (o.val(""), u(0, v)) : (f(), o.val(o.val().substring(0, r + 1))), p ? t : g
+                }
+
+                o.data(k.mask.dataName, function () {
+                    return k.map(c, function (e, t) {
+                        return m[t] && e != d.placeholder ? e : null
+                    }).join("")
+                }), o.attr("readonly") || o.one("unmask", function () {
+                    o.unbind(".mask").removeData(k.mask.dataName)
+                }).bind("focus.mask", function () {
+                    var e;
+                    clearTimeout(a), i = o.val(), e = h(), a = setTimeout(function () {
+                        f(), e == t.length ? o.caret(0, e) : o.caret(e)
+                    }, 10)
+                }).bind("blur.mask", function () {
+                    h(), o.val() != i && o.change()
+                }).bind("keydown.mask", function (e) {
+                    var t, n, a, r = e.which;
+                    8 === r || 46 === r || b && 127 === r ? (n = (t = o.caret()).begin, (a = t.end) - n == 0 && (n = 46 !== r ? function (e) {
+                        for (; 0 <= --e && !m[e];) ;
+                        return e
+                    }(n) : a = l(n - 1), a = 46 === r ? l(a) : a), u(n, a), s(n, a - 1), e.preventDefault()) : 27 == r && (o.val(i), o.caret(0, h()), e.preventDefault())
+                }).bind("keypress.mask", function (e) {
+                    var t, n, a, r = e.which, i = o.caret();
+                    e.ctrlKey || e.altKey || e.metaKey || r < 32 || r && (i.end - i.begin != 0 && (u(i.begin, i.end), s(i.begin, i.end - 1)), (t = l(i.begin - 1)) < v && (n = String.fromCharCode(r), m[t].test(n) && (function (e) {
+                        var t, n, a, r;
+                        for (t = e, n = d.placeholder; t < v; t++) if (m[t]) {
+                            if (a = l(t), r = c[t], c[t] = n, !(a < v && m[a].test(r))) break;
+                            n = r
+                        }
+                    }(t), c[t] = n, f(), a = l(t), y ? setTimeout(k.proxy(k.fn.caret, o, a), 0) : o.caret(a), d.completed && v <= a && d.completed.call(o))), e.preventDefault())
+                }).bind(r, function () {
+                    setTimeout(function () {
+                        var e = h(!0);
+                        o.caret(e), d.completed && e == o.val().length && d.completed.call(o)
+                    }, 0)
+                }), h()
+            }))
+        }
+    })
+}(jQuery);
+
+/* customScrollbar */
+!function (h) {
+    h.fn.customScrollbar = function (i, t) {
+        var o = {
+            skin: void 0,
+            hScroll: !0,
+            vScroll: !0,
+            updateOnWindowResize: !1,
             animationSpeed: 300,
-            onCustomScroll: undefined,
+            onCustomScroll: void 0,
             swipeSpeed: 1,
             wheelSpeed: 40,
-            fixedThumbWidth: undefined,
-            fixedThumbHeight: undefined
+            fixedThumbWidth: void 0,
+            fixedThumbHeight: void 0
+        }, s = function (e, i) {
+            this.$element = h(e), this.options = i, this.addScrollableClass(), this.addSkinClass(), this.addScrollBarComponents(), this.options.vScroll && (this.vScrollbar = new n(this, new r)), this.options.hScroll && (this.hScrollbar = new n(this, new l)), this.$element.data("scrollable", this), this.initKeyboardScrolling(), this.bindEvents()
         };
-        var Scrollable = function (element, options) {
-            this.$element = $(element);
-            this.options = options;
-            this.addScrollableClass();
-            this.addSkinClass();
-            this.addScrollBarComponents();
-            if (this.options.vScroll)
-                this.vScrollbar = new Scrollbar(this, new VSizing());
-            if (this.options.hScroll)
-                this.hScrollbar = new Scrollbar(this, new HSizing());
-            this.$element.data("scrollable", this);
-            this.initKeyboardScrolling();
-            this.bindEvents();
-        };
-        Scrollable.prototype = {
+        s.prototype = {
             addScrollableClass: function () {
-                if (!this.$element.hasClass("scrollable")) {
-                    this.scrollableAdded = true;
-                    this.$element.addClass("scrollable");
-                }
-            },
-            removeScrollableClass: function () {
-                if (this.scrollableAdded)
-                    this.$element.removeClass("scrollable");
-            },
-            addSkinClass: function () {
-                if (typeof(this.options.skin) == "string" && !this.$element.hasClass(this.options.skin)) {
-                    this.skinClassAdded = true;
-                    this.$element.addClass(this.options.skin);
-                }
-            },
-            removeSkinClass: function () {
-                if (this.skinClassAdded)
-                    this.$element.removeClass(this.options.skin);
-            },
-            addScrollBarComponents: function () {
-                this.assignViewPort();
-                if (this.$viewPort.length == 0) {
-                    this.$element.wrapInner("<div class=\"viewport\" />");
-                    this.assignViewPort();
-                    this.viewPortAdded = true;
-                }
-                this.assignOverview();
-                if (this.$overview.length == 0) {
-                    this.$viewPort.wrapInner("<div class=\"overview\" />");
-                    this.assignOverview();
-                    this.overviewAdded = true;
-                }
-                this.addScrollBar("vertical", "prepend");
-                this.addScrollBar("horizontal", "append");
-            },
-            removeScrollbarComponents: function () {
-                this.removeScrollbar("vertical");
-                this.removeScrollbar("horizontal");
-                if (this.overviewAdded)
-                    this.$element.unwrap();
-                if (this.viewPortAdded)
-                    this.$element.unwrap();
-            },
-            removeScrollbar: function (orientation) {
-                if (this[orientation + "ScrollbarAdded"])
-                    this.$element.find(".scroll-bar." + orientation).remove();
-            },
-            assignViewPort: function () {
-                this.$viewPort = this.$element.find(".viewport");
-            },
-            assignOverview: function () {
-                this.$overview = this.$viewPort.find(".overview");
-            },
-            addScrollBar: function (orientation, fun) {
-                if (this.$element.find(".scroll-bar." + orientation).length == 0) {
-                    this.$element[fun]("<div class='scroll-bar " + orientation + "'><div class='thumb'></div></div>");
-                    this[orientation + "ScrollbarAdded"] = true;
-                }
-            },
-            resize: function (keepPosition) {
-                if (this.vScrollbar)
-                    this.vScrollbar.resize(keepPosition);
-                if (this.hScrollbar)
-                    this.hScrollbar.resize(keepPosition);
-            },
-            scrollTo: function (element) {
-                if (this.vScrollbar)
-                    this.vScrollbar.scrollToElement(element);
-                if (this.hScrollbar)
-                    this.hScrollbar.scrollToElement(element);
-            },
-            scrollToXY: function (x, y) {
-                this.scrollToX(x);
-                this.scrollToY(y);
-            },
-            scrollToX: function (x) {
-                if (this.hScrollbar)
-                    this.hScrollbar.scrollOverviewTo(x, true);
-            },
-            scrollToY: function (y) {
-                if (this.vScrollbar)
-                    this.vScrollbar.scrollOverviewTo(y, true);
-            },
-            remove: function () {
-                this.removeScrollableClass();
-                this.removeSkinClass();
-                this.removeScrollbarComponents();
-                this.$element.data("scrollable", null);
-                this.removeKeyboardScrolling();
-                if (this.vScrollbar)
-                    this.vScrollbar.remove();
-                if (this.hScrollbar)
-                    this.hScrollbar.remove();
-            },
-            setAnimationSpeed: function (speed) {
-                this.options.animationSpeed = speed;
-            },
-            isInside: function (element, wrappingElement) {
-                var $element = $(element);
-                var $wrappingElement = $(wrappingElement);
-                var elementOffset = $element.offset();
-                var wrappingElementOffset = $wrappingElement.offset();
-                return (elementOffset.top >= wrappingElementOffset.top) && (elementOffset.left >= wrappingElementOffset.left) &&
-                    (elementOffset.top + $element.height() <= wrappingElementOffset.top + $wrappingElement.height()) &&
-                    (elementOffset.left + $element.width() <= wrappingElementOffset.left + $wrappingElement.width())
-            },
-            initKeyboardScrolling: function () {
-                var _this = this;
-                this.elementKeydown = function (event) {
-                    if (document.activeElement === _this.$element[0]) {
-                        if (_this.vScrollbar)
-                            _this.vScrollbar.keyScroll(event);
-                        if (_this.hScrollbar)
-                            _this.hScrollbar.keyScroll(event);
-                    }
-                };
-                this.$element
-                    .attr('tabindex', '-1')
-                    .keydown(this.elementKeydown);
-            },
-            removeKeyboardScrolling: function () {
-                this.$element
-                    .removeAttr('tabindex')
-                    .unbind("keydown", this.elementKeydown);
-            },
-            bindEvents: function () {
-                if (this.options.onCustomScroll)
-                    this.$element.on("customScroll", this.options.onCustomScroll);
+                this.$element.hasClass("scrollable") || (this.scrollableAdded = !0, this.$element.addClass("scrollable"))
+            }, removeScrollableClass: function () {
+                this.scrollableAdded && this.$element.removeClass("scrollable")
+            }, addSkinClass: function () {
+                "string" != typeof this.options.skin || this.$element.hasClass(this.options.skin) || (this.skinClassAdded = !0, this.$element.addClass(this.options.skin))
+            }, removeSkinClass: function () {
+                this.skinClassAdded && this.$element.removeClass(this.options.skin)
+            }, addScrollBarComponents: function () {
+                this.assignViewPort(), 0 == this.$viewPort.length && (this.$element.wrapInner('<div class="viewport" />'), this.assignViewPort(), this.viewPortAdded = !0), this.assignOverview(), 0 == this.$overview.length && (this.$viewPort.wrapInner('<div class="overview" />'), this.assignOverview(), this.overviewAdded = !0), this.addScrollBar("vertical", "prepend"), this.addScrollBar("horizontal", "append")
+            }, removeScrollbarComponents: function () {
+                this.removeScrollbar("vertical"), this.removeScrollbar("horizontal"), this.overviewAdded && this.$element.unwrap(), this.viewPortAdded && this.$element.unwrap()
+            }, removeScrollbar: function (e) {
+                this[e + "ScrollbarAdded"] && this.$element.find(".scroll-bar." + e).remove()
+            }, assignViewPort: function () {
+                this.$viewPort = this.$element.find(".viewport")
+            }, assignOverview: function () {
+                this.$overview = this.$viewPort.find(".overview")
+            }, addScrollBar: function (e, i) {
+                0 == this.$element.find(".scroll-bar." + e).length && (this.$element[i]("<div class='scroll-bar " + e + "'><div class='thumb'></div></div>"), this[e + "ScrollbarAdded"] = !0)
+            }, resize: function (e) {
+                this.vScrollbar && this.vScrollbar.resize(e), this.hScrollbar && this.hScrollbar.resize(e)
+            }, scrollTo: function (e) {
+                this.vScrollbar && this.vScrollbar.scrollToElement(e), this.hScrollbar && this.hScrollbar.scrollToElement(e)
+            }, scrollToXY: function (e, i) {
+                this.scrollToX(e), this.scrollToY(i)
+            }, scrollToX: function (e) {
+                this.hScrollbar && this.hScrollbar.scrollOverviewTo(e, !0)
+            }, scrollToY: function (e) {
+                this.vScrollbar && this.vScrollbar.scrollOverviewTo(e, !0)
+            }, remove: function () {
+                this.removeScrollableClass(), this.removeSkinClass(), this.removeScrollbarComponents(), this.$element.data("scrollable", null), this.removeKeyboardScrolling(), this.vScrollbar && this.vScrollbar.remove(), this.hScrollbar && this.hScrollbar.remove()
+            }, setAnimationSpeed: function (e) {
+                this.options.animationSpeed = e
+            }, isInside: function (e, i) {
+                var t = h(e), o = h(i), s = t.offset(), n = o.offset();
+                return s.top >= n.top && s.left >= n.left && s.top + t.height() <= n.top + o.height() && s.left + t.width() <= n.left + o.width()
+            }, initKeyboardScrolling: function () {
+                var i = this;
+                this.elementKeydown = function (e) {
+                    document.activeElement === i.$element[0] && (i.vScrollbar && i.vScrollbar.keyScroll(e), i.hScrollbar && i.hScrollbar.keyScroll(e))
+                }, this.$element.attr("tabindex", "-1").keydown(this.elementKeydown)
+            }, removeKeyboardScrolling: function () {
+                this.$element.removeAttr("tabindex").unbind("keydown", this.elementKeydown)
+            }, bindEvents: function () {
+                this.options.onCustomScroll && this.$element.on("customScroll", this.options.onCustomScroll)
             }
         };
-        var Scrollbar = function (scrollable, sizing) {
-            this.scrollable = scrollable;
-            this.sizing = sizing;
-            this.$scrollBar = this.sizing.scrollBar(this.scrollable.$element);
-            this.$thumb = this.$scrollBar.find(".thumb");
-            this.setScrollPosition(0, 0);
-            this.resize();
-            this.initMouseMoveScrolling();
-            this.initMouseWheelScrolling();
-            this.initTouchScrolling();
-            this.initMouseClickScrolling();
-            this.initWindowResize();
+        var n = function (e, i) {
+            this.scrollable = e, this.sizing = i, this.$scrollBar = this.sizing.scrollBar(this.scrollable.$element), this.$thumb = this.$scrollBar.find(".thumb"), this.setScrollPosition(0, 0), this.resize(), this.initMouseMoveScrolling(), this.initMouseWheelScrolling(), this.initTouchScrolling(), this.initMouseClickScrolling(), this.initWindowResize()
         };
-        Scrollbar.prototype = {
-            resize: function (keepPosition) {
-                this.scrollable.$viewPort.height(this.scrollable.$element.height());
-                this.sizing.size(this.scrollable.$viewPort, this.sizing.size(this.scrollable.$element));
-                this.viewPortSize = this.sizing.size(this.scrollable.$viewPort);
-                this.overviewSize = this.sizing.size(this.scrollable.$overview);
-                this.ratio = this.viewPortSize / this.overviewSize;
-                this.sizing.size(this.$scrollBar, this.viewPortSize);
-                this.thumbSize = this.calculateThumbSize();
-                this.sizing.size(this.$thumb, this.thumbSize);
-                this.maxThumbPosition = this.calculateMaxThumbPosition();
-                this.maxOverviewPosition = this.calculateMaxOverviewPosition();
-                this.enabled = (this.overviewSize > this.viewPortSize);
-                if (this.scrollPercent === undefined)
-                    this.scrollPercent = 0.0;
-                if (this.enabled)
-                    this.rescroll(keepPosition);
-                else
-                    this.setScrollPosition(0, 0);
-                this.$scrollBar.toggle(this.enabled);
-            },
-            calculateThumbSize: function () {
-                var fixedSize = this.sizing.fixedThumbSize(this.scrollable.options);
-                var size;
-                if (fixedSize)
-                    size = fixedSize;
-                else
-                    size = this.ratio * this.viewPortSize;
-                return Math.max(size, this.sizing.minSize(this.$thumb));
-            },
-            initMouseMoveScrolling: function () {
-                var _this = this;
-                this.$thumb.mousedown(function (event) {
-                    if (_this.enabled)
-                        _this.startMouseMoveScrolling(event);
-                });
-                this.documentMouseup = function (event) {
-                    _this.stopMouseMoveScrolling(event);
-                };
-                $(document).mouseup(this.documentMouseup);
-                this.documentMousemove = function (event) {
-                    _this.mouseMoveScroll(event);
-                };
-                $(document).mousemove(this.documentMousemove);
-                this.$thumb.click(function (event) {
-                    event.stopPropagation();
-                });
-            },
-            removeMouseMoveScrolling: function () {
-                this.$thumb.unbind();
-                $(document).unbind("mouseup", this.documentMouseup);
-                $(document).unbind("mousemove", this.documentMousemove);
-            },
-            initMouseWheelScrolling: function () {
-                var _this = this;
-                this.scrollable.$element.mousewheel(function (event, delta, deltaX, deltaY) {
-                    if (_this.enabled) {
-                        if (_this.mouseWheelScroll(deltaX, deltaY)) {
-                            event.stopPropagation();
-                            event.preventDefault();
-                        }
-                    }
-                });
-            },
-            removeMouseWheelScrolling: function () {
-                this.scrollable.$element.unbind("mousewheel");
-            },
-            initTouchScrolling: function () {
+        n.prototype = {
+            resize: function (e) {
+                this.scrollable.$viewPort.height(this.scrollable.$element.height()), this.sizing.size(this.scrollable.$viewPort, this.sizing.size(this.scrollable.$element)), this.viewPortSize = this.sizing.size(this.scrollable.$viewPort), this.overviewSize = this.sizing.size(this.scrollable.$overview), this.ratio = this.viewPortSize / this.overviewSize, this.sizing.size(this.$scrollBar, this.viewPortSize), this.thumbSize = this.calculateThumbSize(), this.sizing.size(this.$thumb, this.thumbSize), this.maxThumbPosition = this.calculateMaxThumbPosition(), this.maxOverviewPosition = this.calculateMaxOverviewPosition(), this.enabled = this.overviewSize > this.viewPortSize, void 0 === this.scrollPercent && (this.scrollPercent = 0), this.enabled ? this.rescroll(e) : this.setScrollPosition(0, 0), this.$scrollBar.toggle(this.enabled)
+            }, calculateThumbSize: function () {
+                var e, i = this.sizing.fixedThumbSize(this.scrollable.options);
+                return e = i || this.ratio * this.viewPortSize, Math.max(e, this.sizing.minSize(this.$thumb))
+            }, initMouseMoveScrolling: function () {
+                var i = this;
+                this.$thumb.mousedown(function (e) {
+                    i.enabled && i.startMouseMoveScrolling(e)
+                }), this.documentMouseup = function (e) {
+                    i.stopMouseMoveScrolling(e)
+                }, h(document).mouseup(this.documentMouseup), this.documentMousemove = function (e) {
+                    i.mouseMoveScroll(e)
+                }, h(document).mousemove(this.documentMousemove), this.$thumb.click(function (e) {
+                    e.stopPropagation()
+                })
+            }, removeMouseMoveScrolling: function () {
+                this.$thumb.unbind(), h(document).unbind("mouseup", this.documentMouseup), h(document).unbind("mousemove", this.documentMousemove)
+            }, initMouseWheelScrolling: function () {
+                var s = this;
+                this.scrollable.$element.mousewheel(function (e, i, t, o) {
+                    s.enabled && s.mouseWheelScroll(t, o) && (e.stopPropagation(), e.preventDefault())
+                })
+            }, removeMouseWheelScrolling: function () {
+                this.scrollable.$element.unbind("mousewheel")
+            }, initTouchScrolling: function () {
                 if (document.addEventListener) {
-                    var _this = this;
-                    this.elementTouchstart = function (event) {
-                        if (_this.enabled)
-                            _this.startTouchScrolling(event);
-                    };
-                    this.scrollable.$element[0].addEventListener("touchstart", this.elementTouchstart);
-                    this.documentTouchmove = function (event) {
-                        _this.touchScroll(event);
-                    };
-                    document.addEventListener("touchmove", this.documentTouchmove);
-                    this.elementTouchend = function (event) {
-                        _this.stopTouchScrolling(event);
-                    };
-                    this.scrollable.$element[0].addEventListener("touchend", this.elementTouchend);
+                    var i = this;
+                    this.elementTouchstart = function (e) {
+                        i.enabled && i.startTouchScrolling(e)
+                    }, this.scrollable.$element[0].addEventListener("touchstart", this.elementTouchstart), this.documentTouchmove = function (e) {
+                        i.touchScroll(e)
+                    }, document.addEventListener("touchmove", this.documentTouchmove), this.elementTouchend = function (e) {
+                        i.stopTouchScrolling(e)
+                    }, this.scrollable.$element[0].addEventListener("touchend", this.elementTouchend)
                 }
-            },
-            removeTouchScrolling: function () {
-                if (document.addEventListener) {
-                    this.scrollable.$element[0].removeEventListener("touchstart", this.elementTouchstart);
-                    document.removeEventListener("touchmove", this.documentTouchmove);
-                    this.scrollable.$element[0].removeEventListener("touchend", this.elementTouchend);
-                }
-            },
-            initMouseClickScrolling: function () {
-                var _this = this;
-                this.scrollBarClick = function (event) {
-                    _this.mouseClickScroll(event);
-                };
-                this.$scrollBar.click(this.scrollBarClick);
-            },
-            removeMouseClickScrolling: function () {
-                this.$scrollBar.unbind("click", this.scrollBarClick);
-            },
-            initWindowResize: function () {
+            }, removeTouchScrolling: function () {
+                document.addEventListener && (this.scrollable.$element[0].removeEventListener("touchstart", this.elementTouchstart), document.removeEventListener("touchmove", this.documentTouchmove), this.scrollable.$element[0].removeEventListener("touchend", this.elementTouchend))
+            }, initMouseClickScrolling: function () {
+                var i = this;
+                this.scrollBarClick = function (e) {
+                    i.mouseClickScroll(e)
+                }, this.$scrollBar.click(this.scrollBarClick)
+            }, removeMouseClickScrolling: function () {
+                this.$scrollBar.unbind("click", this.scrollBarClick)
+            }, initWindowResize: function () {
                 if (this.scrollable.options.updateOnWindowResize) {
-                    var _this = this;
+                    var e = this;
                     this.windowResize = function () {
-                        _this.resize();
-                    };
-                    $(window).resize(this.windowResize);
+                        e.resize()
+                    }, h(window).resize(this.windowResize)
                 }
-            },
-            removeWindowResize: function () {
-                $(window).unbind("resize", this.windowResize);
-            },
-            isKeyScrolling: function (key) {
-                return this.keyScrollDelta(key) != null;
-            },
-            keyScrollDelta: function (key) {
-                for (var scrollingKey in this.sizing.scrollingKeys)
-                    if (scrollingKey == key)
-                        return this.sizing.scrollingKeys[key](this.viewPortSize);
-                return null;
-            },
-            startMouseMoveScrolling: function (event) {
-                this.mouseMoveScrolling = true;
-                $("html").addClass("not-selectable");
-                this.setUnselectable($("html"), "on");
-                this.setScrollEvent(event);
-            },
-            stopMouseMoveScrolling: function (event) {
-                this.mouseMoveScrolling = false;
-                $("html").removeClass("not-selectable");
-                this.setUnselectable($("html"), null);
-            },
-            setUnselectable: function (element, value) {
-                if (element.attr("unselectable") != value) {
-                    element.attr("unselectable", value);
-                    element.find(':not(input)').attr('unselectable', value);
-                }
-            },
-            mouseMoveScroll: function (event) {
+            }, removeWindowResize: function () {
+                h(window).unbind("resize", this.windowResize)
+            }, isKeyScrolling: function (e) {
+                return null != this.keyScrollDelta(e)
+            }, keyScrollDelta: function (e) {
+                for (var i in this.sizing.scrollingKeys) if (i == e) return this.sizing.scrollingKeys[e](this.viewPortSize);
+                return null
+            }, startMouseMoveScrolling: function (e) {
+                this.mouseMoveScrolling = !0, h("html").addClass("not-selectable"), this.setUnselectable(h("html"), "on"), this.setScrollEvent(e)
+            }, stopMouseMoveScrolling: function (e) {
+                this.mouseMoveScrolling = !1, h("html").removeClass("not-selectable"), this.setUnselectable(h("html"), null)
+            }, setUnselectable: function (e, i) {
+                e.attr("unselectable") != i && (e.attr("unselectable", i), e.find(":not(input)").attr("unselectable", i))
+            }, mouseMoveScroll: function (e) {
                 if (this.mouseMoveScrolling) {
-                    var delta = this.sizing.mouseDelta(this.scrollEvent, event);
-                    this.scrollThumbBy(delta);
-                    this.setScrollEvent(event);
+                    var i = this.sizing.mouseDelta(this.scrollEvent, e);
+                    this.scrollThumbBy(i), this.setScrollEvent(e)
                 }
-            },
-            startTouchScrolling: function (event) {
-                if (event.touches && event.touches.length == 1) {
-                    this.setScrollEvent(event.touches[0]);
-                    this.touchScrolling = true;
-                    event.stopPropagation();
+            }, startTouchScrolling: function (e) {
+                e.touches && 1 == e.touches.length && (this.setScrollEvent(e.touches[0]), this.touchScrolling = !0, e.stopPropagation())
+            }, touchScroll: function (e) {
+                if (this.touchScrolling && e.touches && 1 == e.touches.length) {
+                    var i = -this.sizing.mouseDelta(this.scrollEvent, e.touches[0]) * this.scrollable.options.swipeSpeed;
+                    this.scrollOverviewBy(i) && (e.stopPropagation(), e.preventDefault(), this.setScrollEvent(e.touches[0]))
                 }
-            },
-            touchScroll: function (event) {
-                if (this.touchScrolling && event.touches && event.touches.length == 1) {
-                    var delta = -this.sizing.mouseDelta(this.scrollEvent, event.touches[0]) * this.scrollable.options.swipeSpeed;
-                    var scrolled = this.scrollOverviewBy(delta);
-                    if (scrolled) {
-                        event.stopPropagation();
-                        event.preventDefault();
-                        this.setScrollEvent(event.touches[0]);
-                    }
-                }
-            },
-            stopTouchScrolling: function (event) {
-                this.touchScrolling = false;
-                event.stopPropagation();
-            },
-            mouseWheelScroll: function (deltaX, deltaY) {
-                var delta = -this.sizing.wheelDelta(deltaX, deltaY) * this.scrollable.options.wheelSpeed;
-                if (delta != 0)
-                    return this.scrollOverviewBy(delta);
-            },
-            mouseClickScroll: function (event) {
-                var delta = this.viewPortSize - 20;
-                if (event["page" + this.sizing.scrollAxis()] < this.$thumb.offset()[this.sizing.offsetComponent()])
-                // mouse click over thumb
-                    delta = -delta;
-                this.scrollOverviewBy(delta);
-            },
-            keyScroll: function (event) {
-                var keyDown = event.which;
-                if (this.enabled && this.isKeyScrolling(keyDown)) {
-                    if (this.scrollOverviewBy(this.keyScrollDelta(keyDown)))
-                        event.preventDefault();
-                }
-            },
-            scrollThumbBy: function (delta) {
-                var thumbPosition = this.thumbPosition();
-                thumbPosition += delta;
-                thumbPosition = this.positionOrMax(thumbPosition, this.maxThumbPosition);
-                var oldScrollPercent = this.scrollPercent;
-                this.scrollPercent = thumbPosition / this.maxThumbPosition;
-                var overviewPosition = (thumbPosition * this.maxOverviewPosition) / this.maxThumbPosition;
-                this.setScrollPosition(overviewPosition, thumbPosition);
-                if (oldScrollPercent != this.scrollPercent) {
-                    this.triggerCustomScroll(oldScrollPercent);
-                    return true
-                }
-                else
-                    return false;
-            },
-            thumbPosition: function () {
-                return this.$thumb.position()[this.sizing.offsetComponent()];
-            },
-            scrollOverviewBy: function (delta) {
-                var overviewPosition = this.overviewPosition() + delta;
-                return this.scrollOverviewTo(overviewPosition, false);
-            },
-            overviewPosition: function () {
-                return -this.scrollable.$overview.position()[this.sizing.offsetComponent()];
-            },
-            scrollOverviewTo: function (overviewPosition, animate) {
-                overviewPosition = this.positionOrMax(overviewPosition, this.maxOverviewPosition);
-                var oldScrollPercent = this.scrollPercent;
-                this.scrollPercent = overviewPosition / this.maxOverviewPosition;
-                var thumbPosition = this.scrollPercent * this.maxThumbPosition;
-                if (animate)
-                    this.setScrollPositionWithAnimation(overviewPosition, thumbPosition);
-                else
-                    this.setScrollPosition(overviewPosition, thumbPosition);
-                if (oldScrollPercent != this.scrollPercent) {
-                    this.triggerCustomScroll(oldScrollPercent);
-                    return true;
-                }
-                else
-                    return false;
-            },
-            positionOrMax: function (p, max) {
-                if (p < 0)
-                    return 0;
-                else if (p > max)
-                    return max;
-                else
-                    return p;
-            },
-            triggerCustomScroll: function (oldScrollPercent) {
+            }, stopTouchScrolling: function (e) {
+                this.touchScrolling = !1, e.stopPropagation()
+            }, mouseWheelScroll: function (e, i) {
+                var t = -this.sizing.wheelDelta(e, i) * this.scrollable.options.wheelSpeed;
+                if (0 != t) return this.scrollOverviewBy(t)
+            }, mouseClickScroll: function (e) {
+                var i = this.viewPortSize - 20;
+                e["page" + this.sizing.scrollAxis()] < this.$thumb.offset()[this.sizing.offsetComponent()] && (i = -i), this.scrollOverviewBy(i)
+            }, keyScroll: function (e) {
+                var i = e.which;
+                this.enabled && this.isKeyScrolling(i) && this.scrollOverviewBy(this.keyScrollDelta(i)) && e.preventDefault()
+            }, scrollThumbBy: function (e) {
+                var i = this.thumbPosition();
+                i += e, i = this.positionOrMax(i, this.maxThumbPosition);
+                var t = this.scrollPercent;
+                this.scrollPercent = i / this.maxThumbPosition;
+                var o = i * this.maxOverviewPosition / this.maxThumbPosition;
+                return this.setScrollPosition(o, i), t != this.scrollPercent && (this.triggerCustomScroll(t), !0)
+            }, thumbPosition: function () {
+                return this.$thumb.position()[this.sizing.offsetComponent()]
+            }, scrollOverviewBy: function (e) {
+                var i = this.overviewPosition() + e;
+                return this.scrollOverviewTo(i, !1)
+            }, overviewPosition: function () {
+                return -this.scrollable.$overview.position()[this.sizing.offsetComponent()]
+            }, scrollOverviewTo: function (e, i) {
+                e = this.positionOrMax(e, this.maxOverviewPosition);
+                var t = this.scrollPercent;
+                this.scrollPercent = e / this.maxOverviewPosition;
+                var o = this.scrollPercent * this.maxThumbPosition;
+                return i ? this.setScrollPositionWithAnimation(e, o) : this.setScrollPosition(e, o), t != this.scrollPercent && (this.triggerCustomScroll(t), !0)
+            }, positionOrMax: function (e, i) {
+                return e < 0 ? 0 : i < e ? i : e
+            }, triggerCustomScroll: function (e) {
                 this.scrollable.$element.trigger("customScroll", {
-                        scrollAxis: this.sizing.scrollAxis(),
-                        direction: this.sizing.scrollDirection(oldScrollPercent, this.scrollPercent),
-                        scrollPercent: this.scrollPercent * 100
-                    }
-                );
-            },
-            rescroll: function (keepPosition) {
-                if (keepPosition) {
-                    var overviewPosition = this.positionOrMax(this.overviewPosition(), this.maxOverviewPosition);
-                    this.scrollPercent = overviewPosition / this.maxOverviewPosition;
-                    var thumbPosition = this.scrollPercent * this.maxThumbPosition;
-                    this.setScrollPosition(overviewPosition, thumbPosition);
+                    scrollAxis: this.sizing.scrollAxis(),
+                    direction: this.sizing.scrollDirection(e, this.scrollPercent),
+                    scrollPercent: 100 * this.scrollPercent
+                })
+            }, rescroll: function (e) {
+                if (e) {
+                    var i = this.positionOrMax(this.overviewPosition(), this.maxOverviewPosition);
+                    this.scrollPercent = i / this.maxOverviewPosition;
+                    var t = this.scrollPercent * this.maxThumbPosition;
+                    this.setScrollPosition(i, t)
+                } else {
+                    t = this.scrollPercent * this.maxThumbPosition, i = this.scrollPercent * this.maxOverviewPosition;
+                    this.setScrollPosition(i, t)
                 }
-                else {
-                    var thumbPosition = this.scrollPercent * this.maxThumbPosition;
-                    var overviewPosition = this.scrollPercent * this.maxOverviewPosition;
-                    this.setScrollPosition(overviewPosition, thumbPosition);
+            }, setScrollPosition: function (e, i) {
+                this.$thumb.css(this.sizing.offsetComponent(), i + "px"), this.scrollable.$overview.css(this.sizing.offsetComponent(), -e + "px")
+            }, setScrollPositionWithAnimation: function (e, i) {
+                var t = {}, o = {};
+                t[this.sizing.offsetComponent()] = i + "px", this.$thumb.animate(t, this.scrollable.options.animationSpeed), o[this.sizing.offsetComponent()] = -e + "px", this.scrollable.$overview.animate(o, this.scrollable.options.animationSpeed)
+            }, calculateMaxThumbPosition: function () {
+                return this.sizing.size(this.$scrollBar) - this.thumbSize
+            }, calculateMaxOverviewPosition: function () {
+                return this.sizing.size(this.scrollable.$overview) - this.sizing.size(this.scrollable.$viewPort)
+            }, setScrollEvent: function (e) {
+                var i = "page" + this.sizing.scrollAxis();
+                this.scrollEvent && this.scrollEvent[i] == e[i] || (this.scrollEvent = {pageX: e.pageX, pageY: e.pageY})
+            }, scrollToElement: function (e) {
+                var i = h(e);
+                if (this.sizing.isInside(i, this.scrollable.$overview) && !this.sizing.isInside(i, this.scrollable.$viewPort)) {
+                    var t = i.offset(), o = this.scrollable.$overview.offset();
+                    this.scrollable.$viewPort.offset();
+                    this.scrollOverviewTo(t[this.sizing.offsetComponent()] - o[this.sizing.offsetComponent()], !0)
                 }
-            },
-            setScrollPosition: function (overviewPosition, thumbPosition) {
-                this.$thumb.css(this.sizing.offsetComponent(), thumbPosition + "px");
-                this.scrollable.$overview.css(this.sizing.offsetComponent(), -overviewPosition + "px");
-            },
-            setScrollPositionWithAnimation: function (overviewPosition, thumbPosition) {
-                var thumbAnimationOpts = {};
-                var overviewAnimationOpts = {};
-                thumbAnimationOpts[this.sizing.offsetComponent()] = thumbPosition + "px";
-                this.$thumb.animate(thumbAnimationOpts, this.scrollable.options.animationSpeed);
-                overviewAnimationOpts[this.sizing.offsetComponent()] = -overviewPosition + "px";
-                this.scrollable.$overview.animate(overviewAnimationOpts, this.scrollable.options.animationSpeed);
-            },
-            calculateMaxThumbPosition: function () {
-                return this.sizing.size(this.$scrollBar) - this.thumbSize;
-            },
-            calculateMaxOverviewPosition: function () {
-                return this.sizing.size(this.scrollable.$overview) - this.sizing.size(this.scrollable.$viewPort);
-            },
-            setScrollEvent: function (event) {
-                var attr = "page" + this.sizing.scrollAxis();
-                if (!this.scrollEvent || this.scrollEvent[attr] != event[attr])
-                    this.scrollEvent = {pageX: event.pageX, pageY: event.pageY};
-            },
-            scrollToElement: function (element) {
-                var $element = $(element);
-                if (this.sizing.isInside($element, this.scrollable.$overview) && !this.sizing.isInside($element, this.scrollable.$viewPort)) {
-                    var elementOffset = $element.offset();
-                    var overviewOffset = this.scrollable.$overview.offset();
-                    var viewPortOffset = this.scrollable.$viewPort.offset();
-                    this.scrollOverviewTo(elementOffset[this.sizing.offsetComponent()] - overviewOffset[this.sizing.offsetComponent()], true);
-                }
-            },
-            remove: function () {
-                this.removeMouseMoveScrolling();
-                this.removeMouseWheelScrolling();
-                this.removeTouchScrolling();
-                this.removeMouseClickScrolling();
-                this.removeWindowResize();
+            }, remove: function () {
+                this.removeMouseMoveScrolling(), this.removeMouseWheelScrolling(), this.removeTouchScrolling(), this.removeMouseClickScrolling(), this.removeWindowResize()
             }
         };
-        var HSizing = function () {
+        var l = function () {
         };
-        HSizing.prototype = {
-            size: function ($el, arg) {
-                if (arg)
-                    return $el.width(arg);
-                else
-                    return $el.width();
-            },
-            minSize: function ($el) {
-                return parseInt($el.css("min-width")) || 0;
-            },
-            fixedThumbSize: function (options) {
-                return options.fixedThumbWidth;
-            },
-            scrollBar: function ($el) {
-                return $el.find(".scroll-bar.horizontal");
-            },
-            mouseDelta: function (event1, event2) {
-                return event2.pageX - event1.pageX;
-            },
-            offsetComponent: function () {
-                return "left";
-            },
-            wheelDelta: function (deltaX, deltaY) {
-                return deltaX;
-            },
-            scrollAxis: function () {
-                return "X";
-            },
-            scrollDirection: function (oldPercent, newPercent) {
-                return oldPercent < newPercent ? "right" : "left";
-            },
-            scrollingKeys: {
-                37: function (viewPortSize) {
-                    return -10; //arrow left
-                },
-                39: function (viewPortSize) {
-                    return 10; //arrow right
+        l.prototype = {
+            size: function (e, i) {
+                return i ? e.width(i) : e.width()
+            }, minSize: function (e) {
+                return parseInt(e.css("min-width")) || 0
+            }, fixedThumbSize: function (e) {
+                return e.fixedThumbWidth
+            }, scrollBar: function (e) {
+                return e.find(".scroll-bar.horizontal")
+            }, mouseDelta: function (e, i) {
+                return i.pageX - e.pageX
+            }, offsetComponent: function () {
+                return "left"
+            }, wheelDelta: function (e, i) {
+                return e
+            }, scrollAxis: function () {
+                return "X"
+            }, scrollDirection: function (e, i) {
+                return e < i ? "right" : "left"
+            }, scrollingKeys: {
+                37: function (e) {
+                    return -10
+                }, 39: function (e) {
+                    return 10
                 }
-            },
-            isInside: function (element, wrappingElement) {
-                var $element = $(element);
-                var $wrappingElement = $(wrappingElement);
-                var elementOffset = $element.offset();
-                var wrappingElementOffset = $wrappingElement.offset();
-                return (elementOffset.left >= wrappingElementOffset.left) &&
-                    (elementOffset.left + $element.width() <= wrappingElementOffset.left + $wrappingElement.width());
+            }, isInside: function (e, i) {
+                var t = h(e), o = h(i), s = t.offset(), n = o.offset();
+                return s.left >= n.left && s.left + t.width() <= n.left + o.width()
             }
         };
-        var VSizing = function () {
+        var r = function () {
         };
-        VSizing.prototype = {
-            size: function ($el, arg) {
-                if (arg)
-                    return $el.height(arg);
-                else
-                    return $el.height();
-            },
-            minSize: function ($el) {
-                return parseInt($el.css("min-height")) || 0;
-            },
-            fixedThumbSize: function (options) {
-                return options.fixedThumbHeight;
-            },
-            scrollBar: function ($el) {
-                return $el.find(".scroll-bar.vertical");
-            },
-            mouseDelta: function (event1, event2) {
-                return event2.pageY - event1.pageY;
-            },
-            offsetComponent: function () {
-                return "top";
-            },
-            wheelDelta: function (deltaX, deltaY) {
-                return deltaY;
-            },
-            scrollAxis: function () {
-                return "Y";
-            },
-            scrollDirection: function (oldPercent, newPercent) {
-                return oldPercent < newPercent ? "down" : "up";
-            },
-            scrollingKeys: {
-                38: function (viewPortSize) {
-                    return -10; //arrow up
-                },
-                40: function (viewPortSize) {
-                    return 10; //arrow down
-                },
-                33: function (viewPortSize) {
-                    return -(viewPortSize - 20); //page up
-                },
-                34: function (viewPortSize) {
-                    return viewPortSize - 20; //page down
+        return r.prototype = {
+            size: function (e, i) {
+                return i ? e.height(i) : e.height()
+            }, minSize: function (e) {
+                return parseInt(e.css("min-height")) || 0
+            }, fixedThumbSize: function (e) {
+                return e.fixedThumbHeight
+            }, scrollBar: function (e) {
+                return e.find(".scroll-bar.vertical")
+            }, mouseDelta: function (e, i) {
+                return i.pageY - e.pageY
+            }, offsetComponent: function () {
+                return "top"
+            }, wheelDelta: function (e, i) {
+                return i
+            }, scrollAxis: function () {
+                return "Y"
+            }, scrollDirection: function (e, i) {
+                return e < i ? "down" : "up"
+            }, scrollingKeys: {
+                38: function (e) {
+                    return -10
+                }, 40: function (e) {
+                    return 10
+                }, 33: function (e) {
+                    return -(e - 20)
+                }, 34: function (e) {
+                    return e - 20
                 }
-            },
-            isInside: function (element, wrappingElement) {
-                var $element = $(element);
-                var $wrappingElement = $(wrappingElement);
-                var elementOffset = $element.offset();
-                var wrappingElementOffset = $wrappingElement.offset();
-                return (elementOffset.top >= wrappingElementOffset.top) &&
-                    (elementOffset.top + $element.height() <= wrappingElementOffset.top + $wrappingElement.height());
+            }, isInside: function (e, i) {
+                var t = h(e), o = h(i), s = t.offset(), n = o.offset();
+                return s.top >= n.top && s.top + t.height() <= n.top + o.height()
             }
-        };
-        return this.each(function () {
-            if (options == undefined)
-                options = defaultOptions;
-            if (typeof(options) == "string") {
-                var scrollable = $(this).data("scrollable");
-                if (scrollable)
-                    scrollable[options](args);
+        }, this.each(function () {
+            if (null == i && (i = o), "string" == typeof i) {
+                var e = h(this).data("scrollable");
+                e && e[i](t)
+            } else {
+                if ("object" != typeof i) throw"Invalid type of options";
+                i = h.extend(o, i), new s(h(this), i)
             }
-            else if (typeof(options) == "object") {
-                options = $.extend(defaultOptions, options);
-                new Scrollable($(this), options);
-            }
-            else
-                throw "Invalid type of options";
-        });
+        })
     }
-    ;
-})(jQuery);
+}(jQuery), function (l) {
+    var i = ["DOMMouseScroll", "mousewheel"];
+    if (l.event.fixHooks) for (var e = i.length; e;) l.event.fixHooks[i[--e]] = l.event.mouseHooks;
 
-(function ($) {
-    var types = ['DOMMouseScroll', 'mousewheel'];
-    if ($.event.fixHooks) {
-        for (var i = types.length; i;) {
-            $.event.fixHooks[types[--i]] = $.event.mouseHooks;
-        }
+    function t(e) {
+        var i = e || window.event, t = [].slice.call(arguments, 1), o = 0, s = 0, n = 0;
+        return (e = l.event.fix(i)).type = "mousewheel", i.wheelDelta && (o = i.wheelDelta / 120), i.detail && (o = -i.detail / 3), n = o, void 0 !== i.axis && i.axis === i.HORIZONTAL_AXIS && (n = 0, s = o), void 0 !== i.wheelDeltaY && (n = i.wheelDeltaY / 120), void 0 !== i.wheelDeltaX && (s = i.wheelDeltaX / 120), t.unshift(e, o, s, n), (l.event.dispatch || l.event.handle).apply(this, t)
     }
-    $.event.special.mousewheel = {
+
+    l.event.special.mousewheel = {
         setup: function () {
-            if (this.addEventListener) {
-                for (var i = types.length; i;) {
-                    this.addEventListener(types[--i], handler, false);
-                }
-            } else {
-                this.onmousewheel = handler;
-            }
-        },
-        teardown: function () {
-            if (this.removeEventListener) {
-                for (var i = types.length; i;) {
-                    this.removeEventListener(types[--i], handler, false);
-                }
-            } else {
-                this.onmousewheel = null;
-            }
+            if (this.addEventListener) for (var e = i.length; e;) this.addEventListener(i[--e], t, !1); else this.onmousewheel = t
+        }, teardown: function () {
+            if (this.removeEventListener) for (var e = i.length; e;) this.removeEventListener(i[--e], t, !1); else this.onmousewheel = null
         }
-    };
-    $.fn.extend({
-        mousewheel: function (fn) {
-            return fn ? this.bind("mousewheel", fn) : this.trigger("mousewheel");
-        },
-        unmousewheel: function (fn) {
-            return this.unbind("mousewheel", fn);
+    }, l.fn.extend({
+        mousewheel: function (e) {
+            return e ? this.bind("mousewheel", e) : this.trigger("mousewheel")
+        }, unmousewheel: function (e) {
+            return this.unbind("mousewheel", e)
         }
-    });
+    })
+}(jQuery);
 
-    function handler(event) {
-        var orgEvent = event || window.event, args = [].slice.call(arguments, 1), delta = 0, returnValue = true,
-            deltaX = 0, deltaY = 0;
-        event = $.event.fix(orgEvent);
-        event.type = "mousewheel";
-        // Old school scrollwheel delta
-        if (orgEvent.wheelDelta) {
-            delta = orgEvent.wheelDelta / 120;
-        }
-        if (orgEvent.detail) {
-            delta = -orgEvent.detail / 3;
-        }
-        // New school multidimensional scroll (touchpads) deltas
-        deltaY = delta;
-        // Gecko
-        if (orgEvent.axis !== undefined && orgEvent.axis === orgEvent.HORIZONTAL_AXIS) {
-            deltaY = 0;
-            deltaX = delta;
-        }
-        // Webkit
-        if (orgEvent.wheelDeltaY !== undefined) {
-            deltaY = orgEvent.wheelDeltaY / 120;
-        }
-        if (orgEvent.wheelDeltaX !== undefined) {
-            deltaX = orgEvent.wheelDeltaX / 120;
-        }
-        // Add event and delta to the front of the arguments
-        args.unshift(event, delta, deltaX, deltaY);
-        return ($.event.dispatch || $.event.handle).apply(this, args);
-    }
-})(jQuery);
-
-/**
- * Display a nice easy to use multiselect list
- * @Version: 2.4.15
- * @Author: Patrick Springstubbe
- * @Contact: @JediNobleclem
- * @Website: springstubbe.us
- * @Source: https://github.com/nobleclem/jQuery-MultiSelect
- *
- * Usage:
- *     $('select[multiple]').multiselect();
- *     $('select[multiple]').multiselect({ texts: { placeholder: 'Select options' } });
- *     $('select[multiple]').multiselect('reload');
- *     $('select[multiple]').multiselect( 'loadOptions', [{
- *		 name   : 'Option Name 1',
- *		 value  : 'option-value-1',
- *		 checked: false,
- *		 attributes : {
- *			 custom1: 'value1',
- *			 custom2: 'value2'
- *		 }
- *	 },{
- *		 name   : 'Option Name 2',
- *		 value  : 'option-value-2',
- *		 checked: false,
- *		 attributes : {
- *			 custom1: 'value1',
- *			 custom2: 'value2'
- *		 }
- *	 }]);
- *
- **/
-(function ($) {
-    var defaults = {
-        columns: 1,	 // how many columns should be use to show options
-        search: false, // include option search box
-        // search filter options
+/* https://github.com/nobleclem/jQuery-MultiSelect 2.4.15 */
+!function (w) {
+    var s = {
+        columns: 1,
+        search: !1,
         searchOptions: {
-            delay: 250,				  // time (in ms) between keystrokes until search happens
-            showOptGroups: false,				// show option group titles if no options remaining
-            searchText: true,				 // search within the text
-            searchValue: false,				// search within the value
-            onSearch: function (element) {
-            } // fires on keyup before search on options happens
+            delay: 250, showOptGroups: !1, searchText: !0, searchValue: !1, onSearch: function (t) {
+            }
         },
-        // plugin texts
         texts: {
-            placeholder: 'Select options', // text to use in dummy input
-            search: 'Search',		 // search input placeholder text
-            selectedOptions: ' selected',	  // selected suffix text
-            selectAll: 'Select all',	 // select all text
-            unselectAll: 'Unselect all',   // unselect all text
-            noneSelected: 'None Selected'   // None selected text
+            placeholder: "Select options",
+            search: "Search",
+            selectedOptions: " selected",
+            selectAll: "Select all",
+            unselectAll: "Unselect all",
+            noneSelected: "None Selected"
         },
-        // general options
-        selectAll: false, // add select all option
-        selectGroup: false, // select entire optgroup
-        minHeight: 200,   // minimum height of option overlay
-        maxHeight: null,  // maximum height of option overlay
-        maxWidth: null,  // maximum width of option overlay (or selector)
-        maxPlaceholderWidth: null,  // maximum width of placeholder button
-        maxPlaceholderOpts: 10,	// maximum number of placeholder options to show until "# selected" shown instead
-        showCheckbox: true,  // display the checkbox to the user
-        checkboxAutoFit: false,  // auto calc checkbox padding
-        optionAttributes: [],	// attributes to copy to the checkbox from the option element
-        // Callbacks
-        onLoad: function (element) {
-        },		   // fires at end of list initialization
-        onOptionClick: function (element, option) {
-        },   // fires when an option is clicked
-        onControlClose: function (element) {
-        },		   // fires when the options list is closed
-        onSelectAll: function (element, selected) {
-        }, // fires when (un)select all is clicked
-    };
-    var msCounter = 1; // counter for each select list
-    var msOptCounter = 1; // counter for each option on page
-    // FOR LEGACY BROWSERS (talking to you IE8)
-    if (typeof Array.prototype.map !== 'function') {
-        Array.prototype.map = function (callback, thisArg) {
-            if (typeof thisArg === 'undefined') {
-                thisArg = this;
-            }
-            return $.isArray(thisArg) ? $.map(thisArg, callback) : [];
-        };
-    }
-    if (typeof String.prototype.trim !== 'function') {
-        String.prototype.trim = function () {
-            return this.replace(/^\s+|\s+$/g, '');
-        };
+        selectAll: !1,
+        selectGroup: !1,
+        minHeight: 200,
+        maxHeight: null,
+        maxWidth: null,
+        maxPlaceholderWidth: null,
+        maxPlaceholderOpts: 10,
+        showCheckbox: !0,
+        checkboxAutoFit: !1,
+        optionAttributes: [],
+        onLoad: function (t) {
+        },
+        onOptionClick: function (t, e) {
+        },
+        onControlClose: function (t) {
+        },
+        onSelectAll: function (t, e) {
+        }
+    }, o = 1, n = 1;
+
+    function i(t, e) {
+        if (this.element = t, this.options = w.extend(!0, {}, s, e), this.updateSelectAll = !0, this.updatePlaceholder = !0, this.listNumber = o, o += 1, !w(this.element).attr("multiple")) throw new Error("[jQuery-MultiSelect] Select list must be a multiselect list in order to use this plugin");
+        if (this.options.search && !this.options.searchOptions.searchText && !this.options.searchOptions.searchValue) throw new Error("[jQuery-MultiSelect] Either searchText or searchValue should be true.");
+        "placeholder" in this.options && (this.options.texts.placeholder = this.options.placeholder, delete this.options.placeholder), "default" in this.options.searchOptions && (this.options.texts.search = this.options.searchOptions.default, delete this.options.searchOptions.default), this.load()
     }
 
-    function MultiSelect(element, options) {
-        this.element = element;
-        this.options = $.extend(true, {}, defaults, options);
-        this.updateSelectAll = true;
-        this.updatePlaceholder = true;
-        this.listNumber = msCounter;
-        msCounter = msCounter + 1; // increment counter
-        /* Make sure its a multiselect list */
-        if (!$(this.element).attr('multiple')) {
-            throw new Error('[jQuery-MultiSelect] Select list must be a multiselect list in order to use this plugin');
-        }
-        /* Options validation checks */
-        if (this.options.search) {
-            if (!this.options.searchOptions.searchText && !this.options.searchOptions.searchValue) {
-                throw new Error('[jQuery-MultiSelect] Either searchText or searchValue should be true.');
-            }
-        }
-        /** BACKWARDS COMPATIBILITY **/
-        if ('placeholder' in this.options) {
-            this.options.texts.placeholder = this.options.placeholder;
-            delete this.options.placeholder;
-        }
-        if ('default' in this.options.searchOptions) {
-            this.options.texts.search = this.options.searchOptions['default'];
-            delete this.options.searchOptions['default'];
-        }
-        /** END BACKWARDS COMPATIBILITY **/
-        // load this instance
-        this.load();
-    }
-
-    MultiSelect.prototype = {
-        /* LOAD CUSTOM MULTISELECT DOM/ACTIONS */
+    "function" != typeof Array.prototype.map && (Array.prototype.map = function (t, e) {
+        return void 0 === e && (e = this), w.isArray(e) ? w.map(e, t) : []
+    }), "function" != typeof String.prototype.trim && (String.prototype.trim = function () {
+        return this.replace(/^\s+|\s+$/g, "")
+    }), i.prototype = {
         load: function () {
-            var instance = this;
-            // make sure this is a select list and not loaded
-            if ((instance.element.nodeName != 'SELECT') || $(instance.element).hasClass('jqmsLoaded')) {
-                return true;
+            var i = this;
+            if ("SELECT" != i.element.nodeName || w(i.element).hasClass("jqmsLoaded")) return !0;
+            w(i.element).addClass("jqmsLoaded ms-list-" + i.listNumber).data("plugin_multiselect-instance", i), w(i.element).after('<div id="ms-list-' + i.listNumber + '" class="ms-options-wrap"><button type="button"><span>None Selected</span></button><div class="ms-options"><ul></ul></div></div>');
+            var s = w(i.element).siblings("#ms-list-" + i.listNumber + ".ms-options-wrap").find("> button:first-child"),
+                n = w(i.element).siblings("#ms-list-" + i.listNumber + ".ms-options-wrap").find("> .ms-options"),
+                l = n.find("> ul");
+            if (i.options.showCheckbox ? i.options.checkboxAutoFit && n.addClass("checkbox-autofit") : n.addClass("hide-checkbox"), w(i.element).prop("disabled") && s.prop("disabled", !0), i.options.maxPlaceholderWidth && s.css("maxWidth", i.options.maxPlaceholderWidth), i.options.maxHeight) var t = i.options.maxHeight; else t = w(window).height() - n.offset().top + w(window).scrollTop() - 20;
+            if (t = t < i.options.minHeight ? i.options.minHeight : t, n.css({
+                maxWidth: i.options.maxWidth,
+                minHeight: i.options.minHeight,
+                maxHeight: t
+            }), n.on("touchmove mousewheel DOMMouseScroll", function (t) {
+                if (w(this).outerHeight() < w(this)[0].scrollHeight) {
+                    var e = t.originalEvent, s = e.wheelDelta || -e.detail;
+                    w(this).outerHeight() + w(this)[0].scrollTop > w(this)[0].scrollHeight && (t.preventDefault(), this.scrollTop += s < 0 ? 1 : -1)
+                }
+            }), w(document).off("click.ms-hideopts").on("click.ms-hideopts", function (t) {
+                w(t.target).closest(".ms-options-wrap").length || w(".ms-options-wrap.ms-active > .ms-options").each(function () {
+                    w(this).closest(".ms-options-wrap").removeClass("ms-active");
+                    var t = w(this).closest(".ms-options-wrap").attr("id"),
+                        e = w(this).parent().siblings("." + t + ".jqmsLoaded").data("plugin_multiselect-instance");
+                    "function" == typeof e.options.onControlClose && e.options.onControlClose(e.element)
+                })
+            }).on("keydown", function (t) {
+                27 == (t.keyCode || t.which) && w(this).trigger("click.ms-hideopts")
+            }), s.on("keydown", function (t) {
+                var e = t.keyCode || t.which;
+                13 != e && 32 != e || s.trigger("mousedown")
+            }), s.on("mousedown", function (t) {
+                if (t.which && 1 != t.which) return !0;
+                if (w(".ms-options-wrap.ms-active").each(function () {
+                    if (w(this).siblings("." + w(this).attr("id") + ".jqmsLoaded")[0] != n.parent().siblings(".ms-list-" + i.listNumber + ".jqmsLoaded")[0]) {
+                        w(this).removeClass("ms-active");
+                        var t = w(this).siblings("." + w(this).attr("id") + ".jqmsLoaded").data("plugin_multiselect-instance");
+                        "function" == typeof t.options.onControlClose && t.options.onControlClose(t.element)
+                    }
+                }), n.closest(".ms-options-wrap").toggleClass("ms-active"), n.closest(".ms-options-wrap").hasClass("ms-active")) {
+                    if (n.css("maxHeight", ""), i.options.maxHeight) var e = i.options.maxHeight; else e = w(window).height() - n.offset().top + w(window).scrollTop() - 20;
+                    e && (e = e < i.options.minHeight ? i.options.minHeight : e, n.css("maxHeight", e))
+                } else "function" == typeof i.options.onControlClose && i.options.onControlClose(i.element)
+            }).click(function (t) {
+                t.preventDefault()
+            }), i.options.texts.placeholder && s.find("span").text(i.options.texts.placeholder), i.options.search) {
+                l.before('<div class="ms-search"><input type="text" value="" placeholder="' + i.options.texts.search + '" /></div>');
+                var o = n.find(".ms-search input");
+                o.on("keyup", function () {
+                    if (w(this).data("lastsearch") == w(this).val()) return !0;
+                    w(this).data("searchTimeout") && clearTimeout(w(this).data("searchTimeout"));
+                    var e = w(this);
+                    w(this).data("searchTimeout", setTimeout(function () {
+                        e.data("lastsearch", e.val()), "function" == typeof i.options.searchOptions.onSearch && i.options.searchOptions.onSearch(i.element);
+                        var t = w.trim(o.val().toLowerCase());
+                        t ? (l.find('li[data-search-term*="' + t + '"]:not(.optgroup)').removeClass("ms-hidden"), l.find('li:not([data-search-term*="' + t + '"], .optgroup)').addClass("ms-hidden")) : l.find(".ms-hidden").removeClass("ms-hidden"), i.options.searchOptions.showOptGroups || l.find(".optgroup").each(function () {
+                            w(this).find("li:not(.ms-hidden)").length ? w(this).show() : w(this).hide()
+                        }), i._updateSelectAllText()
+                    }, i.options.searchOptions.delay))
+                })
             }
-            // sanity check so we don't double load on a select element
-            $(instance.element).addClass('jqmsLoaded ms-list-' + instance.listNumber).data('plugin_multiselect-instance', instance);
-            // add option container
-            $(instance.element).after('<div id="ms-list-' + instance.listNumber + '" class="ms-options-wrap"><button type="button"><span>None Selected</span></button><div class="ms-options"><ul></ul></div></div>');
-            var placeholder = $(instance.element).siblings('#ms-list-' + instance.listNumber + '.ms-options-wrap').find('> button:first-child');
-            var optionsWrap = $(instance.element).siblings('#ms-list-' + instance.listNumber + '.ms-options-wrap').find('> .ms-options');
-            var optionsList = optionsWrap.find('> ul');
-            // don't show checkbox (add class for css to hide checkboxes)
-            if (!instance.options.showCheckbox) {
-                optionsWrap.addClass('hide-checkbox');
-            }
-            else if (instance.options.checkboxAutoFit) {
-                optionsWrap.addClass('checkbox-autofit');
-            }
-            // check if list is disabled
-            if ($(instance.element).prop('disabled')) {
-                placeholder.prop('disabled', true);
-            }
-            // set placeholder maxWidth
-            if (instance.options.maxPlaceholderWidth) {
-                placeholder.css('maxWidth', instance.options.maxPlaceholderWidth);
-            }
-            // override with user defined maxHeight
-            if (instance.options.maxHeight) {
-                var maxHeight = instance.options.maxHeight;
-            }
-            else {
-                // cacl default maxHeight
-                var maxHeight = ($(window).height() - optionsWrap.offset().top + $(window).scrollTop() - 20);
-            }
-            // maxHeight cannot be less than options.minHeight
-            maxHeight = maxHeight < instance.options.minHeight ? instance.options.minHeight : maxHeight;
-            optionsWrap.css({
-                maxWidth: instance.options.maxWidth,
-                minHeight: instance.options.minHeight,
-                maxHeight: maxHeight,
+            i.options.selectAll && l.before('<a href="#" class="ms-selectall global">' + i.options.texts.selectAll + "</a>"), n.on("click", ".ms-selectall", function (t) {
+                t.preventDefault(), i.updateSelectAll = !1, i.updatePlaceholder = !1;
+                var e = n.parent().siblings(".ms-list-" + i.listNumber + ".jqmsLoaded");
+                if (w(this).hasClass("global")) l.find("li:not(.optgroup, .selected, .ms-hidden)").length ? (l.find("li:not(.optgroup, .selected, .ms-hidden)").addClass("selected"), l.find('li.selected input[type="checkbox"]:not(:disabled)').prop("checked", !0)) : (l.find("li:not(.optgroup, .ms-hidden).selected").removeClass("selected"), l.find('li:not(.optgroup, .ms-hidden, .selected) input[type="checkbox"]:not(:disabled)').prop("checked", !1)); else if (w(this).closest("li").hasClass("optgroup")) {
+                    var s = w(this).closest("li.optgroup");
+                    s.find("li:not(.selected, .ms-hidden)").length ? (s.find("li:not(.selected, .ms-hidden)").addClass("selected"), s.find('li.selected input[type="checkbox"]:not(:disabled)').prop("checked", !0)) : (s.find("li:not(.ms-hidden).selected").removeClass("selected"), s.find('li:not(.ms-hidden, .selected) input[type="checkbox"]:not(:disabled)').prop("checked", !1))
+                }
+                var o = [];
+                l.find('li.selected input[type="checkbox"]').each(function () {
+                    o.push(w(this).val())
+                }), e.val(o).trigger("change"), i.updateSelectAll = !0, i.updatePlaceholder = !0, "function" == typeof i.options.onSelectAll && i.options.onSelectAll(i.element, o.length), i._updateSelectAllText(), i._updatePlaceholderText()
             });
-            // isolate options scroll
-            // @source: https://github.com/nobleclem/jQuery-IsolatedScroll
-            optionsWrap.on('touchmove mousewheel DOMMouseScroll', function (e) {
-                if (($(this).outerHeight() < $(this)[0].scrollHeight)) {
-                    var e0 = e.originalEvent,
-                        delta = e0.wheelDelta || -e0.detail;
-                    if (($(this).outerHeight() + $(this)[0].scrollTop) > $(this)[0].scrollHeight) {
-                        e.preventDefault();
-                        this.scrollTop += (delta < 0 ? 1 : -1);
+            var a = [];
+            w(i.element).children().each(function () {
+                if ("OPTGROUP" == this.nodeName) {
+                    var o = [];
+                    w(this).children("option").each(function () {
+                        for (var t = {}, e = 0; e < i.options.optionAttributes.length; e++) {
+                            var s = i.options.optionAttributes[e];
+                            void 0 !== w(this).attr(s) && (t[s] = w(this).attr(s))
+                        }
+                        o.push({
+                            name: w(this).text(),
+                            value: w(this).val(),
+                            checked: w(this).prop("selected"),
+                            attributes: t
+                        })
+                    }), a.push({label: w(this).attr("label"), options: o})
+                } else {
+                    if ("OPTION" != this.nodeName) return !0;
+                    for (var t = {}, e = 0; e < i.options.optionAttributes.length; e++) {
+                        var s = i.options.optionAttributes[e];
+                        void 0 !== w(this).attr(s) && (t[s] = w(this).attr(s))
                     }
+                    a.push({
+                        name: w(this).text(),
+                        value: w(this).val(),
+                        checked: w(this).prop("selected"),
+                        attributes: t
+                    })
                 }
-            });
-            // hide options menus if click happens off of the list placeholder button
-            $(document).off('click.ms-hideopts').on('click.ms-hideopts', function (event) {
-                if (!$(event.target).closest('.ms-options-wrap').length) {
-                    $('.ms-options-wrap.ms-active > .ms-options').each(function () {
-                        $(this).closest('.ms-options-wrap').removeClass('ms-active');
-                        var listID = $(this).closest('.ms-options-wrap').attr('id');
-                        var thisInst = $(this).parent().siblings('.' + listID + '.jqmsLoaded').data('plugin_multiselect-instance');
-                        // USER CALLBACK
-                        if (typeof thisInst.options.onControlClose == 'function') {
-                            thisInst.options.onControlClose(thisInst.element);
-                        }
-                    });
-                }
-                // hide open option lists if escape key pressed
-            }).on('keydown', function (event) {
-                if ((event.keyCode || event.which) == 27) { // esc key
-                    $(this).trigger('click.ms-hideopts');
-                }
-            });
-            // handle pressing enter|space while tabbing through
-            placeholder.on('keydown', function (event) {
-                var code = (event.keyCode || event.which);
-                if ((code == 13) || (code == 32)) { // enter OR space
-                    placeholder.trigger('mousedown');
-                }
-            });
-            // disable button action
-            placeholder.on('mousedown', function (event) {
-                // ignore if its not a left click
-                if (event.which && (event.which != 1)) {
-                    return true;
-                }
-                // hide other menus before showing this one
-                $('.ms-options-wrap.ms-active').each(function () {
-                    if ($(this).siblings('.' + $(this).attr('id') + '.jqmsLoaded')[0] != optionsWrap.parent().siblings('.ms-list-' + instance.listNumber + '.jqmsLoaded')[0]) {
-                        $(this).removeClass('ms-active');
-                        var thisInst = $(this).siblings('.' + $(this).attr('id') + '.jqmsLoaded').data('plugin_multiselect-instance');
-                        // USER CALLBACK
-                        if (typeof thisInst.options.onControlClose == 'function') {
-                            thisInst.options.onControlClose(thisInst.element);
-                        }
+            }), i.loadOptions(a, !0, !1), n.on("click", 'input[type="checkbox"]', function () {
+                w(this).closest("li").toggleClass("selected"), n.parent().siblings(".ms-list-" + i.listNumber + ".jqmsLoaded").find('option[value="' + w(this).val() + '"]').prop("selected", w(this).is(":checked")).closest("select").trigger("change"), "function" == typeof i.options.onOptionClick && i.options.onOptionClick(i.element, this), i._updateSelectAllText(), i._updatePlaceholderText()
+            }), n.on("focusin", 'input[type="checkbox"]', function () {
+                w(this).closest("label").addClass("focused")
+            }).on("focusout", 'input[type="checkbox"]', function () {
+                w(this).closest("label").removeClass("focused")
+            }), "function" == typeof i.options.onLoad && i.options.onLoad(i.element), w(i.element).hide()
+        }, loadOptions: function (t, e, s) {
+            e = "boolean" != typeof e || e, s = "boolean" != typeof s || s;
+            var o = this, i = w(o.element),
+                n = i.siblings("#ms-list-" + o.listNumber + ".ms-options-wrap").find("> .ms-options > ul"),
+                l = i.siblings("#ms-list-" + o.listNumber + ".ms-options-wrap").find("> .ms-options");
+            e && (n.find("> li").remove(), s && i.find("> *").remove());
+            var a = [];
+            for (var p in t) if (t.hasOwnProperty(p)) {
+                var c = t[p], r = w("<li/>"), h = !0;
+                if (c.hasOwnProperty("value")) {
+                    if (o.options.showCheckbox && o.options.checkboxAutoFit && r.addClass("ms-reflow"), o._addOption(r, c), s) {
+                        var d = w('<option value="' + c.value + '">' + c.name + "</option>");
+                        c.hasOwnProperty("attributes") && Object.keys(c.attributes).length && d.attr(c.attributes), c.checked && d.prop("selected", !0), i.append(d)
                     }
-                });
-                // show/hide options
-                optionsWrap.closest('.ms-options-wrap').toggleClass('ms-active');
-                // recalculate height
-                if (optionsWrap.closest('.ms-options-wrap').hasClass('ms-active')) {
-                    optionsWrap.css('maxHeight', '');
-                    // override with user defined maxHeight
-                    if (instance.options.maxHeight) {
-                        var maxHeight = instance.options.maxHeight;
-                    }
-                    else {
-                        // cacl default maxHeight
-                        var maxHeight = ($(window).height() - optionsWrap.offset().top + $(window).scrollTop() - 20);
-                    }
-                    if (maxHeight) {
-                        // maxHeight cannot be less than options.minHeight
-                        maxHeight = maxHeight < instance.options.minHeight ? instance.options.minHeight : maxHeight;
-                        optionsWrap.css('maxHeight', maxHeight);
-                    }
-                }
-                else if (typeof instance.options.onControlClose == 'function') {
-                    instance.options.onControlClose(instance.element);
-                }
-            }).click(function (event) {
-                event.preventDefault();
-            });
-            // add placeholder copy
-            if (instance.options.texts.placeholder) {
-                placeholder.find('span').text(instance.options.texts.placeholder);
-            }
-            // add search box
-            if (instance.options.search) {
-                optionsList.before('<div class="ms-search"><input type="text" value="" placeholder="' + instance.options.texts.search + '" /></div>');
-                var search = optionsWrap.find('.ms-search input');
-                search.on('keyup', function () {
-                    // ignore keystrokes that don't make a difference
-                    if ($(this).data('lastsearch') == $(this).val()) {
-                        return true;
-                    }
-                    // pause timeout
-                    if ($(this).data('searchTimeout')) {
-                        clearTimeout($(this).data('searchTimeout'));
-                    }
-                    var thisSearchElem = $(this);
-                    $(this).data('searchTimeout', setTimeout(function () {
-                        thisSearchElem.data('lastsearch', thisSearchElem.val());
-                        // USER CALLBACK
-                        if (typeof instance.options.searchOptions.onSearch == 'function') {
-                            instance.options.searchOptions.onSearch(instance.element);
-                        }
-                        // search non optgroup li's
-                        var searchString = $.trim(search.val().toLowerCase());
-                        if (searchString) {
-                            optionsList.find('li[data-search-term*="' + searchString + '"]:not(.optgroup)').removeClass('ms-hidden');
-                            optionsList.find('li:not([data-search-term*="' + searchString + '"], .optgroup)').addClass('ms-hidden');
-                        }
-                        else {
-                            optionsList.find('.ms-hidden').removeClass('ms-hidden');
-                        }
-                        // show/hide optgroups based on if there are items visible within
-                        if (!instance.options.searchOptions.showOptGroups) {
-                            optionsList.find('.optgroup').each(function () {
-                                if ($(this).find('li:not(.ms-hidden)').length) {
-                                    $(this).show();
-                                }
-                                else {
-                                    $(this).hide();
-                                }
-                            });
-                        }
-                        instance._updateSelectAllText();
-                    }, instance.options.searchOptions.delay));
-                });
-            }
-            // add global select all options
-            if (instance.options.selectAll) {
-                optionsList.before('<a href="#" class="ms-selectall global">' + instance.options.texts.selectAll + '</a>');
-            }
-            // handle select all option
-            optionsWrap.on('click', '.ms-selectall', function (event) {
-                event.preventDefault();
-                instance.updateSelectAll = false;
-                instance.updatePlaceholder = false;
-                var select = optionsWrap.parent().siblings('.ms-list-' + instance.listNumber + '.jqmsLoaded');
-                if ($(this).hasClass('global')) {
-                    // check if any options are not selected if so then select them
-                    if (optionsList.find('li:not(.optgroup, .selected, .ms-hidden)').length) {
-                        // get unselected vals, mark as selected, return val list
-                        optionsList.find('li:not(.optgroup, .selected, .ms-hidden)').addClass('selected');
-                        optionsList.find('li.selected input[type="checkbox"]:not(:disabled)').prop('checked', true);
-                    }
-                    // deselect everything
-                    else {
-                        optionsList.find('li:not(.optgroup, .ms-hidden).selected').removeClass('selected');
-                        optionsList.find('li:not(.optgroup, .ms-hidden, .selected) input[type="checkbox"]:not(:disabled)').prop('checked', false);
-                    }
-                }
-                else if ($(this).closest('li').hasClass('optgroup')) {
-                    var optgroup = $(this).closest('li.optgroup');
-                    // check if any selected if so then select them
-                    if (optgroup.find('li:not(.selected, .ms-hidden)').length) {
-                        optgroup.find('li:not(.selected, .ms-hidden)').addClass('selected');
-                        optgroup.find('li.selected input[type="checkbox"]:not(:disabled)').prop('checked', true);
-                    }
-                    // deselect everything
-                    else {
-                        optgroup.find('li:not(.ms-hidden).selected').removeClass('selected');
-                        optgroup.find('li:not(.ms-hidden, .selected) input[type="checkbox"]:not(:disabled)').prop('checked', false);
-                    }
-                }
-                var vals = [];
-                optionsList.find('li.selected input[type="checkbox"]').each(function () {
-                    vals.push($(this).val());
-                });
-                select.val(vals).trigger('change');
-                instance.updateSelectAll = true;
-                instance.updatePlaceholder = true;
-                // USER CALLBACK
-                if (typeof instance.options.onSelectAll == 'function') {
-                    instance.options.onSelectAll(instance.element, vals.length);
-                }
-                instance._updateSelectAllText();
-                instance._updatePlaceholderText();
-            });
-            // add options to wrapper
-            var options = [];
-            $(instance.element).children().each(function () {
-                if (this.nodeName == 'OPTGROUP') {
-                    var groupOptions = [];
-                    $(this).children('option').each(function () {
-                        var thisOptionAtts = {};
-                        for (var i = 0; i < instance.options.optionAttributes.length; i++) {
-                            var thisOptAttr = instance.options.optionAttributes[i];
-                            if ($(this).attr(thisOptAttr) !== undefined) {
-                                thisOptionAtts[thisOptAttr] = $(this).attr(thisOptAttr);
-                            }
-                        }
-                        groupOptions.push({
-                            name: $(this).text(),
-                            value: $(this).val(),
-                            checked: $(this).prop('selected'),
-                            attributes: thisOptionAtts
-                        });
-                    });
-                    options.push({
-                        label: $(this).attr('label'),
-                        options: groupOptions
-                    });
-                }
-                else if (this.nodeName == 'OPTION') {
-                    var thisOptionAtts = {};
-                    for (var i = 0; i < instance.options.optionAttributes.length; i++) {
-                        var thisOptAttr = instance.options.optionAttributes[i];
-                        if ($(this).attr(thisOptAttr) !== undefined) {
-                            thisOptionAtts[thisOptAttr] = $(this).attr(thisOptAttr);
-                        }
-                    }
-                    options.push({
-                        name: $(this).text(),
-                        value: $(this).val(),
-                        checked: $(this).prop('selected'),
-                        attributes: thisOptionAtts
-                    });
-                }
-                else {
-                    // bad option
-                    return true;
-                }
-            });
-            instance.loadOptions(options, true, false);
-            // BIND SELECT ACTION
-            optionsWrap.on('click', 'input[type="checkbox"]', function () {
-                $(this).closest('li').toggleClass('selected');
-                var select = optionsWrap.parent().siblings('.ms-list-' + instance.listNumber + '.jqmsLoaded');
-                // toggle clicked option
-                select.find('option[value="' + $(this).val() + '"]').prop(
-                    'selected', $(this).is(':checked')
-                ).closest('select').trigger('change');
-                // USER CALLBACK
-                if (typeof instance.options.onOptionClick == 'function') {
-                    instance.options.onOptionClick(instance.element, this);
-                }
-                instance._updateSelectAllText();
-                instance._updatePlaceholderText();
-            });
-            // BIND FOCUS EVENT
-            optionsWrap.on('focusin', 'input[type="checkbox"]', function () {
-                $(this).closest('label').addClass('focused');
-            }).on('focusout', 'input[type="checkbox"]', function () {
-                $(this).closest('label').removeClass('focused');
-            });
-            // USER CALLBACK
-            if (typeof instance.options.onLoad === 'function') {
-                instance.options.onLoad(instance.element);
-            }
-            // hide native select list
-            $(instance.element).hide();
-        },
-        /* LOAD SELECT OPTIONS */
-        loadOptions: function (options, overwrite, updateSelect) {
-            overwrite = (typeof overwrite == 'boolean') ? overwrite : true;
-            updateSelect = (typeof updateSelect == 'boolean') ? updateSelect : true;
-            var instance = this;
-            var select = $(instance.element);
-            var optionsList = select.siblings('#ms-list-' + instance.listNumber + '.ms-options-wrap').find('> .ms-options > ul');
-            var optionsWrap = select.siblings('#ms-list-' + instance.listNumber + '.ms-options-wrap').find('> .ms-options');
-            if (overwrite) {
-                optionsList.find('> li').remove();
-                if (updateSelect) {
-                    select.find('> *').remove();
-                }
-            }
-            var containers = [];
-            for (var key in options) {
-                // Prevent prototype methods injected into options from being iterated over.
-                if (!options.hasOwnProperty(key)) {
-                    continue;
-                }
-                var thisOption = options[key];
-                var container = $('<li/>');
-                var appendContainer = true;
-                // OPTION
-                if (thisOption.hasOwnProperty('value')) {
-                    if (instance.options.showCheckbox && instance.options.checkboxAutoFit) {
-                        container.addClass('ms-reflow');
-                    }
-                    // add option to ms dropdown
-                    instance._addOption(container, thisOption);
-                    if (updateSelect) {
-                        var selOption = $('<option value="' + thisOption.value + '">' + thisOption.name + '</option>');
-                        // add custom user attributes
-                        if (thisOption.hasOwnProperty('attributes') && Object.keys(thisOption.attributes).length) {
-                            selOption.attr(thisOption.attributes);
-                        }
-                        // mark option as selected
-                        if (thisOption.checked) {
-                            selOption.prop('selected', true);
-                        }
-                        select.append(selOption);
-                    }
-                }
-                // OPTGROUP
-                else if (thisOption.hasOwnProperty('options')) {
-                    var optGroup = $('<optgroup label="' + thisOption.label + '"></optgroup>');
-                    optionsList.find('> li.optgroup > span.label').each(function () {
-                        if ($(this).text() == thisOption.label) {
-                            container = $(this).closest('.optgroup');
-                            appendContainer = false;
-                        }
-                    });
-                    // prepare to append optgroup to select element
-                    if (updateSelect) {
-                        if (select.find('optgroup[label="' + thisOption.label + '"]').length) {
-                            optGroup = select.find('optgroup[label="' + thisOption.label + '"]');
-                        }
-                        else {
-                            select.append(optGroup);
-                        }
-                    }
-                    // setup container
-                    if (appendContainer) {
-                        container.addClass('optgroup');
-                        container.append('<span class="label">' + thisOption.label + '</span>');
-                        container.find('> .label').css({
-                            clear: 'both'
-                        });
-                        // add select all link
-                        if (instance.options.selectGroup) {
-                            container.append('<a href="#" class="ms-selectall">' + instance.options.texts.selectAll + '</a>');
-                        }
-                        container.append('<ul/>');
-                    }
-                    for (var gKey in thisOption.options) {
-                        // Prevent prototype methods injected into options from
-                        // being iterated over.
-                        if (!thisOption.options.hasOwnProperty(gKey)) {
-                            continue;
-                        }
-                        var thisGOption = thisOption.options[gKey];
-                        var gContainer = $('<li/>');
-                        if (instance.options.showCheckbox && instance.options.checkboxAutoFit) {
-                            gContainer.addClass('ms-reflow');
-                        }
-                        // no clue what this is we hit (skip)
-                        if (!thisGOption.hasOwnProperty('value')) {
-                            continue;
-                        }
-                        instance._addOption(gContainer, thisGOption);
-                        container.find('> ul').append(gContainer);
-                        // add option to optgroup in select element
-                        if (updateSelect) {
-                            var selOption = $('<option value="' + thisGOption.value + '">' + thisGOption.name + '</option>');
-                            // add custom user attributes
-                            if (thisGOption.hasOwnProperty('attributes') && Object.keys(thisGOption.attributes).length) {
-                                selOption.attr(thisGOption.attributes);
-                            }
-                            // mark option as selected
-                            if (thisGOption.checked) {
-                                selOption.prop('selected', true);
-                            }
-                            optGroup.append(selOption);
+                } else {
+                    if (!c.hasOwnProperty("options")) continue;
+                    var u = w('<optgroup label="' + c.label + '"></optgroup>');
+                    for (var m in n.find("> li.optgroup > span.label").each(function () {
+                        w(this).text() == c.label && (r = w(this).closest(".optgroup"), h = !1)
+                    }), s && (i.find('optgroup[label="' + c.label + '"]').length ? u = i.find('optgroup[label="' + c.label + '"]') : i.append(u)), h && (r.addClass("optgroup"), r.append('<span class="label">' + c.label + "</span>"), r.find("> .label").css({clear: "both"}), o.options.selectGroup && r.append('<a href="#" class="ms-selectall">' + o.options.texts.selectAll + "</a>"), r.append("<ul/>")), c.options) if (c.options.hasOwnProperty(m)) {
+                        var f = c.options[m], b = w("<li/>");
+                        if (o.options.showCheckbox && o.options.checkboxAutoFit && b.addClass("ms-reflow"), f.hasOwnProperty("value") && (o._addOption(b, f), r.find("> ul").append(b), s)) {
+                            d = w('<option value="' + f.value + '">' + f.name + "</option>");
+                            f.hasOwnProperty("attributes") && Object.keys(f.attributes).length && d.attr(f.attributes), f.checked && d.prop("selected", !0), u.append(d)
                         }
                     }
                 }
-                else {
-                    // no clue what this is we hit (skip)
-                    continue;
-                }
-                if (appendContainer) {
-                    containers.push(container);
-                }
+                h && a.push(r)
             }
-            optionsList.append(containers);
-            // pad out label for room for the checkbox
-            if (instance.options.checkboxAutoFit && instance.options.showCheckbox && !optionsWrap.hasClass('hide-checkbox')) {
-                var chkbx = optionsList.find('.ms-reflow:eq(0) input[type="checkbox"]');
-                if (chkbx.length) {
-                    var checkboxWidth = chkbx.outerWidth();
-                    checkboxWidth = checkboxWidth ? checkboxWidth : 15;
-                    optionsList.find('.ms-reflow label').css(
-                        'padding-left',
-                        (parseInt(chkbx.closest('label').css('padding-left')) * 2) + checkboxWidth
-                    );
-                    optionsList.find('.ms-reflow').removeClass('ms-reflow');
+            if (n.append(a), o.options.checkboxAutoFit && o.options.showCheckbox && !l.hasClass("hide-checkbox")) {
+                var g = n.find('.ms-reflow:eq(0) input[type="checkbox"]');
+                if (g.length) {
+                    var v = g.outerWidth();
+                    v = v || 15, n.find(".ms-reflow label").css("padding-left", 2 * parseInt(g.closest("label").css("padding-left")) + v), n.find(".ms-reflow").removeClass("ms-reflow")
                 }
             }
-            // update placeholder text
-            instance._updatePlaceholderText();
-            // RESET COLUMN STYLES
-            optionsWrap.find('ul').css({
-                'column-count': '',
-                'column-gap': '',
-                '-webkit-column-count': '',
-                '-webkit-column-gap': '',
-                '-moz-column-count': '',
-                '-moz-column-gap': ''
-            });
-            // COLUMNIZE
-            if (select.find('optgroup').length) {
-                // float non grouped options
-                optionsList.find('> li:not(.optgroup)').css({
-                    'float': 'left',
-                    width: (100 / instance.options.columns) + '%'
-                });
-                // add CSS3 column styles
-                optionsList.find('li.optgroup').css({
-                    clear: 'both'
-                }).find('> ul').css({
-                    'column-count': instance.options.columns,
-                    'column-gap': 0,
-                    '-webkit-column-count': instance.options.columns,
-                    '-webkit-column-gap': 0,
-                    '-moz-column-count': instance.options.columns,
-                    '-moz-column-gap': 0
-                });
-                // for crappy IE versions float grouped options
-                if (this._ieVersion() && (this._ieVersion() < 10)) {
-                    optionsList.find('li.optgroup > ul > li').css({
-                        'float': 'left',
-                        width: (100 / instance.options.columns) + '%'
-                    });
-                }
+            o._updatePlaceholderText(), l.find("ul").css({
+                "column-count": "",
+                "column-gap": "",
+                "-webkit-column-count": "",
+                "-webkit-column-gap": "",
+                "-moz-column-count": "",
+                "-moz-column-gap": ""
+            }), i.find("optgroup").length ? (n.find("> li:not(.optgroup)").css({
+                float: "left",
+                width: 100 / o.options.columns + "%"
+            }), n.find("li.optgroup").css({clear: "both"}).find("> ul").css({
+                "column-count": o.options.columns,
+                "column-gap": 0,
+                "-webkit-column-count": o.options.columns,
+                "-webkit-column-gap": 0,
+                "-moz-column-count": o.options.columns,
+                "-moz-column-gap": 0
+            }), this._ieVersion() && this._ieVersion() < 10 && n.find("li.optgroup > ul > li").css({
+                float: "left",
+                width: 100 / o.options.columns + "%"
+            })) : (n.css({
+                "column-count": o.options.columns,
+                "column-gap": 0,
+                "-webkit-column-count": o.options.columns,
+                "-webkit-column-gap": 0,
+                "-moz-column-count": o.options.columns,
+                "-moz-column-gap": 0
+            }), this._ieVersion() && this._ieVersion() < 10 && n.find("> li").css({
+                float: "left",
+                width: 100 / o.options.columns + "%"
+            })), o._updateSelectAllText()
+        }, settings: function (t) {
+            this.options = w.extend(!0, {}, this.options, t), this.reload()
+        }, unload: function () {
+            w(this.element).siblings("#ms-list-" + this.listNumber + ".ms-options-wrap").remove(), w(this.element).show(function () {
+                w(this).css("display", "").removeClass("jqmsLoaded")
+            })
+        }, reload: function () {
+            w(this.element).siblings("#ms-list-" + this.listNumber + ".ms-options-wrap").remove(), w(this.element).removeClass("jqmsLoaded"), this.load()
+        }, reset: function () {
+            var t = [];
+            w(this.element).find("option").each(function () {
+                w(this).prop("defaultSelected") && t.push(w(this).val())
+            }), w(this.element).val(t), this.reload()
+        }, disable: function (t) {
+            t = "boolean" != typeof t || t, w(this.element).prop("disabled", t), w(this.element).siblings("#ms-list-" + this.listNumber + ".ms-options-wrap").find("button:first-child").prop("disabled", t)
+        }, _updateSelectAllText: function () {
+            if (this.updateSelectAll) {
+                var e = this;
+                if (e.options.selectAll || e.options.selectGroup) w(e.element).siblings("#ms-list-" + e.listNumber + ".ms-options-wrap").find("> .ms-options").find(".ms-selectall").each(function () {
+                    var t = w(this).parent().find("li:not(.optgroup,.selected,.ms-hidden)");
+                    w(this).text(t.length ? e.options.texts.selectAll : e.options.texts.unselectAll)
+                })
             }
-            else {
-                // add CSS3 column styles
-                optionsList.css({
-                    'column-count': instance.options.columns,
-                    'column-gap': 0,
-                    '-webkit-column-count': instance.options.columns,
-                    '-webkit-column-gap': 0,
-                    '-moz-column-count': instance.options.columns,
-                    '-moz-column-gap': 0
-                });
-                // for crappy IE versions float grouped options
-                if (this._ieVersion() && (this._ieVersion() < 10)) {
-                    optionsList.find('> li').css({
-                        'float': 'left',
-                        width: (100 / instance.options.columns) + '%'
-                    });
-                }
+        }, _updatePlaceholderText: function () {
+            if (this.updatePlaceholder) {
+                var t = this, e = w(t.element), s = e.val() ? e.val() : [],
+                    o = e.siblings("#ms-list-" + t.listNumber + ".ms-options-wrap").find("> button:first-child"),
+                    i = o.find("span"),
+                    n = e.siblings("#ms-list-" + t.listNumber + ".ms-options-wrap").find("> .ms-options");
+                e.find("option:selected:disabled").length && (s = [], e.find("option:selected").each(function () {
+                    s.push(w(this).val())
+                }));
+                var l = [];
+                for (var a in s) if (s.hasOwnProperty(a) && (l.push(w.trim(e.find('option[value="' + s[a] + '"]').text())), l.length >= t.options.maxPlaceholderOpts)) break;
+                i.text(l.join(", ")), l.length ? n.closest(".ms-options-wrap").addClass("ms-has-selections") : n.closest(".ms-options-wrap").removeClass("ms-has-selections"), l.length ? (i.width() > o.width() || l.length != s.length) && i.text(s.length + t.options.texts.selectedOptions) : i.text(t.options.texts.placeholder)
             }
-            // update un/select all logic
-            instance._updateSelectAllText();
-        },
-        /* UPDATE MULTISELECT CONFIG OPTIONS */
-        settings: function (options) {
-            this.options = $.extend(true, {}, this.options, options);
-            this.reload();
-        },
-        /* RESET THE DOM */
-        unload: function () {
-            $(this.element).siblings('#ms-list-' + this.listNumber + '.ms-options-wrap').remove();
-            $(this.element).show(function () {
-                $(this).css('display', '').removeClass('jqmsLoaded');
-            });
-        },
-        /* RELOAD JQ MULTISELECT LIST */
-        reload: function () {
-            // remove existing options
-            $(this.element).siblings('#ms-list-' + this.listNumber + '.ms-options-wrap').remove();
-            $(this.element).removeClass('jqmsLoaded');
-            // load element
-            this.load();
-        },
-        // RESET BACK TO DEFAULT VALUES & RELOAD
-        reset: function () {
-            var defaultVals = [];
-            $(this.element).find('option').each(function () {
-                if ($(this).prop('defaultSelected')) {
-                    defaultVals.push($(this).val());
-                }
-            });
-            $(this.element).val(defaultVals);
-            this.reload();
-        },
-        disable: function (status) {
-            status = (typeof status === 'boolean') ? status : true;
-            $(this.element).prop('disabled', status);
-            $(this.element).siblings('#ms-list-' + this.listNumber + '.ms-options-wrap').find('button:first-child')
-                .prop('disabled', status);
-        },
-        /** PRIVATE FUNCTIONS **/
-        // update the un/select all texts based on selected options and visibility
-        _updateSelectAllText: function () {
-            if (!this.updateSelectAll) {
-                return;
-            }
-            var instance = this;
-            // select all not used at all so just do nothing
-            if (!instance.options.selectAll && !instance.options.selectGroup) {
-                return;
-            }
-            var optionsWrap = $(instance.element).siblings('#ms-list-' + instance.listNumber + '.ms-options-wrap').find('> .ms-options');
-            // update un/select all text
-            optionsWrap.find('.ms-selectall').each(function () {
-                var unselected = $(this).parent().find('li:not(.optgroup,.selected,.ms-hidden)');
-                $(this).text(
-                    unselected.length ? instance.options.texts.selectAll : instance.options.texts.unselectAll
-                );
-            });
-        },
-        // update selected placeholder text
-        _updatePlaceholderText: function () {
-            if (!this.updatePlaceholder) {
-                return;
-            }
-            var instance = this;
-            var select = $(instance.element);
-            var selectVals = select.val() ? select.val() : [];
-            var placeholder = select.siblings('#ms-list-' + instance.listNumber + '.ms-options-wrap').find('> button:first-child');
-            var placeholderTxt = placeholder.find('span');
-            var optionsWrap = select.siblings('#ms-list-' + instance.listNumber + '.ms-options-wrap').find('> .ms-options');
-            // if there are disabled options get those values as well
-            if (select.find('option:selected:disabled').length) {
-                selectVals = [];
-                select.find('option:selected').each(function () {
-                    selectVals.push($(this).val());
-                });
-            }
-            // get selected options
-            var selOpts = [];
-            for (var key in selectVals) {
-                // Prevent prototype methods injected into options from being iterated over.
-                if (!selectVals.hasOwnProperty(key)) {
-                    continue;
-                }
-                selOpts.push(
-                    $.trim(select.find('option[value="' + selectVals[key] + '"]').text())
-                );
-                if (selOpts.length >= instance.options.maxPlaceholderOpts) {
-                    break;
-                }
-            }
-            // UPDATE PLACEHOLDER TEXT WITH OPTIONS SELECTED
-            placeholderTxt.text(selOpts.join(', '));
-            if (selOpts.length) {
-                optionsWrap.closest('.ms-options-wrap').addClass('ms-has-selections');
-            }
-            else {
-                optionsWrap.closest('.ms-options-wrap').removeClass('ms-has-selections');
-            }
-            // replace placeholder text
-            if (!selOpts.length) {
-                placeholderTxt.text(instance.options.texts.placeholder);
-            }
-            // if copy is larger than button width use "# selected"
-            else if ((placeholderTxt.width() > placeholder.width()) || (selOpts.length != selectVals.length)) {
-                placeholderTxt.text(selectVals.length + instance.options.texts.selectedOptions);
-            }
-        },
-        // Add option to the custom dom list
-        _addOption: function (container, option) {
-            var instance = this;
-            var thisOption = $('<label/>', {
-                for: 'ms-opt-' + msOptCounter,
-                text: option.name
-            });
-            var thisCheckbox = $('<input>', {
-                type: 'checkbox',
-                title: option.name,
-                id: 'ms-opt-' + msOptCounter,
-                value: option.value
-            });
-            // add user defined attributes
-            if (option.hasOwnProperty('attributes') && Object.keys(option.attributes).length) {
-                thisCheckbox.attr(option.attributes);
-            }
-            if (option.checked) {
-                container.addClass('default selected');
-                thisCheckbox.prop('checked', true);
-            }
-            thisOption.prepend(thisCheckbox);
-            var searchTerm = '';
-            if (instance.options.searchOptions.searchText) {
-                searchTerm += ' ' + option.name.toLowerCase();
-            }
-            if (instance.options.searchOptions.searchValue) {
-                searchTerm += ' ' + option.value.toLowerCase();
-            }
-            container.attr('data-search-term', $.trim(searchTerm)).prepend(thisOption);
-            msOptCounter = msOptCounter + 1;
-        },
-        // check ie version
-        _ieVersion: function () {
-            var myNav = navigator.userAgent.toLowerCase();
-            return (myNav.indexOf('msie') != -1) ? parseInt(myNav.split('msie')[1]) : false;
+        }, _addOption: function (t, e) {
+            var s = w("<label/>", {for: "ms-opt-" + n, text: e.name}),
+                o = w("<input>", {type: "checkbox", title: e.name, id: "ms-opt-" + n, value: e.value});
+            e.hasOwnProperty("attributes") && Object.keys(e.attributes).length && o.attr(e.attributes), e.checked && (t.addClass("default selected"), o.prop("checked", !0)), s.prepend(o);
+            var i = "";
+            this.options.searchOptions.searchText && (i += " " + e.name.toLowerCase()), this.options.searchOptions.searchValue && (i += " " + e.value.toLowerCase()), t.attr("data-search-term", w.trim(i)).prepend(s), n += 1
+        }, _ieVersion: function () {
+            var t = navigator.userAgent.toLowerCase();
+            return -1 != t.indexOf("msie") && parseInt(t.split("msie")[1])
         }
-    };
-    // ENABLE JQUERY PLUGIN FUNCTION
-    $.fn.multiselect = function (options) {
-        if (!this.length) {
-            return;
+    }, w.fn.multiselect = function (e) {
+        if (this.length) {
+            var s, o = arguments;
+            return void 0 === e || "object" == typeof e ? this.each(function () {
+                w.data(this, "plugin_multiselect") || w.data(this, "plugin_multiselect", new i(this, e))
+            }) : "string" == typeof e && "_" !== e[0] && "init" !== e ? (this.each(function () {
+                var t = w.data(this, "plugin_multiselect");
+                t instanceof i && "function" == typeof t[e] && (s = t[e].apply(t, Array.prototype.slice.call(o, 1))), "unload" === e && w.data(this, "plugin_multiselect", null)
+            }), s) : void 0
         }
-        var args = arguments;
-        var ret;
-        // menuize each list
-        if ((options === undefined) || (typeof options === 'object')) {
-            return this.each(function () {
-                if (!$.data(this, 'plugin_multiselect')) {
-                    $.data(this, 'plugin_multiselect', new MultiSelect(this, options));
-                }
-            });
-        } else if ((typeof options === 'string') && (options[0] !== '_') && (options !== 'init')) {
-            this.each(function () {
-                var instance = $.data(this, 'plugin_multiselect');
-                if (instance instanceof MultiSelect && typeof instance[options] === 'function') {
-                    ret = instance[options].apply(instance, Array.prototype.slice.call(args, 1));
-                }
-                // special destruct handler
-                if (options === 'unload') {
-                    $.data(this, 'plugin_multiselect', null);
-                }
-            });
-            return ret;
-        }
-    };
-}(jQuery));
+    }
+}(jQuery);
 
-/* Chosen v1.8.7 | (c) 2011-2018 by Harvest | MIT License, https://github.com/harvesthq/chosen/blob/master/LICENSE.md */
+/* https://github.com/harvesthq/chosen/ 1.8.7 */
 (function () {
     var t, e, s, i, n = function (t, e) {
         return function () {
@@ -7536,20 +3252,92 @@ var $$s = _$$.$s;
     }()
 }).call(this);
 
+/* jquery ui datepicker ru locale */
+!function (e) {
+    "function" == typeof define && define.amd ? define(["../widgets/datepicker"], e) : e(jQuery.datepicker)
+}(function (e) {
+    return e.regional.ru = {
+        closeText: "Закрыть",
+        prevText: "&#x3C;Пред",
+        nextText: "След&#x3E;",
+        currentText: "Сегодня",
+        monthNames: ["Январь", "Февраль", "Март", "Апрель", "Май", "Июнь", "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"],
+        monthNamesShort: ["Янв", "Фев", "Мар", "Апр", "Май", "Июн", "Июл", "Авг", "Сен", "Окт", "Ноя", "Дек"],
+        dayNames: ["воскресенье", "понедельник", "вторник", "среда", "четверг", "пятница", "суббота"],
+        dayNamesShort: ["вск", "пнд", "втр", "срд", "чтв", "птн", "сбт"],
+        dayNamesMin: ["Вс", "Пн", "Вт", "Ср", "Чт", "Пт", "Сб"],
+        weekHeader: "Нед",
+        dateFormat: "dd.mm.yy",
+        firstDay: 1,
+        isRTL: !1,
+        showMonthAfterYear: !1,
+        yearSuffix: ""
+    }, e.setDefaults(e.regional.ru), e.regional.ru
+});
+
 /*-----*/
 
 /* MAIN JS START */
 $(document).ready(function () {
-    //check if mobile
-    var isMobile = false; //initiate as false
-    // device detection
+    var isMobile = false;
     if (/(android|bb\d+|meego).+mobile|avantgo|bada\/|blackberry|blazer|compal|elaine|fennec|hiptop|iemobile|ip(hone|od)|ipad|iris|kindle|Android|Silk|lge |maemo|midp|mmp|netfront|opera m(ob|in)i|palm( os)?|phone|p(ixi|re)\/|plucker|pocket|psp|series(4|6)0|symbian|treo|up\.(browser|link)|vodafone|wap|windows (ce|phone)|xda|xiino/i.test(navigator.userAgent)
         || /1207|6310|6590|3gso|4thp|50[1-6]i|770s|802s|a wa|abac|ac(er|oo|s\-)|ai(ko|rn)|al(av|ca|co)|amoi|an(ex|ny|yw)|aptu|ar(ch|go)|as(te|us)|attw|au(di|\-m|r |s )|avan|be(ck|ll|nq)|bi(lb|rd)|bl(ac|az)|br(e|v)w|bumb|bw\-(n|u)|c55\/|capi|ccwa|cdm\-|cell|chtm|cldc|cmd\-|co(mp|nd)|craw|da(it|ll|ng)|dbte|dc\-s|devi|dica|dmob|do(c|p)o|ds(12|\-d)|el(49|ai)|em(l2|ul)|er(ic|k0)|esl8|ez([4-7]0|os|wa|ze)|fetc|fly(\-|_)|g1 u|g560|gene|gf\-5|g\-mo|go(\.w|od)|gr(ad|un)|haie|hcit|hd\-(m|p|t)|hei\-|hi(pt|ta)|hp( i|ip)|hs\-c|ht(c(\-| |_|a|g|p|s|t)|tp)|hu(aw|tc)|i\-(20|go|ma)|i230|iac( |\-|\/)|ibro|idea|ig01|ikom|im1k|inno|ipaq|iris|ja(t|v)a|jbro|jemu|jigs|kddi|keji|kgt( |\/)|klon|kpt |kwc\-|kyo(c|k)|le(no|xi)|lg( g|\/(k|l|u)|50|54|\-[a-w])|libw|lynx|m1\-w|m3ga|m50\/|ma(te|ui|xo)|mc(01|21|ca)|m\-cr|me(rc|ri)|mi(o8|oa|ts)|mmef|mo(01|02|bi|de|do|t(\-| |o|v)|zz)|mt(50|p1|v )|mwbp|mywa|n10[0-2]|n20[2-3]|n30(0|2)|n50(0|2|5)|n7(0(0|1)|10)|ne((c|m)\-|on|tf|wf|wg|wt)|nok(6|i)|nzph|o2im|op(ti|wv)|oran|owg1|p800|pan(a|d|t)|pdxg|pg(13|\-([1-8]|c))|phil|pire|pl(ay|uc)|pn\-2|po(ck|rt|se)|prox|psio|pt\-g|qa\-a|qc(07|12|21|32|60|\-[2-7]|i\-)|qtek|r380|r600|raks|rim9|ro(ve|zo)|s55\/|sa(ge|ma|mm|ms|ny|va)|sc(01|h\-|oo|p\-)|sdk\/|se(c(\-|0|1)|47|mc|nd|ri)|sgh\-|shar|sie(\-|m)|sk\-0|sl(45|id)|sm(al|ar|b3|it|t5)|so(ft|ny)|sp(01|h\-|v\-|v )|sy(01|mb)|t2(18|50)|t6(00|10|18)|ta(gt|lk)|tcl\-|tdg\-|tel(i|m)|tim\-|t\-mo|to(pl|sh)|ts(70|m\-|m3|m5)|tx\-9|up(\.b|g1|si)|utst|v400|v750|veri|vi(rg|te)|vk(40|5[0-3]|\-v)|vm40|voda|vulc|vx(52|53|60|61|70|80|81|83|85|98)|w3c(\-| )|webc|whit|wi(g |nc|nw)|wmlb|wonu|x700|yas\-|your|zeto|zte\-/i.test(navigator.userAgent.substr(0, 4))) isMobile = true;
-    //-
     if (isMobile) {
         $('body').addClass('mobile');
     }
     $('.fancy').fancybox();
+    if ($('.invite_button').length > 0) {
+        $('.invite_button').each(function () {
+            $(this).fancybox({
+                beforeShow: function () {
+                    $('#invite_popup input[type=hidden]').val($(this.element).attr('data-uid'));
+                    $('#invite_popup select').not('.multiselect').each(function () {
+                        $(this).selectBox({'keepInViewport': false, 'mobile': true});
+                    });
+                    $('#invite_place').on('change', function () {
+                        var text = $(this).children("option:selected").attr('data-snippet');
+                        $('.legend').text(text);
+                    });
+                    $('#invite_popup input[name=invite-date]').datepicker({minDate: 0, regional: "ru"});
+                    $('#invite_popup input[name=invite-city]').on('change', function () {
+                        $('#invite_place').selectBox('destroy');
+                        $('#invite_place option[data-snippet]').remove();
+                        $('.legend').text("");
+                        $('#invite_place').selectBox({'keepInViewport': false, 'mobile': true});
+                        $('#invite_place').selectBox('disable');
+                        $.ajax({
+                            dataType: "json",
+                            headers: {
+                                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                            },
+                            cache: false,
+                            url: 'clubs/list/' + encodeURIComponent($('#invite_popup input[name=invite-city]').val()),
+                            success: function (result) {
+                                if (result.length > 0) {
+                                    $('#invite_place').selectBox('destroy');
+                                    result.forEach(function (item, index) {
+                                        $('#invite_place').append('<option value="' + item.club_id + '" data-snippet="' + item.address + '">' + item.title + '</option>');
+                                    });
+                                    $('#invite_place').selectBox({'keepInViewport': false, 'mobile': true});
+                                }
+                            },
+                            error: function () {
+                            }
+                        });
+                    });
+                }
+            });
+        });
+    }
+    if ($('.book_table_button').length > 0) {
+        $('.book_table_button').each(function () {
+            $(this).fancybox({
+                beforeShow: function () {
+                    $('#booking_popup input[name=book-date]').datepicker({minDate: 0, regional: "ru"});
+                }
+            });
+        });
+    }
     $('input[name="tel"]').mask("+7 (999) 999-99-99");
     //form choise toggler
     $('.choise_toggler a').click(function (e) {
@@ -7588,16 +3376,18 @@ $(document).ready(function () {
         e.stopPropagation();
         $(this).siblings('ul').toggleClass('show');
     });
-    // $('.header_personal_inner > ul > li > ul > li > a').click(function(e) {
-    // 	e.preventDefault();
-    // 	e.stopPropagation();
-    // 	$('.header_personal_inner > ul > li > a').html($(this).html());
-    // 	$('.header_personal_inner > ul > li > a').attr('href',$(this).attr('href'));
-    // 	$('.header_personal_inner > ul > li > ul').removeClass('show');
-    // });
-    // $('body').click(function(e) {
-    // 	$('.header_personal_inner > ul > li > ul').removeClass('show');
-    // });
+    /*
+        $('.header_personal_inner > ul > li > ul > li > a').click(function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            $('.header_personal_inner > ul > li > a').html($(this).html());
+            $('.header_personal_inner > ul > li > a').attr('href',$(this).attr('href'));
+            $('.header_personal_inner > ul > li > ul').removeClass('show');
+        });
+    */
+    $('body').click(function (e) {
+        $('.header_personal_inner > ul > li > ul').removeClass('show');
+    });
     //--
     //match_height
     $('.news_block_div').matchHeight({
@@ -7688,8 +3478,7 @@ $(document).ready(function () {
         var mx = e.pageX - m_offset.left;
         var my = e.pageY - m_offset.top;
         selected_rating = figureOutStars($(this), mx);
-        $(this).find('span').html(selected_rating.substr(-1, 1));
-        $('input[name="rating"]').val(selected_rating.substr(-1, 1))
+        $(this).find('span').html(selected_rating.substr(-1, 1))
     });
     $('.dynamic_stars').mousemove(function (e) {
         var m_offset2 = $(this).offset();
@@ -7717,7 +3506,6 @@ $(document).ready(function () {
         $('.header_menu_wrap').toggleClass('active');
         $(this).toggleClass('active');
     });
-
     //elements rearrangement on mobile
     function mobileRearrangement() {
         if ($(window).width() < 767) {
@@ -7739,7 +3527,6 @@ $(document).ready(function () {
             }
         }
     }
-
     mobileRearrangement();
     $(window).resize(function () {
         mobileRearrangement();
@@ -7806,12 +3593,33 @@ $(document).ready(function () {
         $("#slider-range-time").slider({
             range: true,
             min: 0,
-            max: 23,
-            values: [$('input[name="game_time_from"]').val().split(':')[0], $('input[name="game_time_to"]').val().split(':')[0]],
+            max: 24,
+            values: [8, 22],
             slide: function (event, ui) {
                 $("input[name='time']").val("с " + ui.values[0] + " до " + ui.values[1] + " часов");
-                $('input[name="game_time_from"]').val(ui.values[0] + ":00:00");
-                $('input[name="game_time_to"]').val(ui.values[1] + ":00:00");
+                //$(this).find('val-min').html(ui.values[ 0 ]);
+                //$(this).find('val-max').html(ui.values[ 1 ]);
+            }
+        });
+    }
+    //UI Range slider
+    if ($('#slider-range-time-2').length) {
+        $("input[name='time2']").click(function (e) {
+            e.stopPropagation();
+            $("#slider-range-time-wrap-2").toggleClass('active');
+        });
+        $("body").click(function () {
+            $("#slider-range-time-wrap-2").removeClass('active');
+        });
+        $("#slider-range-time-2").slider({
+            range: true,
+            min: 0,
+            max: 24,
+            values: [8, 22],
+            slide: function (event, ui) {
+                $("input[name='time2']").val("с " + ui.values[0] + " до " + ui.values[1] + " часов");
+                //$(this).find('val-min').html(ui.values[ 0 ]);
+                //$(this).find('val-max').html(ui.values[ 1 ]);
             }
         });
     }
@@ -7823,7 +3631,11 @@ $(document).ready(function () {
         $('input[type="checkbox"]').ezMark();
     }
     if ($('select').length) {
-        $('select').not('.multiselect').selectBox({'keepInViewport': false, 'mobile': true});
+        $('select').not('.multiselect').each(function () {
+            if (!$(this).closest('.the_form').parent().is('.popup')) {
+                $(this).selectBox({'keepInViewport': false, 'mobile': true});
+            }
+        });
     }
     if ($('.multiselect').length) {
         //$('.multiselect').chosen({disable_search_threshold: 15});
@@ -7844,40 +3656,35 @@ $(document).ready(function () {
         });
     }
     //autocomplete
+    if ($('.city-autocomplete').length > 0) {
+        function fillInAddress(object, autocomplete) {
+            var place = autocomplete.getPlace();
+            for (var i = 0; i < place.address_components.length; i++) {
+                var addressType = place.address_components[i].types[0];
+                switch (addressType) {
+                    case "locality":
+                        object.val(place.address_components[i].long_name);
+                        if ($(object).parents('#invite_popup').length > 0) {
+                            $(object).trigger('change');
+                        }
+                        break;
+                }
+            }
+        }
 
-//     if ($('.city-autocomplete').length > 0) {
-//
-//         var autocomplete;
-//
-//         function initAutocomplete() {
-//             autocomplete = new google.maps.places.Autocomplete(($('.city-autocomplete')), {types: ['geocode']});
-//             autocomplete.addListener('place_changed', fillInAddress);
-//         }
-//
-//         function fillInAddress() {
-//             var place = autocomplete.getPlace();
-//             for (var i = 0; i < place.address_components.length; i++) {
-//                 var addressType = place.address_components[i].types[0];
-//                 switch (addressType) {
-//                     case "locality":
-//                         $(".city-autocomplete").val(place.address_components[i].long_name);
-//                         break;
-//                 }
-//             }
-//         }
-//
-//         maps = document.createElement('script');
-//         maps.src = 'https://maps.googleapis.com/maps/api/js?key=AIzaSyAMj0tzo5dL6q5svRGhyCEYhMwqRcAtve4&amp;libraries=places&amp;callback=initAutocomplete';
-//         maps.async = true;
-//         document.getElementsByTagName('body')[0].appendChild(maps);
-//
-//         /*
-// 		var cities = ['Санкт-Петербург','Колпино','Выборг'];
-// 		$('.city-autocomplete').autocomplete({
-// 			source: cities
-// 		});
-// */
-//     }
+        function initAutocomplete() {
+            $('.city-autocomplete').each(function () {
+                var autocomplete;
+                autocomplete = new google.maps.places.Autocomplete(($(this)), {types: ['geocode']});
+                autocomplete.addListener('place_changed', fillInAddress($(this), autocomplete));
+            });
+        }
+
+        maps = document.createElement('script');
+        maps.src = 'https://maps.googleapis.com/maps/api/js?key=AIzaSyAMj0tzo5dL6q5svRGhyCEYhMwqRcAtve4&amp;libraries=places&amp;callback=initAutocomplete';
+        maps.async = true;
+        document.getElementsByTagName('body')[0].appendChild(maps);
+    }
 
     //--
     if ($(".top_section_slider").length) {
@@ -7926,7 +3733,7 @@ $(document).ready(function () {
     $(window).scroll(function () {
         fromTop = $(window).scrollTop();
         /*if (fromTop > header_offset) {$('header').addClass('active');}
-		if (fromTop < header_offset) {$('header').removeClass('active');}*/
+        if (fromTop < header_offset) {$('header').removeClass('active');}*/
         if (fromTop > to_top_show_height) {
             $('.to_top').addClass('active');
         }
@@ -7934,6 +3741,35 @@ $(document).ready(function () {
             $('.to_top').removeClass('active');
         }
     });
+    //-
+    //google map
+    if ($('#map1').length) {
+        var script0 = document.createElement('script');
+        script0.onload = function () {
+        };
+        script0.text = " function initMap() {" +
+            "var map = new google.maps.Map(document.getElementById('map1'), {" +
+            " zoom: 17," +
+            " center: {lat: 45.040458, lng: 38.981979}" +
+            "});" +
+            "var image = 'img/interface/balloon.png';" +
+            "var beachMarker = new google.maps.Marker({" +
+            " position: {lat: 45.040458, lng: 38.981979}," +
+            "map: map," +
+            "icon: image" +
+            "});" +
+            "}";
+        document.getElementById('map1').appendChild(script0);
+        setTimeout(function () {
+            var script = document.createElement('script');
+            script.onload = function () {
+            };
+            script.src = "https://maps.googleapis.com/maps/api/js?key=AIzaSyAMj0tzo5dL6q5svRGhyCEYhMwqRcAtve4&callback=initMap";
+            script.setAttribute('defer', '');
+            script.setAttribute('async', '');
+            document.getElementById('map1').appendChild(script);
+        }, 999);
+    }
     //--
     //scroll to
     $('.to_top').click(function () {

@@ -49,4 +49,12 @@ class MainController extends Controller
                 'results' => $results
             ]);
     }
+
+    public function searchClubs(string $city)
+    {
+        $clubs = (new ClubsService())->findByCity($city);
+
+        return response()
+            ->json($clubs);
+    }
 }

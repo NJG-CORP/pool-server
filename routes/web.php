@@ -28,7 +28,8 @@ Route::group(['namespace' => 'Web'], function(){
         Route::post('/clubs', 'MainController@list')->name('clubs');
         Route::get('/clubs/{id}', 'MainController@viewId')->where('id', '[0-9]+')->name('club.show.id');
         Route::get('/clubs/{url}', 'MainController@view')->name('club.show');;
-        Route::get('/clubs/find/{name}', 'MainController@suggestClub')->name('club.suggestion');;
+        Route::get('/clubs/find/{name}', 'MainController@suggestClub')->name('club.suggestion');
+        Route::get('/clubs/list/{city}', 'MainController@searchClubs')->name('club.search');
     });
 
     Route::group(['namespace' => 'Auth'], function(){
