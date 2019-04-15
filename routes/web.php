@@ -57,7 +57,8 @@ Route::group(['namespace' => 'Web'], function(){
             Route::get('/user/profile/{id}', 'ProfileController@card')->name('profile.card.other');
             Route::get('/invites', 'ProfileController@invites')->name('profile.invites');
             Route::get('/partners', 'ProfileController@partners')->name('profile.partners');
-            Route::get('/chat', 'ProfileController@chat')->name('profile.chat');
+            Route::get('/chat/{id}', 'ChatController@chat')->name('chat.withUser');
+            Route::get('/chat', 'ChatController@chat')->name('chat');
 
             Route::post('/profile', 'ProfileController@updateProfile')->name('profile.update');
         });

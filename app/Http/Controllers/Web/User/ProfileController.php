@@ -54,12 +54,6 @@ class ProfileController extends Controller
         return view('site.user.profile.partners', compact('partners'));
     }
 
-    public function chat()
-    {
-        return view('site.user.profile.chat');
-    }
-
-
     public function updateProfile(Request $request)
     {
         // валидация полей

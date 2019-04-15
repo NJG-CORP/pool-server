@@ -275,7 +275,7 @@ class ClubsService
 
     public function findSuggestion(string $name)
     {
-        return Club::query()->select(['name'])->whereRaw('name like \'%' . $name . '%\'')->get()->toArray();
+        return Club::query()->select(['title'])->whereRaw('title like \'%' . $name . '%\'')->get()->toArray();
     }
 
     public function getMarkers($clubs)

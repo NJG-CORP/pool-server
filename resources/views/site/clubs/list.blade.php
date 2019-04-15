@@ -113,7 +113,7 @@
                     let list = $('#club-search-suggest');
                     list.html('');
                     $.each(response.results, function (index, value) {
-                        list.append('<option value="' + value.name + '">' + value.name + '</option>')
+                        list.append('<option value="' + value.title + '">' + value.title + '</option>')
                     })
                 }
             })

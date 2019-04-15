@@ -48,7 +48,7 @@
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="{{ route('profile.chat') }}">
+                                    <a href="{{ route('chat') }}">
                                         <span>Чат</span>
                                     </a>
                                 </li>

@@ -1,5 +1,5 @@
 <div class="club_cat_page_left_div">
-    <p class="title"><a href="{{route('club.show', $club->url)}}">{{ $club->name }}</a></p>
+    <p class="title"><a href="{{route('club.show', $club->url)}}">{{ $club->title }}</a></p>
     <div class="img">
         <img src="{{$club->getMainImage()}}" alt="">
     </div>

@@ -18,13 +18,13 @@
                             <meta itemprop="position" content="2">
                         </span>
                         <span itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
-                            <span itemprop="item"><span itemprop="name">{{$club->name}}</span></span>
+                            <span itemprop="item"><span itemprop="name">{{$club->title}}</span></span>
                             <meta itemprop="position" content="3">
                         </span>
                     </p>
                 </div>
 
-                <h1>{{ $club->name }}</h1>
+                <h1>{{ $club->title }}</h1>
                 <div class="the_card_wrap clearfix">
                     <div class="the_card_img">
                         <a href="{{ $club->getMainImageEventUrl()->url }}" class="fancy"><img
@@ -89,6 +89,7 @@
                     <p class="section_title">Отзывы участников проекта</p>
                     <div class="partners_wrap">
                         @foreach($partners_review as $review)
+                            @if($review->rater)
                             <div class="partners_div" style="">
                                 <div class="img">
                                     <img src="{{$review->rater->getAvatarUrl()}}" alt="">
@@ -101,6 +102,7 @@
                                     </p>
                                 </div>
                             </div>
+                            @endif
                         @endforeach
                     </div>
                 </div>
