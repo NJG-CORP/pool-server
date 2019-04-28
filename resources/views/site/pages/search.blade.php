@@ -228,8 +228,8 @@
         <div class="the_form">
             <p class="title">Отправить приглашение</p>
 
-            <form method="post" class="frm02" id="frm023">
-                <input type="hidden">
+            <form method="post" class="frm02" action="{{route('send.invite')}}">
+                {{csrf_field()}}
                 <div class="the_form_div">
                     <input type="text" name="invite-city" id="invite-city" placeholder="Город" tabindex="1">
                     <!-- By default selected user city placed here -->

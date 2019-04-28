@@ -35,6 +35,16 @@
                         </ul>
                     </div>
                 @endif
+                @if(session('errors'))
+                    <div class="alert alert-danger">
+                        <ul>
+                            @foreach(session('errors') as $error)
+                                <li>{{$error}}</li>
+                            @endforeach
+
+                        </ul>
+                    </div>
+                @endif
                 <div class="profile_page_block">
                     <form action="{{ route('profile.update') }}" method="POST" enctype="multipart/form-data">
 

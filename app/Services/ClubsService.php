@@ -15,7 +15,7 @@ use Illuminate\Http\Request;
 
 class ClubsService
 {
-    const LIMIT_LIST = 10;
+    const LIMIT_LIST = 1000;
 
     public function getList($limit = self::LIMIT_LIST, $withRating = false, $name = null, $not_id = null)
     {

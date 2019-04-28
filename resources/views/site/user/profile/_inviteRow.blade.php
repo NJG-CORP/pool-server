@@ -1,8 +1,8 @@
 <?php
 /**
- * @var \App\Models\Invitation $invite
+ * @var Invitation $invite
  */
-?>
+?>use App\Models\Invitation;
 
 <div class="news_block_div partners_block_div">
 

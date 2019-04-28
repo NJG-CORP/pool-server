@@ -83,6 +83,9 @@
         </section><!--/the_content_section-->
 
     </main><!--/main-->
+
+@endsection
+@push('scripts')
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.4/socket.io.js"></script>
     <script>
         const socket = io('http://95.213.251.73:8080', {
@@ -93,7 +96,7 @@
         const defaultAvatarUrl = '<?= \App\Models\Image::getDefaultImage()['url'] ?>';
         const activeChat = <?= $threadId ?>;
         const $messageContainer = $('#chat-message-container');
-        const me_id = <?= Auth::user()->id ?>;
+        const me_id =  <?= Auth::user()->id ?>;
         const $text = $('[name="reply"]');
 
         socket.on('connect', s => {
@@ -104,7 +107,7 @@
         });
         socket.on('chat_message_list', data => {
             let html = '';
-            console.log(data);
+            console.log('chat message list', data);
             data.messages.forEach(function (message) {
                 html += renderMessage(message, defaultAvatarUrl);
             });
@@ -136,7 +139,7 @@
         };
         getChatLists = () => {
             socket.emit('chat_list_request');
-        };
+        }
 
         sendForm = () => {
             const text = $text.val();
@@ -144,9 +147,9 @@
             sendMessage(text, activeChat);
 
             $text.val('');
-        };
+        }
 
-        getChatLists();
+        getChatLists()
 
         renderThread = chat => {
             const date = new Date(chat.updated_at);
@@ -165,7 +168,7 @@
                 '            <span class="time">' + date.getDate() + '</span>' +
                 '        </div>\n' +
                 '        </a></div>';
-        };
+        }
 
         renderMessage = (message, avatar) => {
             const date = new Date(message.updated_at);
@@ -188,8 +191,8 @@
                 '        <span class="time">' + date.getDate() + '</span>\n' +
                 '    </div>\n' +
                 '</div>';
-        };
+        }
 
         getMessages(0, activeChat);
     </script>
-@endsection
+@endpush
