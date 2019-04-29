@@ -45,7 +45,6 @@ Route::group(['namespace' => 'Web'], function(){
         Route::get('/password/reset/{token}', 'PasswordResetController@showResetForm')->name('password.reset');
         Route::post('/password/forgot', 'PasswordResetController@sendMessage');
         Route::post('/password/reset', 'PasswordResetController@reset')->name('password.reset.post');
-
     });
 
     Route::group(['middleware' => 'authenticated'], function(){

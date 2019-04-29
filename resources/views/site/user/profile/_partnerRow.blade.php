@@ -3,7 +3,7 @@
     <div class="img">
         <img src="{{$partner->getAvatarUrl()}}" alt="">
 
-        <a class="button" href="#">Выход на чат</a>
+        <a class="button" href="{{route('chat.withUser', ['id' => $partner->id])}}">Выход на чат</a>
     </div>
 
     <div class="text">

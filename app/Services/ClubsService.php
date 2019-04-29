@@ -17,7 +17,7 @@ class ClubsService
 {
     const LIMIT_LIST = 1000;
 
-    public function getList($limit = self::LIMIT_LIST, $withRating = false, $name = null, $not_id = null)
+    public function getList($limit = self::LIMIT_LIST, $withRating = false, $name = null, $not_id = null, array $coords = [])
     {
         $query = Club::with(['rating', 'location', 'images'])
             ->limit($limit)
@@ -43,6 +43,10 @@ class ClubsService
             $query->whereRaw('name like \'%' . $name . '%\'');
         }
 
+        if ($coords) {
+            $query = LocationHelper::decorateQuery($query, $coords);
+        }
+
         $clubs = $query
             ->get()
             ->map(function ($e) {
@@ -54,7 +58,7 @@ class ClubsService
             foreach ($clubs as $club) {
                 $not_in[] = $club->id;
             };
-            $additionalClubs = $this->getList($limit - count($clubs), false, $name, $not_in);
+            $additionalClubs = $this->getList($limit - count($clubs), false, $name, $not_in, $coords);
             foreach ($additionalClubs as $club) {
                 $clubs->push($club);
             }

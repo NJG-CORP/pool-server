@@ -1,4 +1,5 @@
 <?php
+
 Route::middleware('cors')->group(function(){
     Route::prefix('auth')->group(function(){
         Route::post("login", "UserController@login");

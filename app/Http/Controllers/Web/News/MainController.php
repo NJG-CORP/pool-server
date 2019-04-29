@@ -11,7 +11,7 @@ class MainController extends Controller
     public function list()
     {
         $news = (new NewsService())->getAll();
-        return view('site.pages.news', compact('news'));
+        return view('site.news.index', compact('news'));
     }
 
     public function viewId($id)
@@ -28,6 +28,6 @@ class MainController extends Controller
     {
         $news = (new NewsService())->getNewsByUrl($url);
         $rec_news = (new NewsService())->getLastNews($news->id);
-        return view('site.pages.news-single', compact('news', 'rec_news'));
+        return view('site.news.single', compact('news', 'rec_news'));
     }
 }

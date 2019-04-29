@@ -58,7 +58,6 @@ class LoginController extends Controller
             return $this->loginViaModel($user);
         }
         return 'Something went wrong.';
-        r
     }
 
     public function handleCallback()

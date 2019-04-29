@@ -43,13 +43,13 @@
                             {{--<input type="submit" name="submit1" value=" ">--}}
                             {{--</form>--}}
                             {{--</div>--}}
-                            <div class="chat_window_content_left_inner modern-skin scrollable"
+                            <div class="chat_window_content_left_inner modern-skin scrollable-native"
                                  id="chat-thread-container">
                             </div>
                         </div><!--/chat_window_content_left-->
 
                         <div class="chat_window_content_right">
-                            <div class="chat_window_content_right_inner modern-skin scrollable"
+                            <div class="chat_window_content_right_inner modern-skin scrollable-native"
                                  id="chat-message-container">
                             </div><!--/chat_window_content_left_inner-->
                         </div><!--/chat_window_content_right-->
@@ -103,17 +103,29 @@
             console.log('connected')
         });
         socket.on('chat_message_received', data => {
+            let message = data;
+            if (message.sender_id === me_id) {
+                $messageContainer.append(renderOwnMessage(message));
+            } else {
+                console.log(message);
+                $messageContainer.append(renderPartnerMessage(message));
+            }
+            $messageContainer.scrollTop($messageContainer.prop('scrollHeight'));
             console.log('received_message', data);
         });
+
         socket.on('chat_message_list', data => {
             let html = '';
             console.log('chat message list', data);
-            data.messages.forEach(function (message) {
-                html += renderMessage(message, defaultAvatarUrl);
+            data.messages.reverse().forEach(message => {
+                if (message.sender_id === me_id) {
+                    html += renderOwnMessage(message.text, new Date(message.updated_at));
+                } else {
+                    html += renderPartnerMessage(message);
+                }
             });
-
             $messageContainer.html(html);
-            console.log('message_list', data);
+            $messageContainer.scrollTop($messageContainer.prop('scrollHeight'));
         });
         socket.on('chat_list', data => {
             chats = data;
@@ -130,69 +142,90 @@
                 text: text || Math.random(),
                 receiver_id: receiver_id
             });
+            $messageContainer.append(renderOwnMessage(text, new Date()));
+            $messageContainer.scrollTop($messageContainer.prop('scrollHeight'));
         };
         getMessages = (offset, receiver_id) => {
             socket.emit('chat_message_list_request', {
                 offset,
                 receiver_id
             });
+            console.log('MESSAGE LIST')
         };
         getChatLists = () => {
             socket.emit('chat_list_request');
-        }
+        };
 
         sendForm = () => {
             const text = $text.val();
-
             sendMessage(text, activeChat);
-
             $text.val('');
-        }
+        };
 
-        getChatLists()
+        getChatLists();
 
         renderThread = chat => {
             const date = new Date(chat.updated_at);
             const chat_id = chat.receiver_id === me_id ? chat.sender_id : chat.receiver_id;
-            return '<div class="message_item"><a href="/chat/' + chat_id + '">' +
+            const name = chat.receiver_id === me_id ? chat.sender_name : chat.receiver_name;
+            return '<div class="message_item" data-chat-item="' + chat_id + '"><a href="/chat/' + chat_id + '">' +
                 '            <div class="img"><img src="' + (chat.avatar.url === undefined ? chat.avatar.url : defaultAvatarUrl) + '" alt="" /></div>' +
                 '' +
                 '            <div class="text">' +
-                '            <p class="name">' + chat.sender_name + '</p>' +
+                '            <p class="name">' + name + '</p>' +
                 '' +
                 '        <p class="message_body">' +
                 chat.text +
                 '            </p>' +
-                '' +
-                '            <span class="new_messages">2</span>' +
-                '            <span class="time">' + date.getDate() + '</span>' +
+                '            <span class="time">' + date.getDate() + '.' + date.getMonth() + '.' + date.getFullYear() + '</span>' +
                 '        </div>\n' +
                 '        </a></div>';
-        }
+        };
 
-        renderMessage = (message, avatar) => {
-            const date = new Date(message.updated_at);
-
-            return message.sender_id === me_id ? '<div class="message_item message_item_reply">' +
+        renderOwnMessage = (message, date) => {
+            return '<div class="message_item message_item_reply">' +
                 '    <div class="text">' +
                 '        <p class="message_body">' +
-                '            ' + message.text +
+                '            ' + message +
                 '        </p>' +
-                '        <span class="time">' + date.getDate() + '</span>' +
+                '        <span class="time">' + date.getDate() + '.' + date.getMonth() + '.' + date.getFullYear() + '</span>\n' +
                 '    </div>' +
-                '</div>' : '' +
-                '<div class="message_item">\n' +
-                '    <div class="img"><img src="' + avatar + '" alt="" /><span class="mark check"></span></div>\n' +
+                '</div>'
+        };
+
+        renderPartnerMessage = message => {
+            const date = new Date(message.updated_at);
+            let partner = getPartnerInfo(message.sender_id);
+            return '<div class="message_item">\n' +
+                '    <div class="img"><img src="' + partner.avatar + '" alt="" /></div>\n' +
                 '    <div class="text">\n' +
-                '        <p class="name">Светлана Петрова</p>\n' +
+                '        <p class="name">' + partner.name + '</p>\n' +
                 '        <p class="message_body">\n' +
                 message.text +
                 '        </p>\n' +
-                '        <span class="time">' + date.getDate() + '</span>\n' +
+                '        <span class="time">' + date.getDate() + '.' + date.getMonth() + '.' + date.getFullYear() + '</span>\n' +
                 '    </div>\n' +
                 '</div>';
+        };
+
+        //возвращает отсортированный список чатов
+        getPartners = () => {
+            return chats.map(item => {
+                let avatar = item.avatar.url ? item.avatar.url : defaultAvatarUrl;
+                return item.receiver_id === me_id ?
+                    {id: item.sender_id, name: item.sender_name, avatar: avatar} :
+                    {id: item.receiver_id, name: item.receiver_name, avatar: avatar}
+            });
+        };
+
+        //возвращает объект {avatar_url, name}
+        getPartnerInfo = id => {
+            return getPartners().filter(item => item.id === id)[0]
+        };
+
+        if (activeChat) {
+            getMessages(0, activeChat);
         }
 
-        getMessages(0, activeChat);
     </script>
 @endpush

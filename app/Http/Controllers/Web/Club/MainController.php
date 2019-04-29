@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Web\Club;
 use App\Http\Controllers\Controller;
 use App\Services\ClubsService;
 use App\Services\RatingService;
+use Auth;
+use Exception;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
@@ -13,9 +15,14 @@ class MainController extends Controller
     public function list(Request $request)
     {
         $name = $request->get('club_search', null);
-        $clubs = (new ClubsService())->getList(ClubsService::LIMIT_LIST, true, $name);
+        $clubs = (new ClubsService())->getList(ClubsService::LIMIT_LIST, true, $name, null, [
+            'lat' => [
+                'min' => 59.742724
+            ]
+        ]);
+
         $json_markers = (new ClubsService())->getMarkers($clubs);
-        return view('site.clubs.list', compact('clubs', 'json_markers'));
+        return view('site.clubs.index', compact('clubs', 'json_markers'));
     }
 
     public function viewId($id)
@@ -34,10 +41,10 @@ class MainController extends Controller
         if (!$club) {
             throw new NotFoundHttpException;
         }
-        $review_form = RatingService::canUserRate($club, \Auth::user());
+        $review_form = RatingService::canUserRate($club, Auth::user());
         $partners_review = $club->rating;
 
-        return view('site.clubs.single', compact('club', 'review_form', 'partners_review'));
+        return view('site.clubs.club', compact('club', 'review_form', 'partners_review'));
     }
 
     public function suggestClub(string $name)
@@ -54,7 +61,7 @@ class MainController extends Controller
     {
         try {
             $clubs = (new ClubsService())->findByCity($city);
-        } catch (\Exception $exception) {
+        } catch (Exception $exception) {
             throw new NotFoundHttpException();
         }
 

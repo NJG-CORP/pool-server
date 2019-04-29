@@ -564,7 +564,7 @@ html[xmlns] .slides {
 .selectBox-dropdown-menu, .header_personal .dropdown-menu {
     position: absolute;
     z-index: 99999;
-    max-height: 200px;
+    /* max-height: 220px; */
     min-height: 1em;
     /*border: solid 1px #999;*/
     /* should be the same border width as .selectBox-dropdown */
@@ -942,6 +942,23 @@ html[xmlns] .slides {
 /*Modern skin*/
 .scrollable.modern-skin {
     padding-right: 3px;
+}
+
+.scrollable-native {
+    overflow: auto;
+}
+
+.scrollable-native::-webkit-scrollbar {
+    width: 0.5em;
+}
+
+.scrollable-native::-webkit-scrollbar-track {
+    background-color: #eeeff3;
+}
+
+.scrollable-native::-webkit-scrollbar-thumb {
+    background-color: #286e64;
+    outline: 1px solid slategrey;
 }
 .scrollable.modern-skin .scroll-bar {
     min-width: 0px;
@@ -1616,28 +1633,28 @@ input[type='submit']:hover {
 }
 @font-face {
     font-family: "Circe";
-    src: url("../fonts/Circe-Regular.eot");
-    src: url("../fonts/Circe-Regular.eot?#iefix") format("embedded-opentype"),
-    url("../fonts/Circe-Regular.woff") format("woff"),
-    url("../fonts/Circe-Regular.ttf");
+    src: url("/fonts/Circe-Regular.eot");
+    src: url("/fonts/Circe-Regular.eot?#iefix") format("embedded-opentype"),
+    url("/fonts/Circe-Regular.woff") format("woff"),
+    url("/fonts/Circe-Regular.ttf");
     font-style: normal;
     font-weight: normal;
 }
 @font-face {
     font-family: "Circe";
-    src: url("../fonts/Circe-Bold.eot");
-    src: url("../fonts/Circe-Bold.eot?#iefix") format("embedded-opentype"),
-    url("../fonts/Circe-Bold.woff") format("woff"),
-    url("../fonts/Circe-Bold.ttf");
+    src: url("/fonts/Circe-Bold.eot");
+    src: url("/fonts/Circe-Bold.eot?#iefix") format("embedded-opentype"),
+    url("/fonts/Circe-Bold.woff") format("woff"),
+    url("/fonts/Circe-Bold.ttf");
     font-style: normal;
     font-weight: bold;
 }
 @font-face {
     font-family: "Gotham";
-    src: url("../fonts/Gotham_black.eot");
-    src: url("../fonts/Gotham_black.eot?#iefix") format("embedded-opentype"),
-    url("../fonts/Gotham_black.woff") format("woff"),
-    url("../fonts/Gotham_black.ttf");
+    src: url("/fonts/Gotham_black.eot");
+    src: url("/fonts/Gotham_black.eot?#iefix") format("embedded-opentype"),
+    url("/fonts/Gotham_black.woff") format("woff"),
+    url("/fonts/Gotham_black.ttf");
     font-style: normal;
     font-weight: 900;
 }

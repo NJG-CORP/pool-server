@@ -2,11 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Exceptions\ControllableException;
 use App\Models\Club;
 use App\Models\User;
 use App\Services\InvitationService;
 use App\Services\PushService;
+use Auth;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Throwable;
 
 class InvitationController extends Controller
 {
@@ -29,19 +33,20 @@ class InvitationController extends Controller
 
     /**
      * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
-     * @throws \App\Exceptions\ControllableException
+     * @return JsonResponse
+     * @throws ControllableException
      */
     public function inviteUser(Request $request){
+        dd($request->all());
         $this->validateRequestData([
             'invited_id' => 'required|integer',
             'club_id' => 'integer',
             'meeting_at' => 'required'
         ]);
 
-        $currentUser = \Auth::user();
+        $currentUser = Auth::user();
         $invitation = $this->invitation->invite(
-            \Auth::user(),
+            Auth::user(),
             User::find($this->request->get('invited_id')),
             Club::find($this->request->get('club_id')),
             $this->request->get('meeting_at')
@@ -54,7 +59,8 @@ class InvitationController extends Controller
                     "Вас пригласил на игру " . $currentUser->surname . ' ' . $currentUser->name,
                     []
                 );
-            } catch (\Throwable $e){}
+            } catch (Throwable $e) {
+            }
             return $this->responder->successResponse([
                 'invitation' => $invitation
             ]);
@@ -64,21 +70,22 @@ class InvitationController extends Controller
     }
 
     public function invitationAccept(Request $request, $id){
-        $invitation = $this->invitation->setStatus(\Auth::user(), $id, true);
+        $invitation = $this->invitation->setStatus(Auth::user(), $id, true);
         try {
             $this->pushes->sendToUser(
                 $this->request->get($invitation->inviter->id),
                 "Приглашение принято",
                 $invitation->inviter->name . " " . $invitation->inviter->surname .
-                    " принял приглашение на игру",
+                " принял приглашение на игру",
                 []
             );
-        } catch (\Throwable $e){}
+        } catch (Throwable $e) {
+        }
         return back();
     }
 
     public function invitationReject(Request $request, $id){
-        $res = $this->invitation->setStatus(\Auth::user(), $id, false);
+        $res = $this->invitation->setStatus(Auth::user(), $id, false);
         return back();
     }
 
@@ -88,7 +95,7 @@ class InvitationController extends Controller
     }
 
     public function invitationList(){
-        $list = $this->invitation->invitationList(\Auth::user());
+        $list = $this->invitation->invitationList(Auth::user());
         return $this->responder->successResponse([
             'invitations' => $list
         ]);

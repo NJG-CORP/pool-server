@@ -13,14 +13,14 @@ class MainController extends Controller
 
     public function list()
     {
-        return view('site.events.list', [ 'data' => (new EventsService())->getList()]);
+        return view('site.events.index', ['data' => (new EventsService())->getList()]);
     }
 
     public function view($url)
     {
         $event = (new EventsService())->getEventByUrl($url);
-        $more_events = (new \App\Services\EventsService())->getMoreEvents($event->id);
-        return view('site.events.item', compact('event', 'more_events'));
+        $more_events = (new EventsService())->getMoreEvents($event->id);
+        return view('site.events.event', compact('event', 'more_events'));
     }
 
     public function viewId($id)

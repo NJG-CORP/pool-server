@@ -11,7 +11,7 @@ class MainController extends Controller
     public function list()
     {
         $blogs = (new BlogService())->getAll();
-        return view('site.pages.blogs', compact('blogs'));
+        return view('site.blog.index', compact('blogs'));
     }
 
     public function viewId($id)
@@ -33,6 +33,6 @@ class MainController extends Controller
         }
         $rec_blogs = (new BlogService())->getLastBlogs($blog->id);
 
-        return view('site.pages.blogs-single', compact('blog', 'rec_blogs'));
+        return view('site.blog.article', compact('blog', 'rec_blogs'));
     }
 }
