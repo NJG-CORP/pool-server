@@ -107,13 +107,13 @@
     </footer>
 </div>
 @stack('modals')
+{{--<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>--}}
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 <script src="{{ asset('js/jquery.kladr.min.js') }}"></script>
 <script src="{{ asset('js/ion.rangeSlider.min.js') }}"></script>
 <script src="{{ asset('js/form.js') }}"></script>
 <script src="{{ asset('js/jquery.magnific-popup.min.js') }}"></script>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
 <script src="https://use.fontawesome.com/f4efb12980.js"></script>
-<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 <script src="/css/main.js"></script>
 <script>
 
