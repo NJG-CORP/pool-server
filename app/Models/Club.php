@@ -8,6 +8,7 @@ use App\Services\UrlService;
 use App\Services\WorkTimeService;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use stdClass;
 
 class Club extends Model
 {
@@ -37,7 +38,9 @@ class Club extends Model
 
     public function rating()
     {
-        return $this->morphMany(Rating::class, 'rateable')->where(['is_verified' => 1]);
+        return $this->morphMany(Rating::class, 'rateable')
+            ->where(['is_verified' => 1])
+            ->whereHas('rater');
     }
 
     public function gametype()
@@ -94,7 +97,7 @@ class Club extends Model
     public function getMainImageEventUrl()
     {
         if (!$this->getMainImageEvent()->first()) {
-            $this->getMainImageEvent = new \stdClass();
+            $this->getMainImageEvent = new stdClass();
             $this->getMainImageEvent->url = Image::getDefaultImage()['url'];
         }
         return $this->getMainImageEvent;

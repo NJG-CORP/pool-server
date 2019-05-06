@@ -33,6 +33,9 @@
                             <p>{{ $news->description }}</p>
                         </div>
                     </div>
+                    <div class="paragraph">
+                        {!! $news->paragraph !!}
+                    </div>
                     <h2>Другие новости</h2>
                     <div class="news_block_wrap other_news_block_wrap clearfix">
                         @foreach($rec_news as $item)

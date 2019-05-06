@@ -1,6 +1,6 @@
 @extends('layouts.default')
 
-@section('title', $blog->getHeader());
+@section('title', $blog->getHeader())
 
 @section('content')
 
@@ -29,6 +29,9 @@
                             <span class="date">{{ $blog->created_at }}</span>
                             <p>{{ $blog->description }}</p>
                         </div>
+                    </div>
+                    <div class="paragraph">
+                        {!! $blog->paragraph !!}
                     </div>
                     @if(count($rec_blogs))
                         <h2>Другие новости</h2>

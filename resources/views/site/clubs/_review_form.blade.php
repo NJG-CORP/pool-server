@@ -6,25 +6,16 @@
 
         <div class="the_form_col the_form_col_third the_form_col_textarea">
             <div class="the_form_div the_form_div_textarea">
-                <textarea name="review_text" placeholder="Текст отзыва"></textarea>
+                <textarea name="review_text" placeholder="Текст отзыва">{{old('review_text')}}</textarea>
             </div>
         </div>
 
         <div class="the_form_col the_form_col_third">
-            <!--
-                                                <div class="the_form_div">
-                                                    <input type="text" name="place" placeholder="Ваше имя">
-                                                </div>
-
-                                                <div class="the_form_div">
-                                                    <input type="text" name="mail" placeholder="E-mail">
-                                                </div>
-            -->
             <div class="the_form_div rating">
                 <label class="control-label">Рейтинг клуба</label>
                 <div class="stars stars_big dynamic_stars">
                     <div>
-                        <div><span class=""></span></div>
+                        <div><span class="">  </span></div>
                     </div>
                 </div>
                 <input type="hidden" name="rating" class="ratings">

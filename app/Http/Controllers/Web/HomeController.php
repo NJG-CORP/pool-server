@@ -2,22 +2,9 @@
 
 namespace App\Http\Controllers\Web;
 
-use App\Models\Blog;
-use App\Models\GameTime;
-use App\Models\News;
-use App\Models\Rating;
-use App\Models\User;
-use App\Models\UserGameTime;
-use App\Models\UserGameTypes;
-use App\Models\UserPayment;
-use App\Services\PlayerService;
-use App\Services\UserService;
-use function GuzzleHttp\Promise\all;
-use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Auth;
-use Symfony\Component\VarDumper\Dumper\DataDumperInterface;
+use App\Services\ClubsService;
+use App\Services\UserService;
 
 class HomeController extends Controller
 {
@@ -27,7 +14,15 @@ class HomeController extends Controller
         if ((new UserService())->getUser()) {
             return view('site.pages.search');
         } else {
-            return view('site.main.main');
+
+            $clubs = (new ClubsService())->getList(ClubsService::LIMIT_LIST, true, null, null, [
+                'lat' => [
+                    'min' => 59.742724
+                ]
+            ]);
+
+            $json_markers = (new ClubsService())->getMarkers($clubs);
+            return view('site.main.main', compact('json_markers'));
         }
     }
 }

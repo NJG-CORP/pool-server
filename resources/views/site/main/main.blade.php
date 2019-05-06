@@ -254,5 +254,8 @@
         </section>
     </main>
 
+    @include('site.chunks.common.map_with_clubs', ['json_markers' => $json_markers])
+    <script src="https://maps.googleapis.com/maps/api/js?key={{env('GOOGLE_API_KEY')}}&libraries=places&callback=initMap"></script>
+
     
 @endsection

@@ -91,14 +91,8 @@
             };
             script0.text = " function initMap() {" +
                 "var map = new google.maps.Map(document.getElementById('map1'), {" +
-                " zoom: 17," +
-                " center: {lat: 45.040458, lng: 38.981979}" +
-                "});" +
-                "var image = 'img/interface/balloon.png';" +
-                "var beachMarker = new google.maps.Marker({" +
-                " position: {lat: 45.040458, lng: 38.981979}," +
-                "map: map," +
-                "icon: image" +
+                " zoom: 11," +
+                " center: {lat: 59.92444, lng: 30.31417}" +
                 "});" +
                 "}";
             document.getElementById('map1').appendChild(script0);

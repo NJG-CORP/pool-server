@@ -3478,7 +3478,8 @@ $(document).ready(function () {
         var mx = e.pageX - m_offset.left;
         var my = e.pageY - m_offset.top;
         selected_rating = figureOutStars($(this), mx);
-        $(this).find('span').html(selected_rating.substr(-1, 1))
+        $(this).find('span').html(selected_rating.substr(-1, 1));
+        $(this).parent().find('input[name="rating"]').val(selected_rating.substr(-1, 1))
     });
     $('.dynamic_stars').mousemove(function (e) {
         var m_offset2 = $(this).offset();
@@ -3594,11 +3595,11 @@ $(document).ready(function () {
             range: true,
             min: 0,
             max: 24,
-            values: [8, 22],
+            values: [0, 24],
             slide: function (event, ui) {
                 $("input[name='time']").val("с " + ui.values[0] + " до " + ui.values[1] + " часов");
-                //$(this).find('val-min').html(ui.values[ 0 ]);
-                //$(this).find('val-max').html(ui.values[ 1 ]);
+                $(this).parent().parent().find('input[name="game_time_from"]').val(ui.values[0]);
+                $(this).parent().parent().find('input[name="game_time_to"]').val(ui.values[1]);
             }
         });
     }
@@ -3615,11 +3616,11 @@ $(document).ready(function () {
             range: true,
             min: 0,
             max: 24,
-            values: [8, 22],
+            values: [0, 24],
             slide: function (event, ui) {
                 $("input[name='time2']").val("с " + ui.values[0] + " до " + ui.values[1] + " часов");
-                //$(this).find('val-min').html(ui.values[ 0 ]);
-                //$(this).find('val-max').html(ui.values[ 1 ]);
+                $(this).parent().parent().find('input[name="game_time_from"]').val(ui.values[0]);
+                $(this).parent().parent().find('input[name="game_time_to"]').val(ui.values[1]);
             }
         });
     }
@@ -3755,242 +3756,242 @@ $(document).ready(function () {
     });
     //-
 
-    //forms
-    $(".frm1").validate({  //проверка форм
-        rules: {
-            name: {
-                required: true,
-                minlength: 2
-            },
-            tel: {
-                required: true,
-                minlength: 2
-            }
-        },
-        onkeyup: false,
-        highlight: function (element, errorClass) {
-            $(element).fadeOut(function () {
-                $(element).fadeIn(function () {
-                    $(element).fadeOut(function () {
-                        $(element).fadeIn();
-                    });
-                });
-            });
-        },
-        submitHandler: function (form) {
-            $(form).find('input[type="submit"]').addClass('done').attr('disabled', 'disabled');
-            $.fancybox({href: "#thanks_popup"});
-            //отправка файла на сервер
-            $$f({
-                formid: 'frm11',//id формы
-                url: 'sender.php'//адрес на серверный скрипт
-            });
-        },
-        messages: {
-            name: "",
-            mail: "",
-            comment: "",
-            tel: ""
-        }
-    });
-
-    $(".frm2").validate({  //проверка форм
-        rules: {
-            name: {
-                required: true,
-                minlength: 2
-            },
-            tel: {
-                required: true,
-                minlength: 2
-            }
-        },
-        onkeyup: false,
-        highlight: function (element, errorClass) {
-            $(element).fadeOut(function () {
-                $(element).fadeIn(function () {
-                    $(element).fadeOut(function () {
-                        $(element).fadeIn();
-                    });
-                });
-            });
-        },
-        submitHandler: function (form) {
-            $(form).find('input[type="submit"]').addClass('done').attr('disabled', 'disabled');
-            $.fancybox({href: "#thanks_popup"});
-            //отправка файла на сервер
-            $$f({
-                formid: 'frm22',//id формы
-                url: 'sender.php'//адрес на серверный скрипт
-            });
-        },
-        messages: {
-            name: "",
-            mail: "",
-            comment: "",
-            tel: ""
-        }
-    });
-
-    $(".frm3").validate({  //проверка форм
-        rules: {
-            name: {
-                required: true,
-                minlength: 2
-            },
-            adress: {
-                required: true,
-                minlength: 2
-            },
-            mail: {
-                required: true,
-                minlength: 2
-            },
-            tel: {
-                required: true,
-                minlength: 2
-            }
-        },
-        onkeyup: false,
-        highlight: function (element, errorClass) {
-            $(element).fadeOut(function () {
-                $(element).fadeIn(function () {
-                    $(element).fadeOut(function () {
-                        $(element).fadeIn();
-                    });
-                });
-            });
-        },
-        submitHandler: function (form) {
-            $(form).find('input[type="submit"]').addClass('done').attr('disabled', 'disabled');
-            $.fancybox({href: "#thanks_popup"});
-            //отправка файла на сервер
-            $$f({
-                formid: 'frm22',//id формы
-                url: 'sender.php'//адрес на серверный скрипт
-            });
-        },
-        messages: {
-            name: "",
-            mail: "",
-            adress: "",
-            tel: ""
-        }
-    });
-
-    $(".frm01").validate({  //проверка форм
-        rules: {
-            name: {
-                required: true,
-                minlength: 2
-            },
-            tel: {
-                required: true,
-                minlength: 2
-            }
-        },
-        onkeyup: false,
-        highlight: function (element, errorClass) {
-            $(element).fadeOut(function () {
-                $(element).fadeIn(function () {
-                    $(element).fadeOut(function () {
-                        $(element).fadeIn();
-                    });
-                });
-            });
-        },
-        submitHandler: function (form) {
-            $(form).find('input[type="submit"]').addClass('done').attr('disabled', 'disabled');
-            $.fancybox({href: "#thanks_popup"});
-            //отправка файла на сервер
-            $$f({
-                formid: 'frm011',//id формы
-                url: 'sender.php'//адрес на серверный скрипт
-            });
-        },
-        messages: {
-            name: "",
-            mail: "",
-            comment: "",
-            tel: ""
-        }
-    });
-
-    $(".frm02").validate({  //проверка форм
-        rules: {
-            name: {
-                required: true,
-                minlength: 2
-            },
-            tel: {
-                required: true,
-                minlength: 2
-            }
-        },
-        onkeyup: false,
-        highlight: function (element, errorClass) {
-            $(element).fadeOut(function () {
-                $(element).fadeIn(function () {
-                    $(element).fadeOut(function () {
-                        $(element).fadeIn();
-                    });
-                });
-            });
-        },
-        submitHandler: function (form) {
-            $(form).find('input[type="submit"]').addClass('done').attr('disabled', 'disabled');
-            $.fancybox({href: "#thanks_popup"});
-            //отправка файла на сервер
-            $$f({
-                formid: 'frm022',//id формы
-                url: 'sender.php'//адрес на серверный скрипт
-            });
-        },
-        messages: {
-            name: "",
-            mail: "",
-            comment: "",
-            tel: ""
-        }
-    });
-
-    $(".frm03").validate({  //проверка форм
-        rules: {
-            name: {
-                required: true,
-                minlength: 2
-            },
-            tel: {
-                required: true,
-                minlength: 2
-            }
-        },
-        onkeyup: false,
-        highlight: function (element, errorClass) {
-            $(element).fadeOut(function () {
-                $(element).fadeIn(function () {
-                    $(element).fadeOut(function () {
-                        $(element).fadeIn();
-                    });
-                });
-            });
-        },
-        submitHandler: function (form) {
-            $(form).find('input[type="submit"]').addClass('done').attr('disabled', 'disabled');
-            $.fancybox({href: "#thanks_popup"});
-            //отправка файла на сервер
-            $$f({
-                formid: 'frm033',//id формы
-                url: 'sender.php'//адрес на серверный скрипт
-            });
-        },
-        messages: {
-            name: "",
-            mail: "",
-            comment: "",
-            tel: ""
-        }
-    });
+    // //forms
+    // $(".frm1").validate({  //проверка форм
+    //     rules: {
+    //         name: {
+    //             required: true,
+    //             minlength: 2
+    //         },
+    //         tel: {
+    //             required: true,
+    //             minlength: 2
+    //         }
+    //     },
+    //     onkeyup: false,
+    //     highlight: function (element, errorClass) {
+    //         $(element).fadeOut(function () {
+    //             $(element).fadeIn(function () {
+    //                 $(element).fadeOut(function () {
+    //                     $(element).fadeIn();
+    //                 });
+    //             });
+    //         });
+    //     },
+    //     submitHandler: function (form) {
+    //         $(form).find('input[type="submit"]').addClass('done').attr('disabled', 'disabled');
+    //         $.fancybox({href: "#thanks_popup"});
+    //         //отправка файла на сервер
+    //         $$f({
+    //             formid: 'frm11',//id формы
+    //             url: 'sender.php'//адрес на серверный скрипт
+    //         });
+    //     },
+    //     messages: {
+    //         name: "",
+    //         mail: "",
+    //         comment: "",
+    //         tel: ""
+    //     }
+    // });
+    //
+    // $(".frm2").validate({  //проверка форм
+    //     rules: {
+    //         name: {
+    //             required: true,
+    //             minlength: 2
+    //         },
+    //         tel: {
+    //             required: true,
+    //             minlength: 2
+    //         }
+    //     },
+    //     onkeyup: false,
+    //     highlight: function (element, errorClass) {
+    //         $(element).fadeOut(function () {
+    //             $(element).fadeIn(function () {
+    //                 $(element).fadeOut(function () {
+    //                     $(element).fadeIn();
+    //                 });
+    //             });
+    //         });
+    //     },
+    //     submitHandler: function (form) {
+    //         $(form).find('input[type="submit"]').addClass('done').attr('disabled', 'disabled');
+    //         $.fancybox({href: "#thanks_popup"});
+    //         //отправка файла на сервер
+    //         $$f({
+    //             formid: 'frm22',//id формы
+    //             url: 'sender.php'//адрес на серверный скрипт
+    //         });
+    //     },
+    //     messages: {
+    //         name: "",
+    //         mail: "",
+    //         comment: "",
+    //         tel: ""
+    //     }
+    // });
+    //
+    // $(".frm3").validate({  //проверка форм
+    //     rules: {
+    //         name: {
+    //             required: true,
+    //             minlength: 2
+    //         },
+    //         adress: {
+    //             required: true,
+    //             minlength: 2
+    //         },
+    //         mail: {
+    //             required: true,
+    //             minlength: 2
+    //         },
+    //         tel: {
+    //             required: true,
+    //             minlength: 2
+    //         }
+    //     },
+    //     onkeyup: false,
+    //     highlight: function (element, errorClass) {
+    //         $(element).fadeOut(function () {
+    //             $(element).fadeIn(function () {
+    //                 $(element).fadeOut(function () {
+    //                     $(element).fadeIn();
+    //                 });
+    //             });
+    //         });
+    //     },
+    //     submitHandler: function (form) {
+    //         $(form).find('input[type="submit"]').addClass('done').attr('disabled', 'disabled');
+    //         $.fancybox({href: "#thanks_popup"});
+    //         //отправка файла на сервер
+    //         $$f({
+    //             formid: 'frm22',//id формы
+    //             url: 'sender.php'//адрес на серверный скрипт
+    //         });
+    //     },
+    //     messages: {
+    //         name: "",
+    //         mail: "",
+    //         adress: "",
+    //         tel: ""
+    //     }
+    // });
+    //
+    // $(".frm01").validate({  //проверка форм
+    //     rules: {
+    //         name: {
+    //             required: true,
+    //             minlength: 2
+    //         },
+    //         tel: {
+    //             required: true,
+    //             minlength: 2
+    //         }
+    //     },
+    //     onkeyup: false,
+    //     highlight: function (element, errorClass) {
+    //         $(element).fadeOut(function () {
+    //             $(element).fadeIn(function () {
+    //                 $(element).fadeOut(function () {
+    //                     $(element).fadeIn();
+    //                 });
+    //             });
+    //         });
+    //     },
+    //     submitHandler: function (form) {
+    //         $(form).find('input[type="submit"]').addClass('done').attr('disabled', 'disabled');
+    //         $.fancybox({href: "#thanks_popup"});
+    //         //отправка файла на сервер
+    //         $$f({
+    //             formid: 'frm011',//id формы
+    //             url: 'sender.php'//адрес на серверный скрипт
+    //         });
+    //     },
+    //     messages: {
+    //         name: "",
+    //         mail: "",
+    //         comment: "",
+    //         tel: ""
+    //     }
+    // });
+    //
+    // $(".frm02").validate({  //проверка форм
+    //     rules: {
+    //         name: {
+    //             required: true,
+    //             minlength: 2
+    //         },
+    //         tel: {
+    //             required: true,
+    //             minlength: 2
+    //         }
+    //     },
+    //     onkeyup: false,
+    //     highlight: function (element, errorClass) {
+    //         $(element).fadeOut(function () {
+    //             $(element).fadeIn(function () {
+    //                 $(element).fadeOut(function () {
+    //                     $(element).fadeIn();
+    //                 });
+    //             });
+    //         });
+    //     },
+    //     submitHandler: function (form) {
+    //         $(form).find('input[type="submit"]').addClass('done').attr('disabled', 'disabled');
+    //         $.fancybox({href: "#thanks_popup"});
+    //         //отправка файла на сервер
+    //         $$f({
+    //             formid: 'frm022',//id формы
+    //             url: 'sender.php'//адрес на серверный скрипт
+    //         });
+    //     },
+    //     messages: {
+    //         name: "",
+    //         mail: "",
+    //         comment: "",
+    //         tel: ""
+    //     }
+    // });
+    //
+    // $(".frm03").validate({  //проверка форм
+    //     rules: {
+    //         name: {
+    //             required: true,
+    //             minlength: 2
+    //         },
+    //         tel: {
+    //             required: true,
+    //             minlength: 2
+    //         }
+    //     },
+    //     onkeyup: false,
+    //     highlight: function (element, errorClass) {
+    //         $(element).fadeOut(function () {
+    //             $(element).fadeIn(function () {
+    //                 $(element).fadeOut(function () {
+    //                     $(element).fadeIn();
+    //                 });
+    //             });
+    //         });
+    //     },
+    //     submitHandler: function (form) {
+    //         $(form).find('input[type="submit"]').addClass('done').attr('disabled', 'disabled');
+    //         $.fancybox({href: "#thanks_popup"});
+    //         //отправка файла на сервер
+    //         $$f({
+    //             formid: 'frm033',//id формы
+    //             url: 'sender.php'//адрес на серверный скрипт
+    //         });
+    //     },
+    //     messages: {
+    //         name: "",
+    //         mail: "",
+    //         comment: "",
+    //         tel: ""
+    //     }
+    // });
 
 });
 

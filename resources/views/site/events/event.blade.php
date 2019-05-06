@@ -40,7 +40,9 @@
                             </p>
                         </div>
                     </div>
-                    {!! $event->paragraph !!}
+                    <div class="paragraph">
+                        {!! $event->paragraph !!}
+                    </div>
                 </div>
 
                 @if(count($more_events) > 0)
