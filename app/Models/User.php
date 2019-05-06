@@ -194,7 +194,7 @@ class User extends Authenticatable
         $name = $this->name;
 
         if ($this->age) {
-            $name .= $name . ', ' . $this->age;
+            $name = $name . ', ' . $this->age;
         }
         return $name;
     }
