@@ -149,13 +149,13 @@
                                         <div class="the_form_div">
                                             <input type="text" name="city" id="location"
                                                    value="{{ !old('city[name]') ? ($user->city ? $user->city->name : '') : old('city[name]') }}"
-                                                   class="city-autocomplete" placeholder="Санкт-Петербург"/>
+                                                   class="city-autocomplete" placeholder="Город"/>
                                         </div>
 
                                     </div>
                                     <div class="the_form_col the_form_col_half">
                                         <div class="the_form_div">
-                                            <input type="text" name="street"
+                                            <input type="text" name="street" placeholder="Улица"
                                                    value="{{ !old('street') ? $user->street : old('street') }}">
                                         </div>
                                     </div>
@@ -192,6 +192,9 @@
                                                     Воскресенье
                                                 </option>
                                             </select>
+                                            @if($errors->has('game_days'))
+                                                {{ $errors->first('game_days') }}
+                                            @endif
                                         </div>
 
                                         <div class="the_form_div">
@@ -208,6 +211,9 @@
                                                     Профи
                                                 </option>
                                             </select>
+                                            @if($errors->has('skill_level'))
+                                                {{ $errors->first('skill_level') }}
+                                            @endif
                                         </div>
 
                                         <div class="the_form_div">
@@ -227,6 +233,9 @@
                                                     Не имеет значения
                                                 </option>
                                             </select>
+                                            @if($errors->has('game_payment_type'))
+                                                {{ $errors->first('game_payment_type') }}
+                                            @endif
                                         </div>
 
                                     </div>
@@ -265,6 +274,9 @@
                                                     Русский бильярд
                                                 </option>
                                             </select>
+                                            @if($errors->has('game_type'))
+                                                {{ $errors->first('game_type') }}
+                                            @endif
                                         </div>
 
                                         <!--
@@ -283,12 +295,16 @@
                                         <div class="the_form_div">
                                             <input type="password" name="oldpass" placeholder="Старый пароль"/>
                                         </div>
+
                                     </div><!--/the_form_col_half-->
 
                                     <div class="the_form_col the_form_col_half">
                                         <div class="the_form_div">
                                             <input type="password" name="newpass" placeholder="Новый пароль"/>
                                         </div>
+                                        @if($errors->has('newpass'))
+                                            {{ $errors->first('newpass') }}
+                                        @endif
                                     </div><!--/the_form_col_half-->
                                 </div><!--/form_sub_section-->
 

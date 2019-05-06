@@ -66,8 +66,7 @@ class ProfileController extends Controller
             'gender' => 'required',
         ]);
         if ($validator->fails()) {
-            dd($validator);
-            return redirect()->back()->withErrors($validator)->withInput();
+            return redirect()->back()->withErrors($validator->errors())->withInput();
         }
         $profile = new PlayerService();
         if ($profile->save(Auth::user(), $request->all(), new CityService(), new ImageService())) {

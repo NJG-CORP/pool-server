@@ -132,7 +132,12 @@ return [
     */
 
     'attributes'           => [
-        "email" => "электронный адрес"
+        "email" => "электронный адрес",
+        "game_type" => "тип игры",
+        "game_days" => "дни игры",
+        "game_payment_type" => "тип оплаты",
+        "gender" => "пол",
+        "age" => "возраст"
     ],
 
 ];
