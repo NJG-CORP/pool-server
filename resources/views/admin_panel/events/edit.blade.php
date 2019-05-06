@@ -53,7 +53,7 @@
                         <span class="input-group-addon">
                             <i class="far fa-clock"></i>
                         </span>
-                        <input type="text" id="addeventform-time" class="form-control timepicker" name="time"
+                        <input type="text" id="addeventform-time" class="form-control worktime" name="time"
                                value="{{ \Carbon\Carbon::parse($event->date)->format('H:m:s')}}">
                     </div>
 
@@ -160,7 +160,6 @@
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
     <script src="/vendor/unisharp/laravel-ckeditor/ckeditor.js"></script>
     <script src="/vendor/unisharp/laravel-ckeditor/adapters/jquery.js"></script>
-    <script src="/js/timepicker.js"></script>
     <script type="text/javascript"
             src="https://cdn.jsdelivr.net/jquery.validation/1.15.1/jquery.validate.min.js"></script>
     <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
@@ -174,8 +173,7 @@
             $('.textarea').ckeditor();
 
 
-            $('.timepicker').timepicker({"timeFormat": "HH:mm:ss", "showSecond": false});
-
+            $('.worktime').timepicker({"timeFormat": "HH:mm:ss", "showSecond": false});
             $("#frmCreateEvent").validate({
                 ignore: [],
                 rules: {
@@ -239,6 +237,7 @@
         });
 
     </script>
+    <script src="/js/timepicker.js"></script>
 
 
 

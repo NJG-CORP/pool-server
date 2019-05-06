@@ -39,9 +39,11 @@
                                     <div><span class="star{{$user_profile->calculated_rating ?? '0' }}"></span></div>
                                 </div>
                             </div>
-
-                            <p class="partners_p"><b>Мои партнеры</b> <span class="partners_span">0</span></p>
-
+                            @if($user_profile->id == Auth::user()->id)
+                                <p class="partners_p"><b>Мои партнеры</b> <span
+                                            class="partners_span">{{count((new \App\Services\InvitationService())->invitationList($user_profile))}}</span>
+                                </p>
+                            @endif
                         </div>
                     </div>
 
@@ -56,7 +58,7 @@
                                     <p style="font-size: 14px;">{{ $review->comment }}</p>
                                 @endforeach
                             @else
-                                <p style="font-size: 24px;">{{ $user_profile->id === Auth::user()->id ? 'О вас' : ('О ползователе ' . $user_profile->getUsername() . ' ') }}
+                                <p style="font-size: 24px;">{{ $user_profile->id === Auth::user()->id ? 'О вас' : ('О пользователе ' . $user_profile->getUsername() . ' ') }}
                                     еще не оставили отзывов</p></div>
                     @endif
                     <!--<div class="pagination">

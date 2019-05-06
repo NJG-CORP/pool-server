@@ -281,7 +281,6 @@
             $('.worktime').timepicker({"timeFormat": "HH:mm:ss", "showSecond": false});
         });
     </script>
-    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
     <script src="https://maps.googleapis.com/maps/api/js?key={{env('GOOGLE_API_KEY')}}&libraries=places&callback=initGoogle"></script>
 
     <script src="/js/timepicker.js"></script>

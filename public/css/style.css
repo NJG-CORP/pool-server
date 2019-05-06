@@ -3564,7 +3564,7 @@ p.form_title {
     color: #999;
 }
 .the_form.write_review_form .rating .stars {
-    padding-left: 20px;
+    margin-left: 20px;
 }
 .the_form input[type="text"]:focus::-webkit-input-placeholder {
     color: transparent !important;

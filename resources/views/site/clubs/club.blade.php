@@ -10,11 +10,11 @@
                 <div class="breadcrumbs inner_section">
                     <p itemscope itemtype="http://schema.org/BreadcrumbList">
                         <span itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
-                            <a href="#" itemprop="item"><span itemprop="name">Главная</span></a>
+                            <a href="/" itemprop="item"><span itemprop="name">Главная</span></a>
                             <meta itemprop="position" content="1">
                         </span>
                         <span itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
-                            <a href="#" itemprop="item"><span itemprop="name">Клубы</span></a>
+                            <a href="/clubs" itemprop="item"><span itemprop="name">Клубы</span></a>
                             <meta itemprop="position" content="2">
                         </span>
                         <span itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">

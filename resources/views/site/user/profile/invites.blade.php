@@ -12,13 +12,13 @@
 									<meta itemprop="position" content="1">
 								</span>
                         <span itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
-									<span itemprop="item"><span itemprop="name">Партнеры</span></span>
+									<span itemprop="item"><span itemprop="name">Приглашения</span></span>
 									<meta itemprop="position" content="2">
 								</span>
                     </p>
                 </div>
 
-                <h1>Партнеры</h1>
+                <h1>Приглашения</h1>
 
                 <div class="news_block_wrap partners_block_wrap invitation_block_wrap clearfix">
                     @foreach ($invites as $invite)

@@ -7,6 +7,8 @@ use Devfactory\Taxonomy\TaxonomyTrait;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use stdClass;
+use Taxonomy;
 
 /**
  * Class User
@@ -79,19 +81,19 @@ class User extends Authenticatable
     }
 
     public function gameType(){
-        $vocabulary = \Taxonomy::getVocabularyByName('GameType');
+        $vocabulary = Taxonomy::getVocabularyByName('GameType');
         return $this->related()
             ->where('vocabulary_id', $vocabulary->id)->with(['term']);
     }
 
     public function skillLevel(){
-        $vocabulary = \Taxonomy::getVocabularyByName('SkillLevel');
+        $vocabulary = Taxonomy::getVocabularyByName('SkillLevel');
         return $this->related()
             ->where('vocabulary_id', $vocabulary->id)->with(['term']);
     }
 
     public function gamePaymentType(){
-        $vocabulary = \Taxonomy::getVocabularyByName('GamePaymentType');
+        $vocabulary = Taxonomy::getVocabularyByName('GamePaymentType');
         return $this->related()
             ->where('vocabulary_id', $vocabulary->id)->with(['term']);
     }
@@ -130,7 +132,7 @@ class User extends Authenticatable
     {
         if(!$this->avatar)
         {
-            $this->avatar = new \stdClass();
+            $this->avatar = new stdClass();
             $this->avatar->url = Image::getDefaultImage()['url'];
         }
         return $this->avatar->url;
@@ -176,13 +178,25 @@ class User extends Authenticatable
 
     public function getAddress()
     {
-        $address = '';
+        $address = [];
         if ($this->city) {
-            $address .= $this->city->name;
+            $address[] = $this->city->name;
         }
-        $address .= ', ' . $this->street;
+        if ($this->street) {
+            $address[] = $this->street;
+        }
 
-        return $address;
+        return implode(', ', $address);
+    }
+
+    public function getFullUsername()
+    {
+        $name = $this->name;
+
+        if ($this->age) {
+            $name .= $name . ', ' . $this->age;
+        }
+        return $name;
     }
 
     public function getGameTypes()

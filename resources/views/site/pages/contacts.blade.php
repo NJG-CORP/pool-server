@@ -10,7 +10,7 @@
                 <div class="breadcrumbs inner_section">
                     <p itemscope itemtype="http://schema.org/BreadcrumbList">
 								<span itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
-									<a href="#" itemprop="item"><span itemprop="name">Главная</span></a>
+									<a href="/" itemprop="item"><span itemprop="name">Главная</span></a>
 									<meta itemprop="position" content="1">
 								</span>
                         <span itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
@@ -70,7 +70,7 @@
                         </div>
                         <div class="the_form_col the_form_col_fourth">
                             <div class="the_form_div the_form_div_submit">
-                                <input type="submit" value="Отправить отзыв">
+                                <input type="submit" value="Перезвоните мне">
                             </div>
                         </div>
                     </form>
