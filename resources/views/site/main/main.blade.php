@@ -67,14 +67,25 @@
                                 </div>
                             </div>
                         </div>
-
                         <div class="the_tabs_div">
                             <div class="top_section_personal_div">
-                                <br/><br/>
                                 <div class="the_form">
-                                </div>
+                                    <div class="needrestore">
+                                        <p>Забыли пароль?<br>Не беда, мы вышлем новый!</p>
+                                        <p class="note">На зарегистрированный почтовый ящик пользователя портала или мобильного приложения.</p>
+                                    </div>
+                                    <form method="post" class="frm4" id="frm14">
+                                        <div class="the_form_div">
+                                            <input type="text" name="existmail" placeholder="E-mail">
+                                        </div>
+
+                                        <div class="the_form_div the_form_div_submit the_form_div_submit_and_forgot clearfix">
+                                            <input type="submit" name="submit" value="Вперед">
+                                        </div>
+                                    </form>
+                                </div><!--/the_form-->
                             </div>
-                        </div>
+                        </div><!--/the_tabs_div-->
                     </div>
                 </div>
             </div>

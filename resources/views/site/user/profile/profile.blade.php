@@ -78,12 +78,18 @@
                                             <input type="text" name="name"
                                                    value="{{!old('name') ? $user->name : old('name')}}"
                                                    placeholder="Имя"/>
+                                            @if($errors->has('name'))
+                                                {{ $errors->first('name') }}
+                                            @endif
                                         </div>
 
                                         <div class="the_form_div">
                                             <input type="text" name="surname"
                                                    value="{{ !old('surname') ? $user->surname : old('surname') }}"
                                                    placeholder="Фамилия"/>
+                                            @if($errors->has('surname'))
+                                                {{ $errors->first('surname') }}
+                                            @endif
                                         </div>
 
                                         <div class="the_form_div">
