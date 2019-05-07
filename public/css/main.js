@@ -3591,10 +3591,11 @@ $(document).ready(function () {
         $("body").click(function () {
             $("#slider-range-time-wrap").removeClass('active');
         });
+
         $("#slider-range-time").slider({
             range: true,
-            min: 0,
-            max: 24,
+            min: parseInt($('input[name="game_time_from"]').val()),
+            max: parseInt($('input[name="game_time_to"]').val()),
             values: [0, 24],
             slide: function (event, ui) {
                 $("input[name='time']").val("с " + ui.values[0] + " до " + ui.values[1] + " часов");
@@ -3614,8 +3615,8 @@ $(document).ready(function () {
         });
         $("#slider-range-time-2").slider({
             range: true,
-            min: 0,
-            max: 24,
+            min: parseInt($('input[name="game_time_from"]').val()),
+            max: parseInt($('input[name="game_time_to"]').val()),
             values: [0, 24],
             slide: function (event, ui) {
                 $("input[name='time2']").val("с " + ui.values[0] + " до " + ui.values[1] + " часов");
