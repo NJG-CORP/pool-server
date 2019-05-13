@@ -74,9 +74,15 @@
                                         <p>Забыли пароль?<br>Не беда, мы вышлем новый!</p>
                                         <p class="note">На зарегистрированный почтовый ящик пользователя портала или мобильного приложения.</p>
                                     </div>
-                                    <form method="post" class="frm4" id="frm14">
+                                    <form method="post" class="frm4" id="frm14" action="{{route('password.reset.email')}}">
+                                        {{ csrf_field() }}
                                         <div class="the_form_div">
-                                            <input type="text" name="existmail" placeholder="E-mail">
+                                            <input type="text" name="email" placeholder="E-mail">
+                                            @if ($errors->has('email'))
+                                                <span class="help-block">
+                                                    <strong>{{ $errors->first('email') }}</strong>
+                                                </span>
+                                            @endif
                                         </div>
 
                                         <div class="the_form_div the_form_div_submit the_form_div_submit_and_forgot clearfix">
@@ -268,5 +274,5 @@
     @include('site.chunks.common.map_with_clubs', ['json_markers' => $json_markers])
     <script src="https://maps.googleapis.com/maps/api/js?key={{env('GOOGLE_API_KEY')}}&libraries=places&callback=initMap"></script>
 
-    
+
 @endsection

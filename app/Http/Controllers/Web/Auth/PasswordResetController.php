@@ -12,6 +12,7 @@ use App\Http\Controllers\Web\Controller;
 use App\Models\User;
 use App\Services\DeviceService;
 use App\Services\UserService;
+use App\Utils\Utils;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -30,17 +31,20 @@ class PasswordResetController extends Controller
 
     public function sendMessage(Request $request)
     {
-        $this->validateEmail($request);
-        $reset = $this->users->makeResetPasswordToken($request->post('email'));
-        if ( $reset === Password::RESET_LINK_SENT ) {
-            return response()->json(['success' => true], 200);
-        }
-        return response()->json(['success' => false], 404);
+        $this->validate($request, ['email' => 'required|email|exists:users,email']);
+        $user = User::where('email', $request->email)->first();
+        $password = str_random(10);
+        $user->password = bcrypt($password);
+        $user->save();
+        Utils::sendMail(
+        "Ваш новый пароль уже готов: {$password}.", $user->email, "Сброс пароля на poolbuddy.ru"
+    );
+        return redirect(route('home'))->withSuccess('password.sent');
     }
 
     protected function validateEmail(Request $request)
     {
-        $this->validate($request, ['email' => 'required|email']);
+        return $this->validate($request, ['email' => 'required|email']);
     }
 
     public function showResetForm($token)

@@ -25,6 +25,11 @@
                                         <strong>{{ $errors->first('password') }}</strong>
                                     </span>
             @endif
+            @if(session('success') && session('success') == 'password.sent')
+                <span class="help-block">
+                                                    <strong>Ссылка отправлена на email</strong>
+                                                </span>
+            @endif
         </div>
     </div>
 
