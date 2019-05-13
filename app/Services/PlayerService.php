@@ -8,6 +8,7 @@ use App\Models\Location;
 use App\Models\TermRelation;
 use App\Models\User;
 use App\Models\Weekday;
+use Carbon\Carbon;
 use Devfactory\Taxonomy\Models\Term;
 use Devfactory\Taxonomy\Models\Vocabulary;
 use Illuminate\Http\Request;
@@ -318,9 +319,10 @@ class PlayerService
         }
 
         $result['time'] = [
-            'from' => $request->get('game_time_from'),
-            'to' => $request->get('game_time_to'),
+            'from' => Carbon::createFromTime($request->get('game_time_from'), 0, 0)->format("H:i:s"),
+            'to' => TimeService::mutateToTime($request->get('game_time_to')),
         ];
+
 
         if ($prepared->get('gender') == -1) {
             $result['gender'] = null;

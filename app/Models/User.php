@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Services\TimeService;
 use App\Services\UserService;
 use Carbon\Carbon;
 use Devfactory\Taxonomy\TaxonomyTrait;
@@ -112,9 +113,9 @@ class User extends Authenticatable
                 'game_time',
                 'user_id',
                 'weekday_id'
-        );
+            );
     }
-    
+
     public function devices(){
         return $this->hasMany(Device::class);
     }
@@ -131,8 +132,7 @@ class User extends Authenticatable
 
     public function getAvatarUrl(): string
     {
-        if(!$this->avatar)
-        {
+        if(!$this->avatar) {
             $this->avatar = new stdClass();
             $this->avatar->url = Image::getDefaultImage()['url'];
         }
@@ -216,7 +216,7 @@ class User extends Authenticatable
 
     public function setGameTimeToAttribute($value)
     {
-        $this->attributes['game_time_to'] = Carbon::createFromTime($value,0,0)->format("H:i:s");
+        $this->attributes['game_time_to'] = TimeService::mutateToTime($value);
     }
 
     public function getGameTimeFromHourAttribute()
@@ -226,6 +226,6 @@ class User extends Authenticatable
 
     public function getGameTimeToHourAttribute()
     {
-        return (int) Carbon::createFromFormat('H:i:s',$this->game_time_to)->format('H');
+        return TimeService::mutateToTime($this->game_time_to);
     }
 }

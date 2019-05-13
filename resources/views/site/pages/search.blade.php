@@ -96,11 +96,13 @@
                             <div class="form-group">
                                 <label class="control-label">Удобное время</label>
 
-                                <div><input readonly="readonly" type="text" name="time" value="с 8 до 22 часов"></div>
+                                <div><input readonly="readonly" type="text" name="time"
+                                            value="с {{ !old('game_time_from') ?  $user->game_time_from_hour : old('game_time_from') }} до {{ !old('game_time_to') ? $user->game_time_to_hour : old('game_time_to') }} часов">
+                                </div>
                                 <input type="hidden" name="game_time_from"
-                                       value="{{ !old('game_time_from') ? $user->game_time_from : old('game_time_from') }}">
+                                       value="{{ !old('game_time_from') ? $user->game_time_from_hour : old('game_time_from') }}">
                                 <input type="hidden" name="game_time_to"
-                                       value="{{ !old('game_time_to') ? $user->game_time_to : old('game_time_to') }}">
+                                       value="{{ !old('game_time_to') ? $user->game_time_to_hour : old('game_time_to') }}">
                                 <div class="slider-range-wrap" id="slider-range-time-wrap">
                                     <div class="slider-range" id="slider-range-time"><span class="val-min">0</span><span
                                                 class="val-max">24</span></div>
@@ -230,13 +232,16 @@
 
             <form method="post" class="frm02" action="{{route('send.invite')}}">
                 {{csrf_field()}}
-                <div class="the_form_div">
-                    <input type="text" name="invite-city" id="invite-city" placeholder="Город" tabindex="1">
-                    <!-- By default selected user city placed here -->
-                </div>
+                {{--                <div class="the_form_div">--}}
+                {{--                    <input type="text" name="invite-city" id="invite-city" placeholder="Город" tabindex="1">--}}
+                {{--                    <!-- By default selected user city placed here -->--}}
+                {{--                </div>--}}
                 <div class="the_form_div">
                     <select name="invite-place" id="invite_place" data-placeholder="Выберите клуб" tabindex="2">
                         <option disabled="disabled" selected="selected" value="">Выберите клуб</option>
+                        @foreach($clubs as $club)
+                            <option value="{{$club['id']}}">{{$club['title']}}</option>
+                        @endforeach
                     </select>
                     <span class="legend">пр.Культуры, д.111, ПаркХаус</span>
                 </div>

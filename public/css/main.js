@@ -3595,7 +3595,7 @@ $(document).ready(function () {
         $("#slider-range-time").slider({
             range: true,
             min: 0,
-            max: 23,
+            max: 24,
             values: [parseInt($('input[name="game_time_from"]').val()), parseInt($('input[name="game_time_to"]').val())],
             slide: function (event, ui) {
                 $("input[name='time']").val("с " + ui.values[0] + " до " + ui.values[1] + " часов");
@@ -3616,7 +3616,7 @@ $(document).ready(function () {
         $("#slider-range-time-2").slider({
             range: true,
             min: 0,
-            max: 23,
+            max: 24,
             values: [parseInt($('input[name="game_time_from"]').val()), parseInt($('input[name="game_time_to"]').val())],
             slide: function (event, ui) {
                 $("input[name='time2']").val("с " + ui.values[0] + " до " + ui.values[1] + " часов");
