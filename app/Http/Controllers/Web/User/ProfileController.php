@@ -56,7 +56,7 @@ class ProfileController extends Controller
 
     public function updateProfile(Request $request)
     {
-        // валидация полей
+
         $validator = Validator::make($request->all(), [
             'email' => 'required|email',
             'age' => 'required|numeric',

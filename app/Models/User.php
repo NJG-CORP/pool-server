@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Services\UserService;
+use Carbon\Carbon;
 use Devfactory\Taxonomy\TaxonomyTrait;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -206,5 +207,25 @@ class User extends Authenticatable
             $types[] = $type->term->name;
         }
         return !empty($types) ? implode(', ', $types) : 'Еще не выбрано';
+    }
+
+    public function setGameTimeFromAttribute($value)
+    {
+        $this->attributes['game_time_from'] = Carbon::createFromTime($value,0,0)->format("H:i:s");
+    }
+
+    public function setGameTimeToAttribute($value)
+    {
+        $this->attributes['game_time_to'] = Carbon::createFromTime($value,0,0)->format("H:i:s");
+    }
+
+    public function getGameTimeFromHourAttribute()
+    {
+        return (int) Carbon::createFromFormat('H:i:s',$this->game_time_from)->format('H');
+    }
+
+    public function getGameTimeToHourAttribute()
+    {
+        return (int) Carbon::createFromFormat('H:i:s',$this->game_time_to)->format('H');
     }
 }

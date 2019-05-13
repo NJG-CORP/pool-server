@@ -254,9 +254,9 @@
                                                         value="c {{ date('G',strtotime(!old('game_time_from') ? $user->game_time_from : old('game_time_from'))) }} до {{ date('G', strtotime(!old('game_time_to') ? $user->game_time_to : old('game_time_to'))) }} часов">
                                             </div>
                                             <input type="hidden" name="game_time_from"
-                                                   value="{{ !old('game_time_from') ? $user->game_time_from : old('game_time_from') }}">
+                                                   value="{{ !old('game_time_from') ? $user->game_time_from_hour : old('game_time_from') }}">
                                             <input type="hidden" name="game_time_to"
-                                                   value="{{ !old('game_time_to') ? $user->game_time_to : old('game_time_to') }}">
+                                                   value="{{ !old('game_time_to') ? $user->game_time_to_hour : old('game_time_to') }}">
 
                                             <div class="slider-range-wrap" id="slider-range-time-wrap">
                                                 <div class="slider-range" id="slider-range-time">
