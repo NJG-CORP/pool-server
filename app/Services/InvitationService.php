@@ -44,12 +44,8 @@ class InvitationService
         return $q
             ->orderBy('accepted', 'ASC')
             ->orderBy('created_at', 'DESC')
-            ->get()
-            ->map(function (Invitation $e){
-                $e->inviter->setAppends(['calculated_rating']);
-                $e->invited->setAppends(['calculated_rating']);
-                return $e;
-            });
+            ->get();
+
     }
 
     public function partnersList(User $user)

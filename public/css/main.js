@@ -3290,7 +3290,6 @@ $(document).ready(function () {
         $('.invite_button').each(function () {
             $(this).fancybox({
                 beforeShow: function () {
-                    $('#invite_popup input[type=hidden]').val($(this.element).attr('data-uid'));
                     $('#invite_popup select').not('.multiselect').each(function () {
                         $(this).selectBox({'keepInViewport': false, 'mobile': true});
                     });
@@ -3299,6 +3298,8 @@ $(document).ready(function () {
                         $('.legend').text(text);
                     });
                     $('#invite_popup input[name=invite-date]').datepicker({minDate: 0, regional: "ru"});
+
+
                     $('#invite_popup input[name=invite-city]').on('change', function () {
                         $('#invite_place').selectBox('destroy');
                         $('#invite_place option[data-snippet]').remove();

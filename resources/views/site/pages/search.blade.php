@@ -24,6 +24,22 @@
 
                 <h1>Игроки</h1>
 
+                @if(session('success'))
+                    <div>
+                        {{session('success')}}
+                    </div>
+                @endif
+                @if(session('error'))
+                    <div>
+                        {{session('error')}}
+                    </div>
+                @endif
+                @if($errors)
+                    @foreach($errors as $error)
+                        {{$error}}
+                    @endforeach
+
+                @endif
                 <div class="the_form the_players_search_form the_players_search_form_mark2 clearfix">
                     <form id="frm44" class="frm4 clearfix" action="https://poolbuddy.ru/search" method="post"
                           data-pjax="" enctype="multipart/form-data">
@@ -211,7 +227,7 @@
                                                 {{--<p>Статус <span class="status_span">Pro</span></p>--}}
                                                 {{--</div>--}}
 
-                                                <a class="button invite_button" href="#invite_popup"
+                                                <a class="button invite_button show-invite-popup" href="#invite_popup"
                                                    data-uid="{{$player->id}}">Пригласить</a>
                                             </div>
                                         </div><!--/players_table_row-->
@@ -230,14 +246,11 @@
         <div class="the_form">
             <p class="title">Отправить приглашение</p>
 
-            <form method="post" class="frm02" action="{{route('send.invite')}}">
+            <form method="post" class="frm02" id="invite-form" action="{{route('send.invite')}}">
                 {{csrf_field()}}
-                {{--                <div class="the_form_div">--}}
-                {{--                    <input type="text" name="invite-city" id="invite-city" placeholder="Город" tabindex="1">--}}
-                {{--                    <!-- By default selected user city placed here -->--}}
-                {{--                </div>--}}
+                <input type="hidden" name="invited_id" id="invited-id">
                 <div class="the_form_div">
-                    <select name="invite-place" id="invite_place" data-placeholder="Выберите клуб" tabindex="2">
+                    <select name="club_id" id="invite_place" data-placeholder="Выберите клуб" tabindex="2" required>
                         <option disabled="disabled" selected="selected" value="">Выберите клуб</option>
                         @foreach($clubs as $club)
                             <option value="{{$club['id']}}">{{$club['title']}}</option>
@@ -246,14 +259,10 @@
                     <span class="legend">пр.Культуры, д.111, ПаркХаус</span>
                 </div>
                 <div class="the_form_div">
-                    <input type="text" name="invite-date" placeholder="Дата" tabindex="3">
+                    <input type="text" id="invite-form-date" name="invite-date" placeholder="Дата" autocomplete="off" tabindex="3" required>
                 </div>
                 <div class="the_form_div">
-                    <div><input readonly="readonly" type="text" name="time2" value="с 8 до 22 часов" tabindex="4"></div>
-                    <div class="slider-range-wrap" id="slider-range-time-wrap-2">
-                        <div class="slider-range" id="slider-range-time-2"><span class="val-min">0</span><span
-                                    class="val-max">24</span></div>
-                    </div>
+                    <input type="text" id="invite-form-time" class="timepicker" name="time" autocomplete="off" required>
                 </div>
                 <div class="the_form_div">
                     <input type="submit" name="submit1" value="Отправить" tabindex="5">
@@ -299,6 +308,27 @@
 
     </script>
     <script src="https://maps.googleapis.com/maps/api/js?key={{env('GOOGLE_API_KEY')}}&libraries=places&callback=initAutoComplete"></script>
+
+    <script src="{{asset('js/timepicker.js')}}"></script>
+    <script>
+      $('.timepicker').timepicker({"timeFormat": "HH:mm:ss", "showSecond": false});
+      $('#invite-form').submit(function(e){
+        var date = $("#invite-form-date").val();
+        var time = $("#invite-form-time").val();
+        $("<input>").attr('name', 'meeting_at').css('display', 'none').val(date + " " + time).appendTo(this);
+        return true;
+      });
+
+      $('.show-invite-popup').click(function(e){
+        var user_id = $(this).attr('data-uid');
+        $('#invited-id').val(user_id);
+      });
+
+    </script>
+    @endpush
+
+    @push('styles')
+        <link rel="stylesheet" href="{{asset('css/timepicker.css')}}">
     @endpush
 
 @endsection

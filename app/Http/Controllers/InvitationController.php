@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Exceptions\ControllableException;
+use App\Http\Requests\SendInvitationRequest;
 use App\Models\Club;
 use App\Models\User;
 use App\Services\InvitationService;
@@ -37,19 +38,24 @@ class InvitationController extends Controller
      * @throws ControllableException
      */
     public function inviteUser(Request $request){
-        dd($request->all());
-        $this->validateRequestData([
-            'invited_id' => 'required|integer',
-            'club_id' => 'integer',
-            'meeting_at' => 'required'
+        $validator = \Validator::make($request->all(), [
+            'invited_id' => 'required|exists:users,id',
+            'club_id' => 'required|exists:clubs,id',
+            'meeting_at' => 'required|date_format:d.m.Y H:i:s'
         ]);
+        if($validator->fails()) {
+            return redirect()
+                ->back()
+                ->withErrors($validator)
+                ->withInput();
+        }
 
         $currentUser = Auth::user();
         $invitation = $this->invitation->invite(
             Auth::user(),
-            User::find($this->request->get('invited_id')),
-            Club::find($this->request->get('club_id')),
-            $this->request->get('meeting_at')
+            User::find($request->invited_id),
+            Club::find($request->club_id),
+            $request->meeting_at
         );
         if ( $invitation ){
             try {
@@ -60,13 +66,12 @@ class InvitationController extends Controller
                     []
                 );
             } catch (Throwable $e) {
+                dd($e);
             }
-            return $this->responder->successResponse([
-                'invitation' => $invitation
-            ]);
+            return redirect()->back()->with('success', 'Приглашение отправлено');
         }
 
-        return $this->responder->errorResponse();
+        return redirect()->back()->with('error', 'Приглашение не отправлено, произошла ошибка');
     }
 
     public function invitationAccept(Request $request, $id){
@@ -96,6 +101,7 @@ class InvitationController extends Controller
 
     public function invitationList(){
         $list = $this->invitation->invitationList(Auth::user());
+        dd($list);
         return $this->responder->successResponse([
             'invitations' => $list
         ]);
