@@ -13,7 +13,7 @@
                 <h2>Новости</h2>
                 <div class="news_block_wrap clearfix">
                     @foreach($news as $item)
-                        @include('site.chunks.news.item', ['news' => $item])
+                        @include('site.chunks.news.item', ['article' => $item])
                     @endforeach
                 </div>
             </div>

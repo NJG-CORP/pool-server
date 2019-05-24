@@ -3289,6 +3289,12 @@ $(document).ready(function () {
     if ($('.invite_button').length > 0) {
         $('.invite_button').each(function () {
             $(this).fancybox({
+                scrolling: "no",
+                helpers: {
+                    overlay: {
+                        locked: true // try changing to true and scrolling around the page
+                    }
+                },
                 beforeShow: function () {
                     $('#invite_popup select').not('.multiselect').each(function () {
                         $(this).selectBox({'keepInViewport': false, 'mobile': true});

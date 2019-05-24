@@ -169,9 +169,12 @@
                                         <p class="help-block help-block-error"></p>
                                     </div>
                                     <div class="stars stars_big dynamic_stars">
-                                        <div><span></span></div>
+                                        <div>
+                                            <span class="star{{ old('rating') ?? '' }}">{{ old('rating') ?? '' }}</span>
+                                        </div>
                                     </div>
-                                    <input type="hidden" name="rating" class="ratings">
+                                    <input type="hidden" name="rating" class="ratings"
+                                           value="{{ old('rating') ?? '' }}">
                                 </div>
                             </div>
                         </div>

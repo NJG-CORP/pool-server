@@ -39,7 +39,7 @@
                     <h2>Другие новости</h2>
                     <div class="news_block_wrap other_news_block_wrap clearfix">
                         @foreach($rec_news as $item)
-                            @include('site.chunks.blog.item', ['article' => $item])
+                            @include('site.chunks.news.item', ['article' => $item])
                         @endforeach
                     </div>
                     <a class="button book_table_button list_button" href="{{ route('news') }}">Перейти к списку
