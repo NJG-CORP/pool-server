@@ -41,25 +41,6 @@
         <input type="submit" name="submit" value="Войти">
     </div>
 </form>
-@push('modals')
-    <div id="popup-forgot-password" class="white-popup mfp-hide">
-        <form action="#" id="form-forgot-password">
-            {{csrf_field()}}
-            <h4>Восстановление пароля</h4>
-            <div class="form-group">
-                <input type="text" name="email" class="input_type_mail" placeholder="Введите e-mail">
-            </div>
-            <button type="submit">Восстановить</button>
-        </form>
-    </div>
-
-    <div id="popup-forgot-password-success" class="white-popup mfp-hide">
-        Письмо с ссылкой на восстановление пароля отправлено на почту.
-    </div>
-    <div id="popup-forgot-password-error" class="white-popup mfp-hide">
-        Такой e-mail еще не зарегистрирован :(
-    </div>
-    @endpush
 @push('scripts')
     <script src="{{asset('js/signin.js')}}"></script>
 @endpush
