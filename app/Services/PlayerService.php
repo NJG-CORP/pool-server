@@ -179,9 +179,7 @@ class PlayerService
         }
 
         if ($rating = $query->get('rating')) {
-            $dbQuery
-                ->where('rating.rateable_type', User::class)
-                ->havingRaw(\DB::raw('`calculated_rating` >= ' . $rating));
+            $dbQuery->with('receivedRatings');
         }
 
         if ($gameTypes = $query->get('game_type')) {
@@ -210,20 +208,27 @@ class PlayerService
         }
         $total = $dbQuery->get()->count();
 
+        $rating = $query->get('rating');
+
+        $dbQuery = $dbQuery
+            ->get()
+            ->when(!!$rating, function($collection) use ($rating){
+                return $collection->filter(function (User $user) use ($rating) {
+                    return $user->receivedRatings->average('score') >= $rating;
+                });
+            })
+            ->map(function (User $user) {
+                $user->setAppends(['calculated_rating']);
+                return $user;
+            })
+            ->sort(function ($a, $b) {
+                return $b->calculated_rating - $a->calculated_rating;
+            })
+            ->values();
+
         return [
             "total" => $total,
             "players" => $dbQuery
-                ->offset($offset)
-                ->limit(10)
-                ->get()
-                ->map(function (User $user) {
-                    $user->setAppends(['calculated_rating']);
-                    return $user;
-                })
-                ->sort(function ($a, $b) {
-                    return $b->calculated_rating - $a->calculated_rating;
-                })
-                ->values()
         ];
     }
 
