@@ -55,6 +55,7 @@ class InvitationService
             'inviter.avatar',
             'inviter.receivedRatings', 'club.location'
         ])
+            ->groupBy('inviter_id')
             ->where(function (Builder $q) use ($user) {
                 $q->where('invited_id', $user->id)
                     ->where(function (Builder $q) {
