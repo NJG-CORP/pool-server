@@ -7,6 +7,7 @@ use App\Models\Invitation;
  */
 ?>
 
+@if($invite->invited_id === Auth::user()->id)
 <div class="news_block_div partners_block_div">
 
     <div class="img">
@@ -54,3 +55,4 @@ use App\Models\Invitation;
         </div>
     @endif
 </div>
+@endif

@@ -56,7 +56,6 @@ class ProfileController extends Controller
 
     public function updateProfile(Request $request)
     {
-
         $validator = Validator::make($request->all(), [
             'email' => 'required|email',
             'age' => 'required|numeric',
@@ -74,7 +73,6 @@ class ProfileController extends Controller
         } else {
             return redirect()->back()->with('error', 'Что-то пошло не так.');
         }
-
     }
 
 }

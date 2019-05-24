@@ -251,12 +251,12 @@
                                         <div class="the_form_div">
                                             <!--												<input type="text" name="times" placeholder="Время игры" /> -->
                                             <div><input readonly="readonly" type="text" name="time"
-                                                        value="c {{ date('G',strtotime(!old('game_time_from') ? $user->game_time_from : old('game_time_from'))) }} до {{ date('G', strtotime(!old('game_time_to') ? $user->game_time_to : old('game_time_to'))) }} часов">
+                                                        value="c {{ $user->gameTimeFromHour}} до {{ $user->gameTimeToHour }} часов">
                                             </div>
                                             <input type="hidden" name="game_time_from"
-                                                   value="{{ !old('game_time_from') ? $user->game_time_from_hour : old('game_time_from') }}">
+                                                   value="{{$user->gameTimeFromHour }}">
                                             <input type="hidden" name="game_time_to"
-                                                   value="{{ !old('game_time_to') ? $user->game_time_to_hour : old('game_time_to') }}">
+                                                   value="{{ $user->gameTimeToHour }}">
 
                                             <div class="slider-range-wrap" id="slider-range-time-wrap">
                                                 <div class="slider-range" id="slider-range-time">
