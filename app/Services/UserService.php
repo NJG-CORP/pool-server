@@ -8,12 +8,14 @@ use App\Models\User;
 use App\Models\Weekday;
 use App\Utils\R;
 use App\Utils\Utils;
+use DB;
 use Devfactory\Taxonomy\Models\Term;
 use Devfactory\Taxonomy\Models\Vocabulary;
 use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Password;
+use Taxonomy;
 
 class UserService
 {
@@ -84,19 +86,19 @@ class UserService
             "source" => $source,
             "external_id" => $external_id,
             "api_token" => $this->makeToken(),
-            'game_time_from' => '00:00:00',
-            'game_time_to' => '23:59:00',
+            'game_time_from' => 0,
+            'game_time_to' => 23,
             "status" => false
         ]);
         if ($createdUser instanceof User) {
             /**
              * @var Vocabulary $v
              */
-            $v = \Taxonomy::getVocabularyByName('GamePaymentType');
+            $v = Taxonomy::getVocabularyByName('GamePaymentType');
             $createdUser->addTerm(
                 $v->terms()->where('name', 'Поровну')->first()
             );
-            $v = \Taxonomy::getVocabularyByName('SkillLevel');
+            $v = Taxonomy::getVocabularyByName('SkillLevel');
             $createdUser->addTerm(
                 $v->terms()->where('name', 'Стандартный')->first()
             );
@@ -126,7 +128,7 @@ class UserService
                     Что бы сбросить пароль пройдите по ссылке: https://poolbuddy.ru/password/reset/$token
                 ", $email, "Сброс пароля на poolbuddy.ru"
             );
-            \DB::insert("INSERT INTO password_resets SET email = '$email', token = '$token', created_at=NOW()");
+            DB::insert("INSERT INTO password_resets SET email = '$email', token = '$token', created_at=NOW()");
             return Password::RESET_LINK_SENT;
         }
         return null;
@@ -134,14 +136,14 @@ class UserService
 
     public function resetPassword($token, $password)
     {
-        $pr = \DB::select("SELECT * FROM password_resets WHERE token = '$token' ORDER BY created_at DESC");
+        $pr = DB::select("SELECT * FROM password_resets WHERE token = '$token' ORDER BY created_at DESC");
         if (count($pr)) {
             $user = User::where('email', $pr[0]->email)->firstOrFail();
             $user->password = bcrypt($password);
             $user->save();
 
             Utils::sendMail($password, $user->email, "Новый пароль на poolbuddy.ru");
-            \DB::delete("DELETE FROM password_resets WHERE token = '$token'");
+            DB::delete("DELETE FROM password_resets WHERE token = '$token'");
 
             return $user;
         }
@@ -173,7 +175,12 @@ class UserService
     {
         $email = isset($vkUser->accessTokenResponseBody['email']) ? $vkUser->accessTokenResponseBody['email'] : null;
 
-        $user = $this->getUserViaVkId($vkUser->user['id']);
+        if ($email) {
+            $user = User::where(['email' => $email])->first();
+        }
+        if (!$user) {
+            $user = $this->getUserViaVkId($vkUser->user['id']);
+        }
         $user = $user ?? $this->register(
                 $email,
                 $vkUser->user['first_name'],
@@ -190,9 +197,10 @@ class UserService
 
     public function getOrRegisterUserViaFb(\Laravel\Socialite\Contracts\User $fbUser)
     {
-
-
-        $user = $this->getUserViaFbId($fbUser->user['id']);
+        $user = User::where(['email' => $fbUser->getEmail()])->first();
+        if (!$user) {
+            $user = $this->getUserViaFbId($fbUser->user['id']);
+        }
         $user = $user ?? $this->register(
                 $fbUser->getEmail(),
                 $fbUser->getName(),

@@ -49,9 +49,10 @@
                         <div class="the_form_div the_form_div_half">
                             <div class="form-group field-searchform-location">
                                 <label class="control-label">Город</label>
-                                <input type="text" name="city" id="location"
+                                <input type="text" name="address" id="location"
                                        value="{{ !old('city') ? ($user->city ? $user->city->name : '') : old('city') }}"
                                        class="city-autocomplete" placeholder="Санкт-Петербург"/>
+                                <input type="hidden" name="city">
                             </div>
 
                             <div class="form-group field-searchform-days required cleared">
@@ -284,18 +285,15 @@
             autocomplete.addListener('place_changed', function () {
                 const place = autocomplete.getPlace();
                 $("#location").val(getCity(place.address_components));
+                $("input[name='city']").val(getCity(place.address_components));
             });
 
-
-            const autocompleteInvite = new google.maps.places.Autocomplete(document.getElementById('invite-city'), {
-                types: ['(cities)'],
-                componentRestrictions: {country: "ru"}
-            });
-
-            autocompleteInvite.addListener('place_changed', function () {
-                const place = autocomplete.getPlace();
-                $('#invite-city').val(getCity(place.address_components));
-            });
+            var geocoder = new google.maps.Geocoder();
+            $("#location").on('focusout', function () {
+                geocoder.geocode({'address': $(this).val()}, function (results, status) {
+                    $("input[name='city']").val(getCity(results.address_components));
+                });
+            })
         }
 
         function getCity(address) {
@@ -310,8 +308,8 @@
         }
 
     </script>
-    <script src="https://maps.googleapis.com/maps/api/js?key={{env('GOOGLE_API_KEY')}}&libraries=places&callback=initAutoComplete"></script>
 
+    <script src="https://maps.googleapis.com/maps/api/js?key={{env('GOOGLE_API_KEY')}}&libraries=places,geocoder&callback=initAutoComplete"></script>
     <script src="{{asset('js/timepicker.js')}}"></script>
     <script>
       $('.timepicker').timepicker({"timeFormat": "HH:mm:ss", "showSecond": false});

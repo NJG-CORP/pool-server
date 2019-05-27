@@ -88,7 +88,7 @@
 @push('scripts')
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.4/socket.io.js"></script>
     <script>
-        const socket = io('http://95.213.251.73:8080', {
+        const socket = io('https://poolbuddy:8080', {
             query: "api_token=<?= Auth::user()->api_token ?>"
         });
         let chats;
