@@ -9,11 +9,13 @@ use App\Models\TermRelation;
 use App\Models\User;
 use App\Models\Weekday;
 use Carbon\Carbon;
+use DB;
 use Devfactory\Taxonomy\Models\Term;
 use Devfactory\Taxonomy\Models\Vocabulary;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Hash;
+use Taxonomy;
 
 class PlayerService
 {
@@ -82,7 +84,7 @@ class PlayerService
         }
 
         if ($avatar) {
-            \DB::delete("
+            DB::delete("
               DELETE FROM images WHERE imageable_type = 'App\\\\Models\\\\User'
               AND imageable_id = " . $user->id);
             $imagePath = "avatars/" . str_random(8) . '.jpg';
@@ -124,9 +126,9 @@ class PlayerService
         }
 
         if ($gameDays) {
-            \DB::delete('DELETE FROM game_time WHERE user_id=' . $user->id);
+            DB::delete('DELETE FROM game_time WHERE user_id=' . $user->id);
             foreach ($gameDays as $day) {
-                \DB::insert(
+                DB::insert(
                     "INSERT INTO game_time SET user_id=" . $user->id . ", weekday_id=$day"
                 );
             }
@@ -151,11 +153,11 @@ class PlayerService
             ->where('users.id', '<>', $currentUser->id);
 
         $gender = $query->get('gender');
-        if ($gender !== null) {
+        if ($gender !== null && $gender !== -1) {
             $dbQuery->where('gender', $gender);
         }
 
-        if ($cityId = $query->get('city_id')) {
+        if ($cityId = $query->get('city_id') && $check = $query->get('address')) {
             $dbQuery->where('city_id', $cityId);
         }
 
@@ -187,7 +189,7 @@ class PlayerService
         }
 
         if ($gamePaymentTypes = $query->get('game_payment_type')) {
-            $v = \Taxonomy::getVocabularyByName('GamePaymentType');
+            $v = Taxonomy::getVocabularyByName('GamePaymentType');
             /**
              * @var Collection $terms
              */

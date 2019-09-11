@@ -41,7 +41,7 @@
                             </div>
                             @if($user_profile->id == Auth::user()->id)
                                 <p class="partners_p"><b>Мои партнеры</b> <span
-                                            class="partners_span">{{count((new \App\Services\InvitationService())->invitationList($user_profile))}}</span>
+                                            class="partners_span">{{(new \App\Services\InvitationService())->getPartnersCount($user_profile)}}</span>
                                 </p>
                             @endif
                         </div>

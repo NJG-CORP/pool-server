@@ -57,7 +57,7 @@ class BlogService
 	  		
 	  		
 	  		$blog->description = $request->description;
-	  		$blog->gallery_title = $request->gallery_title;
+          $blog->gallery_title = $request->gallery_title ?? '';
 	  		$blog->save();
 
 

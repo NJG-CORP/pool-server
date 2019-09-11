@@ -57,29 +57,29 @@
                     <div class="clearfix"></div>
                 </div>
 
-                <div class="form-group field-addeventform-url required">
-                    <label class="control-label" for="addeventform-url">Gallery Title</label>
-                    <input type="text" id="addeventform-url" class="form-control" name="gallery_title"
-                           aria-required="true"
-                           value="{{$blog->gallery_title}}">
-                </div>
+                {{--                <div class="form-group field-addeventform-url required">--}}
+                {{--                    <label class="control-label" for="addeventform-url">Gallery Title</label>--}}
+                {{--                    <input type="text" id="addeventform-url" class="form-control" name="gallery_title"--}}
+                {{--                           aria-required="true"--}}
+                {{--                           value="{{$blog->gallery_title}}">--}}
+                {{--                </div>--}}
 
-                <div class="form-group field-addeventform-images">
-                    <label class="control-label" for="addeventform-images">Gallery Images</font></label>
-                    <input type="file" id="addeventform-images" multiple="" name="gallery_images[]">
-                    @if(count($gallery_images))
-                        @foreach($gallery_images as $more_img)
-                            <div class="img" id="img{{$more_img->id}}">
-                                <button type="button" class="rmImg btn btn-danger btn-small"
-                                        data-id="{{$more_img->id}}">
-                                    Remove
-                                </button>
-                                <img src="/assets/images/{{$more_img->path}}" style="width:100px">
-                            </div>
-                        @endforeach
-                    @endif
-                    <div class="clearfix"></div>
-                </div>
+                {{--                <div class="form-group field-addeventform-images">--}}
+                {{--                    <label class="control-label" for="addeventform-images">Gallery Images</font></label>--}}
+                {{--                    <input type="file" id="addeventform-images" multiple="" name="gallery_images[]">--}}
+                {{--                    @if(count($gallery_images))--}}
+                {{--                        @foreach($gallery_images as $more_img)--}}
+                {{--                            <div class="img" id="img{{$more_img->id}}">--}}
+                {{--                                <button type="button" class="rmImg btn btn-danger btn-small"--}}
+                {{--                                        data-id="{{$more_img->id}}">--}}
+                {{--                                    Remove--}}
+                {{--                                </button>--}}
+                {{--                                <img src="/assets/images/{{$more_img->path}}" style="width:100px">--}}
+                {{--                            </div>--}}
+                {{--                        @endforeach--}}
+                {{--                    @endif--}}
+                {{--                    <div class="clearfix"></div>--}}
+                {{--                </div>--}}
 
                 <div class="form-group field-addeventform-paragraph">
                     <label class="control-label" for="addeventform-paragraph">Paragraph</label>

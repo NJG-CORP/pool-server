@@ -26,12 +26,32 @@ class InvitationService
         return $invitation;
     }
 
+    public function getPartnersCount(User $user)
+    {
+        $q = $this->getInvitesQuery($user);
+
+        $q->where('accepted', 1);
+
+        return $q->count();
+    }
+
+
     public function invitationList(User $user){
-        $q = Invitation::
-            with([
-                'invited.avatar', 'invited.receivedRatings', 'inviter.avatar',
-                'inviter.receivedRatings', 'club.location'
-            ])
+        $q = $this->getInvitesQuery($user);
+        return $q
+            ->orderBy('accepted', 'ASC')
+            ->orderBy('created_at', 'DESC')
+            ->get();
+
+    }
+
+    private function getInvitesQuery(User $user)
+    {
+        return Invitation::
+        with([
+            'invited.avatar', 'invited.receivedRatings', 'inviter.avatar',
+            'inviter.receivedRatings', 'club.location'
+        ])
             ->where(function(Builder $q) use($user){
                 $q->where('invited_id', $user->id)
                     ->where(function (Builder $q){
@@ -41,32 +61,19 @@ class InvitationService
             })->orWhere(function (Builder $q) use($user){
                 $q->where('inviter_id', $user->id);
             });
-        return $q
-            ->orderBy('accepted', 'ASC')
-            ->orderBy('created_at', 'DESC')
-            ->get();
-
     }
 
     public function partnersList(User $user)
     {
-        $q = Invitation::
-        with([
-            'inviter.avatar',
-            'inviter.receivedRatings', 'club.location'
-        ])
-            ->groupBy('inviter_id')
-            ->where(function (Builder $q) use ($user) {
-                $q->where('invited_id', $user->id)
-                    ->where(function (Builder $q) {
-                        $q->where('accepted', 1);
-                    });
-            });
+        $q = $this->getInvitesQuery($user);
+        $q->where('accepted', 1);
         return $q
             ->orderBy('created_at', 'DESC')
             ->get()
-            ->map(function (Invitation $e) {
-                return $e->inviter;
+            ->map(function (Invitation $e) use ($user) {
+                $partner = $e->inviter->id === $user->id ? $e->invited : $e->inviter;
+
+                return $partner;
             });
     }
 

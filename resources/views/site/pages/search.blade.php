@@ -50,9 +50,10 @@
                             <div class="form-group field-searchform-location">
                                 <label class="control-label">Город</label>
                                 <input type="text" name="address" id="location"
-                                       value="{{ !old('city') ? ($user->city ? $user->city->name : '') : old('city') }}"
+                                       value="{{ old('address') ?? ($user->city ? $user->city->name : '')}}"
                                        class="city-autocomplete" placeholder="Санкт-Петербург"/>
-                                <input type="hidden" name="city">
+                                <input type="hidden" name="city"
+                                       value="{{ old('city') ?? ($user->city ? $user->city->name : '')}}">
                             </div>
 
                             <div class="form-group field-searchform-days required cleared">
@@ -213,9 +214,8 @@
 
                                                 <div class="text">
                                                     <p class="name"><a
-                                                                href="{{(route('profile.card.other', ['id' => $player->id]))}}">{{$player->getUsername()}}
-                                                            , {{$player->age}} год</a></p>
-
+                                                                href="{{(route('profile.card.other', ['id' => $player->id]))}}">{{$player->getFullUsername()}}</a>
+                                                    </p>
                                                     <p>{{ $player->getAddress() }}</p>
                                                 </div>
 
@@ -274,9 +274,29 @@
             </form>
         </div>
     </div><!--/order_call_popup invite_popup-->
-
-    @push('scripts')
     <script>
+        $("#invite-form").submit(function (e) {
+            e.preventDefault();
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
+                }
+            });
+            $.ajax({
+                method: 'POST',
+                data: $(this).serialize(),
+                url: $(this).attr('action'),
+                success: function (response) {
+                    alert('Приглашение отправлено');
+                    $.fancybox.close()
+                },
+                error: function (response) {
+                    alert(response);
+                }
+            });
+
+            return false;
+        });
         function initAutoComplete() {
             const autocomplete = new google.maps.places.Autocomplete(document.getElementById('location'), {
                 types: ['(cities)'],
@@ -291,7 +311,8 @@
             var geocoder = new google.maps.Geocoder();
             $("#location").on('focusout', function () {
                 geocoder.geocode({'address': $(this).val()}, function (results, status) {
-                    $("input[name='city']").val(getCity(results.address_components));
+                    console.log(results);
+                    $("input[name='city']").val(getCity(results[0].address_components));
                 });
             })
         }
@@ -308,26 +329,25 @@
         }
 
     </script>
+    @push('scripts')
+        <script src="https://maps.googleapis.com/maps/api/js?key={{env('GOOGLE_API_KEY')}}&libraries=places,geocoder&callback=initAutoComplete&language=ru-RU"></script>
+        <script src="{{asset('js/timepicker.js')}}"></script>
+        <script>
 
-    <script src="https://maps.googleapis.com/maps/api/js?key={{env('GOOGLE_API_KEY')}}&libraries=places,geocoder&callback=initAutoComplete"></script>
-    <script src="{{asset('js/timepicker.js')}}"></script>
-    <script>
-      $('.timepicker').timepicker({"timeFormat": "HH:mm:ss", "showSecond": false});
-      $('#invite-form').submit(function(e){
-        var date = $("#invite-form-date").val();
-        var time = $("#invite-form-time").val();
-        $("<input>").attr('name', 'meeting_at').css('display', 'none').val(date + " " + time).appendTo(this);
-        return true;
-      });
+            $('.timepicker').timepicker({"timeFormat": "HH:mm", "showSecond": false, 'regional': 'ru'});
+            $('#invite-form').submit(function (e) {
+                var date = $("#invite-form-date").val();
+                var time = $("#invite-form-time").val();
+                $("<input>").attr('name', 'meeting_at').css('display', 'none').val(date + " " + time).appendTo(this);
+                return true;
+            });
 
-      $('.show-invite-popup').click(function(e){
-        var user_id = $(this).attr('data-uid');
-        $('#invited-id').val(user_id);
-      });
-
-    </script>
+            $('.show-invite-popup').click(function (e) {
+                var user_id = $(this).attr('data-uid');
+                $('#invited-id').val(user_id);
+            });
+        </script>
     @endpush
-
     @push('styles')
         <link rel="stylesheet" href="{{asset('css/timepicker.css')}}">
     @endpush

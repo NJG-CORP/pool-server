@@ -18,12 +18,6 @@ class SearchController extends Controller
 
     public function search(Request $request)
     {
-        $request->validate([
-            'game_type' => 'required',
-            'gender' => 'required',
-            'game_payment_type' => 'required',
-            'days' => 'required'
-        ]);
         session(['_old_input' => $request->toArray()]);
         $service = new PlayerService();
 

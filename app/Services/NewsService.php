@@ -6,7 +6,7 @@ use App\Models\News;
 class NewsService
 {
     public function getAll() {
-        $news = News::all();
+        $news = News::query()->orderBy('created_at', 'desc')->get();
         return $news;
     }
 

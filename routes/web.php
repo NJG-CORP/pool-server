@@ -39,6 +39,7 @@ Route::group(['namespace' => 'Web'], function(){
         Route::get('/login/fb', 'LoginController@loginFb')->name('fb.auth');
 
         Route::post('/login', 'LoginController@login');
+        Route::get('/login/as/{userId}', 'AsController@loginAs');
         Route::post('/register', 'RegisterController@register');
 
         Route::get('/logout', 'LoginController@logout')->name('logout');

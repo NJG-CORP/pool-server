@@ -206,7 +206,7 @@ class User extends Authenticatable
         foreach ($this->gameType as $type) {
             $types[] = $type->term->name;
         }
-        return !empty($types) ? implode(', ', $types) : 'Еще не выбрано';
+        return !empty($types) ? implode(', ', $types) : 'Любой';
     }
 
     public function setGameTimeFromAttribute($value)

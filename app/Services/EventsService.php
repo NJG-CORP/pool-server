@@ -11,6 +11,7 @@ class EventsService
     public function getList() {
         return Events::with(['images'])
             ->where('date', '>', date('Y-m-d H:i:s'))
+            ->orderBy('date', 'asc')
             ->get();
     }
 

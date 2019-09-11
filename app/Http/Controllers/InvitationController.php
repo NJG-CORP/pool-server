@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Exceptions\ControllableException;
-use App\Http\Requests\SendInvitationRequest;
 use App\Models\Club;
 use App\Models\User;
 use App\Services\InvitationService;
@@ -12,6 +11,7 @@ use Auth;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Throwable;
+use Validator;
 
 class InvitationController extends Controller
 {
@@ -38,10 +38,10 @@ class InvitationController extends Controller
      * @throws ControllableException
      */
     public function inviteUser(Request $request){
-        $validator = \Validator::make($request->all(), [
+        $validator = Validator::make($request->all(), [
             'invited_id' => 'required|exists:users,id',
             'club_id' => 'required|exists:clubs,id',
-            'meeting_at' => 'required|date_format:d.m.Y H:i:s'
+            'meeting_at' => 'required|date_format:d.m.Y H:i'
         ]);
         if($validator->fails()) {
             return redirect()
@@ -66,7 +66,7 @@ class InvitationController extends Controller
                     []
                 );
             } catch (Throwable $e) {
-                dd($e);
+//                dd($e);
             }
             return redirect()->back()->with('success', 'Приглашение отправлено');
         }

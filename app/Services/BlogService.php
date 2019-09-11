@@ -6,7 +6,7 @@ use App\Models\Blog;
 class BlogService
 {
     public function getAll() {
-        $news = Blog::all();
+        $news = Blog::query()->orderBy('created_at', 'desc')->get();
         return $news;
     }
 

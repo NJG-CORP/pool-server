@@ -35,16 +35,16 @@
                     <input type="file" id="addeventform-images" multiple="" name="images[]">
                 </div>
 
-                <div class="form-group field-addeventform-url required">
-                    <label class="control-label" for="addeventform-url">Gallery Title</label>
-                    <input type="text" id="addeventform-url" class="form-control" name="gallery_title"
-                           aria-required="true">
-                </div>
+                {{--                <div class="form-group field-addeventform-url required">--}}
+                {{--                    <label class="control-label" for="addeventform-url">Gallery Title</label>--}}
+                {{--                    <input type="text" id="addeventform-url" class="form-control" name="gallery_title"--}}
+                {{--                           aria-required="true">--}}
+                {{--                </div>--}}
 
-                <div class="form-group field-addeventform-images">
-                    <label class="control-label" for="addeventform-images">Gallery Images</font></label>
-                    <input type="file" id="addeventform-images" multiple="" name="gallery_images[]">
-                </div>
+                {{--                <div class="form-group field-addeventform-images">--}}
+                {{--                    <label class="control-label" for="addeventform-images">Gallery Images</font></label>--}}
+                {{--                    <input type="file" id="addeventform-images" multiple="" name="gallery_images[]">--}}
+                {{--                </div>--}}
 
                 <div class="form-group field-addeventform-paragraph">
                     <label class="control-label" for="addeventform-paragraph">Paragraph</label>
